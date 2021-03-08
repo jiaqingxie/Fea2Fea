@@ -1,0 +1,5 @@
+Constant_feature	Degree	Clustering_coefficient	Pagerank	Aver_path_len
+1.0	3.0	1.0	0.25	1.0
+1.0	3.0	1.0	0.25	1.0
+1.0	3.0	1.0	0.25	1.0
+1.0	3.0	1.0	0.24999999999999997	1.0

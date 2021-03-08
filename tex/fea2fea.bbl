@@ -1,0 +1,88 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{4}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Hamilton, Ying, and Leskovec}{Hamilton
+  et~al\mbox{.}}{2017}]%
+        {hamilton2017inductive}
+\bibfield{author}{\bibinfo{person}{Will Hamilton}, \bibinfo{person}{Zhitao
+  Ying}, {and} \bibinfo{person}{Jure Leskovec}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Inductive representation learning on large graphs}.
+  In \bibinfo{booktitle}{\emph{Advances in neural information processing
+  systems}}. \bibinfo{pages}{1024--1034}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Kipf and Welling}{Kipf and Welling}{2016}]%
+        {kipf2016semi}
+\bibfield{author}{\bibinfo{person}{Thomas~N Kipf} {and} \bibinfo{person}{Max
+  Welling}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Semi-supervised classification with graph
+  convolutional networks}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1609.02907}}
+  (\bibinfo{year}{2016}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Veli{\v{c}}kovi{\'c}, Cucurull, Casanova,
+  Romero, Lio, and Bengio}{Veli{\v{c}}kovi{\'c} et~al\mbox{.}}{2017}]%
+        {velivckovic2017graph}
+\bibfield{author}{\bibinfo{person}{Petar Veli{\v{c}}kovi{\'c}},
+  \bibinfo{person}{Guillem Cucurull}, \bibinfo{person}{Arantxa Casanova},
+  \bibinfo{person}{Adriana Romero}, \bibinfo{person}{Pietro Lio}, {and}
+  \bibinfo{person}{Yoshua Bengio}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Graph attention networks}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1710.10903}}
+  (\bibinfo{year}{2017}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Xu, Hu, Leskovec, and Jegelka}{Xu
+  et~al\mbox{.}}{2018}]%
+        {xu2018powerful}
+\bibfield{author}{\bibinfo{person}{Keyulu Xu}, \bibinfo{person}{Weihua Hu},
+  \bibinfo{person}{Jure Leskovec}, {and} \bibinfo{person}{Stefanie Jegelka}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{How powerful are graph neural networks?}
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1810.00826}}
+  (\bibinfo{year}{2018}).
+\newblock
+
+
+\end{thebibliography}
