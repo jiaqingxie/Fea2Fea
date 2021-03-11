@@ -16,66 +16,19 @@ import matplotlib.pyplot as plt
 from graph_property import G_property, binning
 import seaborn as sns
 
-path = osp.join('/home/jiaqing/桌面/FASG_KDD/data/')
+from model.GNN import Net
 
-class Net(nn.Module):
-    def __init__(self, embedding):
-        super(Net, self).__init__()
-        mlp1 = nn.Sequential(
-                nn.Linear(1, 512),
-                nn.BatchNorm1d(512),
-                nn.ReLU(),
-                nn.Linear(512,256),
-            )
-        mlp2 = nn.Sequential(
-                nn.Linear(256,128 ),
-                nn.BatchNorm1d(128),
-                nn.ReLU(),
-                nn.Linear(128,64),
-            )
-        self.embedding = embedding
-        if self.embedding == 'SAGE':
-            self.conv1 = SAGEConv(1,128,normalize=True)
-            self.conv2 = SAGEConv(128,64 ,normalize=True)
-        elif self.embedding == 'GAT':
-            self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
-            self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
-                           dropout=0.6)
-        elif self.embedding == 'GCN':
-            self.conv1 = GCNConv(1,256,cached=True)
-            self.conv2 = GCNConv(256,64,cached=True)
-        elif self.embedding == 'GIN':
-            self.conv1 = GINConv(mlp1)
-            self.conv2 = GINConv(mlp2)
-        else:
-            pass 
-        self.lin1 = nn.Linear(64,16)
-        self.lin2 = nn.Linear(16,6)
-        self.latent = 0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    def forward(self):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        #x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        x = F.relu(self.conv1(x, edge_index, data.edge_attr))
-        #x = F.relu(self.conv1(x))
-        x = F.dropout(x, training=self.training)
-        #x = F.relu(self.conv2(x))
-        x = F.relu(self.conv2(x, edge_index, data.edge_attr))
-        graph_embedding = F.dropout(x, training=self.training)
-        self.latent = graph_embedding
-        x = F.relu(self.lin1(graph_embedding))
-        x = self.lin2(x)
-        return F.log_softmax(x, dim =1)
+path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
 
 def train():
     model.train()
     optimizer.zero_grad()
-    F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
+    F.nll_loss(model(data)[data.train_mask], data.y[data.train_mask]).backward()
     optimizer.step()
 
 def test():
     model.eval()
-    logits, accs = model(), []
+    logits, accs = model(data), []
     for _, mask in data('train_mask', 'val_mask', 'test_mask'):
         pred = logits[mask].max(1)[1]
         acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
@@ -83,13 +36,10 @@ def test():
     return accs
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-#model =  Net().to(device)
-
 
 best_val_acc = test_acc = 0
 t = 0
-record_acc = 0
-
+record_acc = 1
 
 train_accu_plot = []
 epoch_plot = []
@@ -103,7 +53,7 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
     dataset_name = dataset
     dataset = Planetoid(path, name = dataset, transform=T.NormalizeFeatures())
     data = dataset[0]
-    name = r'/home/jiaqing/桌面/FASG_KDD/Result/Planetoid/' + dataset_name + '_property.txt'
+    name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset_name + '_property.txt'
     property_file = pd.read_csv(name, sep = '\t')
     R[0][0] = 1.000
 
@@ -155,12 +105,12 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
                         #print(R)
                         k = np.array(R)
                         k = pd.DataFrame(k)
-                        filepath = '/home/jiaqing/桌面/FASG_KDD/Result/Planetoid'
+                        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
                         fig_name = '/' + dataset_name + '_' + embedding_method + '.txt'
                         fig_path = filepath + fig_name
                         k.to_csv(fig_path, header = None, index = None, sep = '\t')
                         #----------- save Heatmap Matrix-----------#
-                        filepath = '/home/jiaqing/桌面/FASG_KDD/Result/Planetoid'
+                        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
                         fig_name = '/' + dataset_name + '_' + embedding_method + '_property' + '.eps'
                         fig_path = filepath + fig_name
                         xlabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
@@ -195,82 +145,7 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
                     print(model.embedding)
                     print(model.embedding.shape)
                 '''
-            # visualization
-    else:
-
-        test_case = [(1,3), (4,1)]
-        embeddings = ['SAGE','GAT','GCN','GIN' ]
-        #,'PubMed','Citeseer'
-        for dataset, embedding_method in list(itertools.product(['Cora'],embeddings)):
-            
-
-            for (i, j) in test_case:
-
-                ttmp = np.array([])
-                best_val_acc = test_acc = 0
-                t = 0
-
-                model = Net(embedding=embedding_method)
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=1e-4)
-
-                property_i = property_file.iloc[:,[i]]
-                data.x = torch.tensor(np.array(property_i)).float()
-
-                property_j = property_file.iloc[:,[j]]
-                #tmp = binning(np.array(property_j), k = 6, data_len = len(data.y))
-                data.y = binning(np.array(property_j), k = 6, data_len = len(data.y))
-
-                for epoch in range(1, 3000):   
-                    train()
-                    train_acc, val_acc, tmp_test_acc = test()
-                    
-                    if val_acc > best_val_acc:
-                        best_val_acc = val_acc
-                        test_acc = tmp_test_acc
-                        embedding = model.latent
-                        t = 0
-                    t = t + 1
-                    ttmp = np.append(ttmp, round(train_acc,3))   
-                    if t > 100:
-                        break
-                    
-                    total_epoch+=1
-                    log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-                    print(log.format(epoch, train_acc, best_val_acc, test_acc))
-                
-
-                # record data:
-                training_error = np.append(training_error, (total_epoch, ttmp))
-
-            #print(training_error)
-        '''
-        # for Cora:
-
-        # case 1:
-        seq = [4 * i for i in range(4)]
-        plt.figure(figsize=(5,5))
-        k = 0
-        for i in seq:
-            plt.plot(range(1, training_error[i]+1), training_error[i+1], label = embeddings[k])
-            k+=1
-        plt.show()
-
-        # case 2:
-        seq = [4 * i + 2 for i in range(4)]
-        plt.figure((5,5))
-        k = 0
-        for i in seq:
-            plt.plot(range(1, training_error[i]+1), training_error[i+1], label = embeddings[k])
-            k+=1
-        plt.show()
-
-        # for Citeseer:
-        # case 1:
-        #plt.figure((5,5))
-        # case 2:        
-
-        '''
-
+    
 
 
 

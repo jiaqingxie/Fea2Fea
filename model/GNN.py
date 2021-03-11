@@ -1,7 +1,17 @@
+import itertools
+import os.path as osp
+import pandas as pd
+import numpy as np
+import torch
+import torch.nn.functional as F
+from torch.utils.data import Dataset,DataLoader
+import torch.nn as nn
+from torch_geometric.datasets import Planetoid
+import torch_geometric.transforms as T
 from torch_geometric.nn import ARMAConv,AGNNConv
 from torch_geometric.nn import GINConv,GATConv,GCNConv
 from torch_geometric.nn import SAGEConv,SplineConv
-import torch.nn as nn
+
 class Net(nn.Module):
     def __init__(self, embedding):
         super(Net, self).__init__()
@@ -37,28 +47,16 @@ class Net(nn.Module):
         self.lin2 = nn.Linear(16,6)
         self.latent = 0
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-    def forward(self):
+    def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        #x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
         x = F.relu(self.conv1(x, edge_index, data.edge_attr))
+        #x = F.relu(self.conv1(x))
         x = F.dropout(x, training=self.training)
+        #x = F.relu(self.conv2(x))
         x = F.relu(self.conv2(x, edge_index, data.edge_attr))
         graph_embedding = F.dropout(x, training=self.training)
         self.latent = graph_embedding
         x = F.relu(self.lin1(graph_embedding))
         x = self.lin2(x)
         return F.log_softmax(x, dim =1)
-
-def train():
-    model.train()
-    optimizer.zero_grad()
-    F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
-    optimizer.step()
-
-def test():
-    model.eval()
-    logits, accs = model(), []
-    for _, mask in data('train_mask', 'val_mask', 'test_mask'):
-        pred = logits[mask].max(1)[1]
-        acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
-        accs.append(acc)
-    return accs
