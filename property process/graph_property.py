@@ -6,15 +6,20 @@ import pandas as pd
 import math
 import torch
 
-def G_property(graph, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0, 
+def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0, 
                 avg_path_length_bool = 0, bin_bool = 0):
     G=nx.Graph()
     G.add_edges_from(graph) #one example from CS224W
     # to reorder the mixed dictionary to an ascending order
+    if constant_bool:
+        constant = torch.ones([max(G) + 1,1],dtype = float)
+        return constant
+
     if degree_bool:
         degrees = torch.zeros([max(G) + 1,1],dtype = float)
         for (n, d) in sorted(G.degree()):
             degrees[n,0] = d
+        #print(degrees)
         
         degrees_sequence = sorted(degrees, reverse=True)
         '''
@@ -43,7 +48,7 @@ def G_property(graph, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0,
 
     if pagerank_bool:
         pagerank = torch.zeros([max(G) + 1,1],dtype = float)
-        for key,value in sorted(nx.pagerank(G, alpha=0.9, max_iter = 600).items()): #default dumping coefficient is equal to 0.85
+        for key,value in sorted(nx.pagerank(G, alpha=0.9).items()): #default dumping coefficient is equal to 0.85
             pagerank[key,0] = value
         pagerank_sequence = sorted(pagerank, reverse=True)
         if bin_bool:
@@ -70,6 +75,7 @@ def G_property(graph, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0,
                 k = k.item()
             
             avg_path_len_G[i] = k
+            #print(i)
         avg_path_len_G_sequence = sorted(avg_path_len_G, reverse=True)
         return avg_path_len_G,G
  
@@ -127,15 +133,3 @@ def binning(Array, k, data_len):
 
 
 
-'''
-graph = [(0,1),(0,2),(0,3),(0,4),(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)]
-graph_2 = [(0,1),(1,2),(1,4),(2,3),(2,5),(3,4),(3,6),(4,7)]
-avg_path_len_G,G = G_property(graph_2,avg_path_length_bool=1,degree_bool=0,clustering_bool=0,pagerank_bool=0)
-avg_path_len_G,G = G_property(graph_2,avg_path_length_bool=0,degree_bool=1,clustering_bool=0,pagerank_bool=0)
-avg_path_len_G,G = G_property(graph_2,avg_path_length_bool=0,degree_bool=0,clustering_bool=1,pagerank_bool=0)
-avg_path_len_G,G = G_property(graph_2,avg_path_length_bool=0,degree_bool=0,clustering_bool=0,pagerank_bool=1)
-print(avg_path_len_G)
-'''
-#graph_2 = [(0,1),(1,2),(1,4),(2,3),(2,5),(3,4),(3,6),(4,7)]
-#avg_path_len_G,G = G_property(graph_2,avg_path_length_bool=1,degree_bool=0,clustering_bool=0,pagerank_bool=0)
-#degrees, bin_degrees ,G = G_property(graph_2,degree_bool=1,bin_bool=1)
