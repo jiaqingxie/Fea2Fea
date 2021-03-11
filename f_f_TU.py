@@ -136,11 +136,11 @@ def test(i, j, dn,  model, task, optimizer, test_loader):
     return test_acc
 
 if __name__ == '__main__':
-    #'ENZYMES','PROTEINS'
-    dataset_name = ['NCI1']
-    #'GIN'
+
+    dataset_name = ['ENZYMES','PROTEINS', 'NCI1']
+
     GNN_model = ['GIN','SAGE','GAT', 'GCN']
-    #'GIN','SAGE','GAT',    
+ 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')    
 
     for dn, embedding_method in list(itertools.product(dataset_name, GNN_model)):
