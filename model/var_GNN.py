@@ -13,44 +13,54 @@ from torch_geometric.nn import GINConv,GATConv,GCNConv
 from torch_geometric.nn import SAGEConv,SplineConv
 
 class Net(nn.Module):
-    def __init__(self, embedding, hidden_dim, depth, bins, if_BN):
+    def __init__(self, embedding = 'GIN', hidden_dim = 64, depth = 2, bins = 6, if_BN = 0):
         super(Net, self).__init__()
         mlp1 = nn.Sequential(
                 nn.Linear(1, 512),
-                nn.BatchNorm1d(512),
+                #nn.BatchNorm1d(512),
                 nn.ReLU(),
                 nn.Linear(512,256),
             )
         mlp2 = nn.Sequential(
                 nn.Linear(256,128 ),
-                nn.BatchNorm1d(128),
+                #nn.BatchNorm1d(128),
                 nn.ReLU(),
                 nn.Linear(128,64),
             )
+        mlp3 = nn.Sequential(
+                nn.Linear(hidden_dim, hidden_dim),
+                nn.BatchNorm1d(hidden),
+                nn.ReLU(),
+        )
+        self.bn = nn.BatchNorm1d(hidden_dim)
         self.embedding = embedding
         if self.embedding == 'SAGE':
             self.conv1 = SAGEConv(1,128,normalize=True)
             self.conv2 = SAGEConv(128,64 ,normalize=True)
+            self.conv3 = SAGEConv(hidden_dim, hidden_dim, normalize=True)
         elif self.embedding == 'GAT':
             self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
             self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
                            dropout=0.6)
+            self.conv3 = GATConv(hidden_dim, hidden_dim, heads = 1, concat= False, dropout= 0.6)
         elif self.embedding == 'GCN':
             self.conv1 = GCNConv(1,256,cached=False)
             self.conv2 = GCNConv(256,64,cached=False)
+            self.conv3 = GCNConv(hidden_dim, hidden_dim, cached=False)
         elif self.embedding == 'GIN':
             self.conv1 = GINConv(mlp1)
             self.conv2 = GINConv(mlp2)
+            self.conv3 = GIN
         else:
             pass 
-        self.lin1 = nn.Linear(64,16)
-        self.lin2 = nn.Linear(16,6)
+        self.lin1 = nn.Linear(hidden_dim,16)
+        self.lin2 = nn.Linear(16,bins)
         self.latent = 0
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        #x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        x = F.relu(self.conv1(x, edge_index, data.edge_attr))
+        for i in range(depth):
+            x = F.relu(self.conv1(x, edge_index, data.edge_attr))
         #x = F.relu(self.conv1(x))
         x = F.dropout(x, training=self.training)
         #x = F.relu(self.conv2(x))
