@@ -13,127 +13,215 @@ from torch_geometric.nn import GINConv,GATConv,GCNConv
 from torch_geometric.nn import SAGEConv,SplineConv
 import math
 import matplotlib.pyplot as plt
-#from graph_property import G_property, binning
 import seaborn as sns
 from torch_geometric.data import DataLoader
 from torch_scatter import scatter_mean
+from graph_property import G_property,binning
+#import torch_xla.core.xla_model as xm
+from model.GNN import Net
 
+def reserve(task, dn,  loader):
+    t = 0
+    for load in loader:
+        G = []
+        # construct graph
+        for p1 in range(np.array(load.edge_index).shape[1]):
+            G.append((int(load.edge_index[0][p1]),int(load.edge_index[1][p1])))
+        # calculate graph properties
+        constant = G_property(G, constant_bool=1)
+        degrees, graph = G_property(G, degree_bool=1, bin_bool=0) 
+        clustering, graph = G_property(G, clustering_bool=1, bin_bool=0) 
+        pagerank, graph = G_property(G, pagerank_bool=1, bin_bool=0)
+        avg_path_len_G, graph = G_property(G, avg_path_length_bool=1, bin_bool=0)
 
+        matrix = torch.cat((constant,degrees),1)
+        matrix = torch.cat((matrix,clustering),1)
+        matrix = torch.cat((matrix,pagerank),1)
+        matrix = torch.cat((matrix,avg_path_len_G),1)
 
+        matrix = matrix.numpy()
+        matrix = pd.DataFrame(matrix,columns = ['Constant_feature','Degree','Clustering_coefficient','Pagerank','Aver_path_len'])   
+        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+        matrix.to_csv(name, sep = '\t', index=False)
+        t+=1
 
-#dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES', use_node_attr=False)
-#loader = DataLoader(dataset, batch_size=1, shuffle=True)
-#dataset = TUDataset(root='/tmp/PROTEINS', name='PROTEINS', use_node_attr=False)
-#train_loader = DataLoader(dataset[:480] , batch_size=1, shuffle=True)
-dataset = TUDataset(root='/tmp/NCI1', name='NCI1', use_node_attr=False)
-print(len(dataset))
-loader = DataLoader(dataset, batch_size=2, shuffle=True)
-#valid_loader = DataLoader(dataset[480:540], batch_size=1, shuffle=True)
-i = 0
-for load in loader:
-    print(load.edge_index)
-    break
-#for data in loader:
-    #print(data.x.edge_index)
-
-'''
-test_loader = DataLoader(dataset[540:600], batch_size=32, shuffle=True) 
-
-class Net(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, task='node'):
-        super(Net, self).__init__()
-        self.task = task
-        self.convs = nn.ModuleList()
-        self.convs.append(self.build_conv_model(input_dim, hidden_dim))
-        self.lns = nn.ModuleList()
-        self.lns.append(nn.LayerNorm(hidden_dim))
-        self.lns.append(nn.LayerNorm(hidden_dim))
-        for l in range(2):
-            self.convs.append(self.build_conv_model(hidden_dim, hidden_dim))
-
-        # post-message-passing
-        self.post_mp = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim), nn.Dropout(0.25), 
-            nn.Linear(hidden_dim, output_dim))
-        if not (self.task == 'node' or self.task == 'graph'):
-            raise RuntimeError('Unknown task.')
-
-        self.dropout = 0.25
-        self.num_layers = 3
-
-    def build_conv_model(self, input_dim, hidden_dim):
-        # refer to pytorch geometric nn module for different implementation of GNNs.
-        if self.task == 'node':
-            return GCNConv(input_dim, hidden_dim)
-        else:
-            return GINConv(nn.Sequential(nn.Linear(input_dim, hidden_dim),
-                                  nn.ReLU(), nn.Linear(hidden_dim, hidden_dim)))
-
-    def forward(self, data):
-        x, edge_index, batch = data.x, data.edge_index, data.batch
-        if data.num_node_features == 0:
-          x = torch.ones(data.num_nodes, 1)
-
-        for i in range(self.num_layers):
-            x = self.convs[i](x, edge_index)
-            emb = x
-            x = F.relu(x)
-            x = F.dropout(x, p=self.dropout, training=self.training)
-            if not i == self.num_layers - 1:
-                x = self.lns[i](x)
-
-        if self.task == 'graph':
-            x = global_mean_pool(x, batch)
-
-        x = self.post_mp(x)
-
-        return F.log_softmax(x, dim=1)
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = Net(max(dataset.num_node_features, 1), 32, dataset.num_classes, task='graph').to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
-
-def train():
+def train(i, j, dn, model, task, optimizer, train_loader):
     total_loss = 0
     model.train()
-    for data in train_loader:
-        data = data.to(device)
+    total_num_nodes = 0
+    t= 0
+    for load in train_loader:
+        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+        property_file = pd.read_csv(name, sep = '\t')
+
+        propert_i = property_file.iloc[:,[i]]
+        array = np.array(propert_i)
+        load.x = torch.tensor(array).float()
+
+
+        propert_j = property_file.iloc[:,[j]]
+        array_2 = np.array(propert_j)
+        number = len(array_2)
+        load.y = binning(array_2, k = 6,data_len =  number)
+        # --------- training loop ---------- #
+        
+        load = load.to(device)
         optimizer.zero_grad()
-        out = model(data)
-        loss = F.nll_loss(out,data.y)
+        out = model(load)
+        loss = F.nll_loss(out,load.y)
         loss.backward()
         optimizer.step()
-        total_loss += loss.item() * data.num_graphs
-    return total_loss / len(train_loader.dataset)
+        total_loss += loss.item() * len(load.y)
+        total_num_nodes+=len(load.y)
+        t+=1
+        #print(loss)
+    train_loss = total_loss / total_num_nodes
+    return train_loss
 
-def test():
-    model.eval()
+def valid(i, j, dn, model, task, optimizer, valid_loader):
     correct = 0
-    for data in test_loader:
-        with torch.no_grad():
-            data = data.to(device)
-            pred = model(data)
-            pred = pred.argmax(dim=1)
-        correct += pred.eq(data.y).sum().item()
-    return correct / len(test_loader.dataset)
-
-def valid():
     model.eval()
+    total_num_nodes = 0
+    t = 0
+    for load in valid_loader:
+        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+        property_file = pd.read_csv(name, sep = '\t')
 
-    correct = 0
-    for data in valid_loader:
+        propert_i = property_file.iloc[:,[i]]
+        array = np.array(propert_i)
+        load.x = torch.tensor(array).float()
+
+
+        propert_j = property_file.iloc[:,[j]]
+        array_2 = np.array(propert_j)
+        number = len(array_2)
+        load.y = binning(array_2, k = 6,data_len =  number)
+        
         with torch.no_grad():
-            data = data.to(device)
-            pred = model(data).max(dim=1)[1]
-        correct += pred.eq(data.y).sum().item()
-    return correct / len(valid_loader.dataset)
+            load = load.to(device)
+            pred = model(load).max(dim=1)[1]
+        correct += pred.eq(load.y).sum().item()
+        total_num_nodes+=len(load.y)
+        t+=1
+    valid_acc = correct / total_num_nodes
+    return valid_acc
 
-for epoch in range(1, 201):
-    loss = train()
-    valid_acc = valid()
-    test_acc = test()
-    print('Epoch {:03d}, Loss: {:.4f}, Valid :{:.4f},  Test: {:.4f}'.format(
-        epoch, loss, valid_acc, test_acc))
-    scheduler.step()
-'''
+def test(i, j, dn,  model, task, optimizer, test_loader):
+    correct = 0
+    model.eval()
+    total_num_nodes = 0
+    t = 0
+    for load in test_loader:
+
+        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+        property_file = pd.read_csv(name, sep = '\t')
+
+        propert_i = property_file.iloc[:,[i]]
+        array = np.array(propert_i)
+        load.x = torch.tensor(array).float()
+
+
+        propert_j = property_file.iloc[:,[j]]
+        array_2 = np.array(propert_j)
+        number = len(array_2)
+        load.y = binning(array_2, k = 6,data_len =  number)
+        
+        with torch.no_grad():
+            load = load.to(device)
+            pred = model(load).max(dim=1)[1]
+        correct += pred.eq(load.y).sum().item()
+        total_num_nodes+=len(load.y)
+        t+=1
+    test_acc = correct / total_num_nodes
+    return test_acc
+
+if __name__ == '__main__':
+    #'ENZYMES'
+    dataset_name = ['PROTEINS']
+    #'GIN'
+    GNN_model = ['SAGE','GAT', 'GCN']
+    #'GIN','SAGE','GAT',    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')    
+
+    for dn, embedding_method in list(itertools.product(dataset_name, GNN_model)):
+        # make sure that your dataset is reserved in /tmp/dn/dn/...
+        dataset = TUDataset(root = '/home/jiaqing/桌面/Fea2Fea/data/' + dn, name = dn, use_node_attr = False)
+        # batch size is the parameter
+        # print(len(dataset))
+        train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
+        test_len = len(dataset) - train_len - valid_len
+        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False)
+        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False)
+        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False)
+        # for each batch, calculate the feature properties
+        #reserve('train', dn, train_loader)
+        #reserve('valid', dn, valid_loader)
+        #reserve('test', dn, test_loader)
+
+        R = [[0 for i in range(5)] for j in range(5)] # initialize our feature relationship matrix 
+        R[0][0] = 1.000
+        # i is the featire taken as input,  j is the predicted feature
+        for i in range(5):
+            for j in range(1,5):
+                model = Net(embedding=embedding_method).to(device)
+                optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
+                #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.8)
+                # record epoch
+                best_epoch = 0
+                best_valid_acc = 0
+                best_test_acc = 0
+                op_iters = 0
+                for epoch in range(1, 200):
+                    
+                    # for train
+                    t_loss = train(i, j, dn, model, 'train', optimizer, train_loader)
+                    # for valid 
+                    v_acc = valid(i, j, dn, model, 'valid', optimizer, valid_loader)
+                    # for test
+                    t_acc = test(i, j, dn, model, 'test', optimizer, test_loader)
+                    print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
+                        epoch, t_loss, v_acc, t_acc ))
+
+                    if v_acc > best_valid_acc:
+                        best_valid_acc = v_acc
+                        best_test_acc = t_acc
+                        best_epoch = epoch
+                        
+                        if i == 0:
+                            R[i][j] = round(t_acc,3)
+                            R[j][i] = round(t_acc,3)
+                        else:
+                            R[i][j] = round(t_acc,3)
+                        op_iters=0
+                    op_iters+=1
+                    if op_iters > 20:
+                        break
+                    if i == 4 and j == 4:
+                        #print(R)
+                        k = np.array(R)
+                        k = pd.DataFrame(k)
+                        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset'
+                        fig_name = '/' +dn + '_' + embedding_method + '.txt'
+                        fig_path = filepath + fig_name
+                        k.to_csv(fig_path, header = None, index = None, sep = '\t')
+                        #----------- save Heatmap Matrix-----------#
+                        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset'
+                        fig_name = '/' +dn + '_' + embedding_method + '_property' + '.eps'
+                        fig_path = filepath + fig_name
+                        xlabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
+                        ylabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
+                        cm = sns.heatmap(R,annot=True,cmap="Blues",cbar = False, square=True,
+                                    xticklabels = xlabels, yticklabels = ylabels)
+                        cm.set_xticklabels(cm.get_xticklabels(), rotation=30)
+                        cm.set_yticklabels(cm.get_xticklabels(), rotation=0)
+                        label = embedding_method
+                        cm.set_title(label)
+                        heatmap = cm.get_figure()
+                        heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
+                        plt.show()
+                        break
+                    print('Current optimal valid_acc {:.4f} at epoch {} with test acc {:.4f}'.format(best_valid_acc , best_epoch, best_test_acc))
+
+                    #scheduler.step()
+                
+

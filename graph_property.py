@@ -6,16 +6,20 @@ import pandas as pd
 import math
 import torch
 
-def G_property(graph, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0, 
+def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0, 
                 avg_path_length_bool = 0, bin_bool = 0):
     G=nx.Graph()
     G.add_edges_from(graph) #one example from CS224W
     # to reorder the mixed dictionary to an ascending order
+    if constant_bool:
+        constant = torch.ones([max(G) + 1,1],dtype = float)
+        return constant
+
     if degree_bool:
         degrees = torch.zeros([max(G) + 1,1],dtype = float)
         for (n, d) in sorted(G.degree()):
             degrees[n,0] = d
-        print(degrees)
+        #print(degrees)
         
         degrees_sequence = sorted(degrees, reverse=True)
         '''
@@ -71,7 +75,7 @@ def G_property(graph, degree_bool = 0, clustering_bool = 0, pagerank_bool = 0,
                 k = k.item()
             
             avg_path_len_G[i] = k
-            print(i)
+            #print(i)
         avg_path_len_G_sequence = sorted(avg_path_len_G, reverse=True)
         return avg_path_len_G,G
  

@@ -36,8 +36,8 @@ class Net(nn.Module):
             self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
                            dropout=0.6)
         elif self.embedding == 'GCN':
-            self.conv1 = GCNConv(1,256,cached=True)
-            self.conv2 = GCNConv(256,64,cached=True)
+            self.conv1 = GCNConv(1,256,cached=False)
+            self.conv2 = GCNConv(256,64,cached=False)
         elif self.embedding == 'GIN':
             self.conv1 = GINConv(mlp1)
             self.conv2 = GINConv(mlp2)

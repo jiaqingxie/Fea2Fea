@@ -38,7 +38,7 @@ for dataset in planetoid:
     matrix = torch.cat((matrix,pagerank),1)
     matrix = torch.cat((matrix,avg_path_len_G),1)
     #print(matrix.shape)
-    print(matrix)
+    #print(matrix)
 
     matrix = matrix.numpy()
 
