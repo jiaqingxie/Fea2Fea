@@ -136,10 +136,10 @@ def test(i, j, dn,  model, task, optimizer, test_loader):
     return test_acc
 
 if __name__ == '__main__':
-    #'ENZYMES'
-    dataset_name = ['PROTEINS']
+    #'ENZYMES','PROTEINS'
+    dataset_name = ['NCI1']
     #'GIN'
-    GNN_model = ['SAGE','GAT', 'GCN']
+    GNN_model = ['GIN','SAGE','GAT', 'GCN']
     #'GIN','SAGE','GAT',    
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')    
 
@@ -150,9 +150,9 @@ if __name__ == '__main__':
         # print(len(dataset))
         train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
         test_len = len(dataset) - train_len - valid_len
-        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False)
-        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False)
-        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False)
+        train_loader = DataLoader(dataset[0:train_len], batch_size = 32, shuffle=False)
+        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 32, shuffle = False)
+        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 32, shuffle = False)
         # for each batch, calculate the feature properties
         #reserve('train', dn, train_loader)
         #reserve('valid', dn, valid_loader)
@@ -172,7 +172,11 @@ if __name__ == '__main__':
                 best_test_acc = 0
                 op_iters = 0
                 for epoch in range(1, 200):
-                    
+                    if dn == 'NCI1':
+                        if j == 2 or i == 2:
+                            R[i][j] = 0
+                            R[j][i] = 0
+                            break
                     # for train
                     t_loss = train(i, j, dn, model, 'train', optimizer, train_loader)
                     # for valid 
