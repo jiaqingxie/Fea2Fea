@@ -363,7 +363,7 @@ Through the violin plot we find that most of the clustering coefficients are 0 i
 {5 -> 4} & 0.367 & \B 0.757 & 0.492 & 0.170 & 0.424 & \B 0.692 & 0.596 & 0.316 & 0.430 & \B 0.586 & 0.540 & 0.161\\
 \bottomrule
   \end{tabular}
-\end{table*}
+\end{table*} 
 
 \subsubsection{GNN  performance}
 
@@ -440,6 +440,28 @@ But we want to accurately predict the clustering coefficient, so we set bins con
 \bottomrule
   \end{tabular}
 \end{table*}
+
+
+\begin{table}[htb]
+  \caption{Hyper-parameter 1 : number of bins}
+  \label{tab:commands}
+  \begin{tabular}{*{7}{c}} \toprule
+{Bins}  & \multicolumn{3}{c}{{\sc Citeseer}} & \multicolumn{3}{c}{{\sc PubMed}} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+& 3->2 & 4->5 & 5->3 & 3->2 & 4->5 & 5->3 \\ \hline
+2 & 1.0000& 0.7620& 0.8350 &   \\
+3 & 1.0000& 0.6800& 0.7820 &   \\
+4 & 1.0000& 0.5640 & 0.7440   \\
+5 & 0.9960& 0.5310 & 0.7200   \\
+6 & 1.0000& 0.4680 & 0.7250   \\
+7 & 1.0000& 0.3870 & 0.7110   \\
+8 & 1.0000& 0.3620 & 0.7020   \\
+9 & 1.0000& 0.3800 & 0.6910   \\
+10 & 1.0000& 0.3910 & 0.6900  \\
+\bottomrule
+  \end{tabular}
+\end{table}
+
 
 
 

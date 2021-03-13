@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  8 MAR 2021 16:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  13 MAR 2021 17:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.tex
-(/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.tex
+**/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.tex
+(/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.tex
 LaTeX2e <2020-10-01> patch level 4
-L3 programming layer <2021-02-18> (/home/jiaqing/桌面/FASG_KDD/tex/acmart.cls
+L3 programming layer <2021-02-18> (/home/jiaqing/桌面/Fea2Fea/tex/acmart.cls
 Document Class: acmart 2020/10/25 v1.74 Typesetting articles for the Association for Computing Machinery
 (/usr/local/texlive/2020/texmf-dist/tex/latex/xkeyval/xkeyval.sty
 Package: xkeyval 2020/11/20 v2.8 package option processing (HA)
@@ -793,7 +793,10 @@ Package: balance 1999/02/23 4.3 (PWD)
 File: l3backend-pdftex.def 2021-03-02 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count318
 \l__pdf_internal_box=\box65
-) (/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.aux
+) (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.aux
+
+LaTeX Warning: Label `tab:commands' multiply defined.
+
 
 LaTeX Warning: Label `tab:commands' multiply defined.
 
@@ -896,7 +899,7 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 92.
 LaTeX Info: Redefining \pageref on input line 92.
 LaTeX Info: Redefining \nameref on input line 92.
- (/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.out) (/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.out)
+ (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.out) (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.out)
 \@outlinefile=\write5
 \openout5 = `fea2fea.out'.
 
@@ -1048,7 +1051,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [1.1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
- </home/jiaqing/桌面/FASG_KDD/tex/fig/LesMiserables-eps-converted-to.pdf>]
+ </home/jiaqing/桌面/Fea2Fea/tex/fig/LesMiserables-eps-converted-to.pdf>]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
 (Font)              scaled to size 9.0pt on input line 206.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
@@ -1071,7 +1074,7 @@ LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
 (Font)              scaled to size 9.0pt on input line 227.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
 (Font)              scaled to size 7.0pt on input line 227.
- [2.2 </home/jiaqing/桌面/FASG_KDD/tex/Pipeline.jpg>]
+ [2.2 </home/jiaqing/桌面/Fea2Fea/tex/Pipeline.jpg>]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 6.0pt on input line 243.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/it' will be
@@ -1153,7 +1156,7 @@ Overfull \hbox (2.10234pt too wide) in paragraph at lines 316--317
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
 (Font)              scaled to size 9.0pt on input line 370.
-[4.4 </home/jiaqing/桌面/FASG_KDD/tex/fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/Degree_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/Pagerank_planetoid_vp-eps-converted-to.pdf>]
+[4.4 </home/jiaqing/桌面/Fea2Fea/tex/fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Degree_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Pagerank_planetoid_vp-eps-converted-to.pdf>]
 Package epstopdf Info: Source file: <fig/Cora_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
 (epstopdf)                    size: 70762 bytes
@@ -1245,7 +1248,7 @@ Class acmart Warning: A possible image without description on input line 411.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- (/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.bbl [5.5 </home/jiaqing/桌面/FASG_KDD/tex/fig/Cora_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/Citeseer_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/PubMed_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/Cora_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/Citeseer_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/FASG_KDD/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf>]) (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
+ (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.bbl [5.5 </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf>]) (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 ) (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
@@ -1257,33 +1260,36 @@ Class acmart Warning: Some images may lack descriptions.
 Class acmart Warning: CCS concepts are mandatory for papers over two pages.
 
 
-Overfull \vbox (1.16599pt too high) has occurred while \output is active []
+Overfull \vbox (37.14742pt too high) has occurred while \output is active []
+
+
+Overfull \vbox (37.14742pt too high) has occurred while \output is active []
 
  [6.6]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     522.
+(LaTeX3)     544.
 
- (/home/jiaqing/桌面/FASG_KDD/tex/fea2fea.aux)
+ (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `fea2fea.out' has not changed.
-(rerunfilecheck)             Checksum: C6407F63050DEAE24DEBB0266EAA0E03;3789.
+(rerunfilecheck)             Checksum: 0E955EA138991A2D90D7A936FB4CC1D0;3789.
  ) 
 Here is how much of TeX's memory you used:
- 22706 strings out of 479023
- 369130 string characters out of 5859398
- 810692 words of memory out of 5000000
+ 22707 strings out of 479023
+ 369129 string characters out of 5859398
+ 814140 words of memory out of 5000000
  38993 multiletter control sequences out of 15000+600000
  599263 words of font info for 379 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 97i,17n,131p,1268b,567s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 97i,17n,131p,1267b,567s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsyb.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on /home/jiaqing/桌面/FASG_KDD/tex/fea2fea.pdf (6 pages, 7330918 bytes).
+Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (6 pages, 7331284 bytes).
 PDF statistics:
- 547 PDF objects out of 1000 (max. 8388607)
- 295 compressed objects within 3 object streams
- 78 named destinations out of 1000 (max. 500000)
+ 549 PDF objects out of 1000 (max. 8388607)
+ 297 compressed objects within 3 object streams
+ 79 named destinations out of 1000 (max. 500000)
  112905 words of extra memory for PDF output out of 128383 (max. 10000000)
 

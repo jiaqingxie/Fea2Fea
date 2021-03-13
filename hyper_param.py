@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import os.path as osp
 import torch 
+import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid
 import torch_geometric.transforms as T
 from graph_property import binning, G_property
@@ -12,25 +13,30 @@ def train(task):
     if task == 'node':
         model.train()
         optimizer.zero_grad()
-        F.nll_loss(model(data)[data.train_mask], data.y[data.train_mask]).backward()
+        loss = F.nll_loss(model(data)[data.train_mask], data.y[data.train_mask])
+        #print(loss)
+        loss.backward()
+        
         optimizer.step()
+        
     elif task == 'graph':
         pass
 
 
-def test():
-    model.eval()
-    logits, accs = model(data), []
-    for _, mask in data('train_mask', 'val_mask', 'test_mask'):
-        pred = logits[mask].max(1)[1]
-        acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
-        accs.append(acc)
+def test(task):
+    if task == 'node':
+        model.eval()
+        logits, accs = model(data), []
+        for _, mask in data('train_mask', 'val_mask', 'test_mask'):
+            pred = logits[mask].max(1)[1]
+            acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
+            accs.append(acc)
     return accs
 
 def option():
     parser = ArgumentParser()
-    parser.add_argument('--input_feature', default = 1, type = int, help = 'input feature')
-    parser.add_argument('--output_feature', default = 2, type = int, help = 'output feature')
+    parser.add_argument('--input_feature', default = 0, type = int, help = 'input feature')
+    parser.add_argument('--output_feature', default = 1, type = int, help = 'output feature')
     parser.add_argument('--task', default = 'node', type = str, help = 'node / graph dataset')
     parser.add_argument('--dataset', default = 'Cora', type = str, help = 'dataset name')
     parser.add_argument('--hyperparameter', default = 'binning', type = str, help = 'hyper-para task')
@@ -46,7 +52,8 @@ def option():
 if __name__ == "__main__":
     a = option() # add parser
     path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
-    device = 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    features = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
     # if node dataset
     if a.task == 'node':
         dataset = Planetoid(path, name = a.dataset, transform=T.NormalizeFeatures())
@@ -63,18 +70,51 @@ if __name__ == "__main__":
         #print(data.x.shape)
         propert_j = property_file.iloc[:,[a.output_feature]]
         array_2 = np.array(propert_j)
+        # if task is different bins
         if a.hyperparameter == 'binning':
+            print("dataset : {}".format(a.dataset))
+            print("min bins : {}".format(a.min_bins))
+            print("max bins : {}".format(a.max_bins))
+            print("graph embedding method : {}".format(a.embedding))
+            print("-------- start testing --------")
             for bins in range(a.min_bins, a.max_bins +1):
+                best_val_acc = test_acc = 0
+                t = 0
+
                 data.y = binning(array_2, k = bins, data_len =  len(data.y))
                 # to GPU
-                model = Net(bins = bins).to(device)
+                model = Net(embedding = a.embedding ,bins = bins).to(device)
                 data =  data.to(device)
                 # optimizer
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.04, weight_decay=5e-4)    
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)    
                 # training epoch
                 for epoch in range(1, 3000):
+                    train('node')
+                    train_acc, val_acc, tmp_test_acc = test('node')
 
 
+                    if val_acc > best_val_acc and tmp_test_acc > test_acc:
+                        best_val_acc = val_acc
+                        test_acc = tmp_test_acc
+                        '''
+                        if i == 0:
+                            R[i][j] = round(test_acc,3)
+                            R[j][i] = round(test_acc,3)
+                        else:
+                            R[i][j] = round(test_acc,3)
+                        '''
+                        t = 0
+                    t = t + 1
+                    if t > 600:
+                        break   
+
+
+                    log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
+                    #print(log.format(epoch, train_acc, best_val_acc, test_acc))
+                
+                log2 = 'bins : {}, test acc : {:.4f}, task: input {} predict output {}'
+                print(log2.format(bins, test_acc, features[a.input_feature], features[a.output_feature]))
+                    
             
 
         elif a.hyperparameter == 'depth':

@@ -27,10 +27,13 @@ class Net(nn.Module):
                 nn.ReLU(),
                 nn.Linear(128,64),
             )
+        self.batch_norm1 = nn.BatchNorm1d(256)
+        self.batch_norm2 = nn.BatchNorm1d(64)
         self.embedding = embedding
+
         if self.embedding == 'SAGE':
-            self.conv1 = SAGEConv(1,128,normalize=True)
-            self.conv2 = SAGEConv(128,64 ,normalize=True)
+            self.conv1 = SAGEConv(1,256,normalize=True)
+            self.conv2 = SAGEConv(256,64 ,normalize=True)
         elif self.embedding == 'GAT':
             self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
             self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
@@ -50,13 +53,21 @@ class Net(nn.Module):
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
         #x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        x = F.relu(self.conv1(x, edge_index, data.edge_attr))
-        #x = F.relu(self.conv1(x))
-        x = F.dropout(x, training=self.training)
-        #x = F.relu(self.conv2(x))
-        x = F.relu(self.conv2(x, edge_index, data.edge_attr))
-        graph_embedding = F.dropout(x, training=self.training)
-        self.latent = graph_embedding
-        x = F.relu(self.lin1(graph_embedding))
+        for i in range(2):
+            if i == 0:
+                x = self.conv1(x, edge_index, data.edge_attr)
+                if self.embedding != 'GIN':
+                    x = self.batch_norm1(x)
+                    x = F.relu(x)
+                x = F.dropout(x, training=self.training)
+            if i == 1:
+                x = self.conv2(x, edge_index, data.edge_attr)
+                if self.embedding != 'GIN':
+                    x = self.batch_norm2(x)
+                    x = F.relu(x)
+                x = F.dropout(x, training=self.training)
+                graph_embedding = F.dropout(x, training=self.training)
+                self.latent = graph_embedding
+        x = F.relu(self.lin1(self.latent))
         x = self.lin2(x)
         return F.log_softmax(x, dim =1)

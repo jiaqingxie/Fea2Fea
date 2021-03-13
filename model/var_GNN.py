@@ -15,21 +15,27 @@ from torch_geometric.nn import SAGEConv,SplineConv
 class Net(nn.Module):
     def __init__(self, embedding = 'GIN', hidden_dim = 64, depth = 2, bins = 6, if_BN = 0):
         super(Net, self).__init__()
+        self.embedding = embedding
+        self.hidden_dim = hidden_dim
+        self.depth = depth
+        self.graph_embed = 0
+        self.linear_embed = 0
+
         mlp1 = nn.Sequential(
                 nn.Linear(1, 512),
-                #nn.BatchNorm1d(512),
+                nn.BatchNorm1d(512),
                 nn.ReLU(),
                 nn.Linear(512,256),
             )
         mlp2 = nn.Sequential(
                 nn.Linear(256,128 ),
-                #nn.BatchNorm1d(128),
+                nn.BatchNorm1d(128),
                 nn.ReLU(),
                 nn.Linear(128,64),
             )
         mlp3 = nn.Sequential(
-                nn.Linear(hidden_dim, hidden_dim),
-                #nn.BatchNorm1d(hidden),
+                nn.Linear(self.hidden_dim, self.hidden_dim),
+                nn.BatchNorm1d(self.hidden_dim),
                 nn.ReLU(),
         )
         self.bn = nn.BatchNorm1d(hidden_dim)
@@ -55,17 +61,24 @@ class Net(nn.Module):
             pass 
         self.lin1 = nn.Linear(hidden_dim,16)
         self.lin2 = nn.Linear(16,bins)
-        self.graph_embed = 0
-        self.linear_embed = 0
+        self.batch_norm1 = nn.BatchNorm1d(256)
+        self.batch_norm2 = nn.BatchNorm1d(64)
+
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        for i in range(depth):
+        for i in range(self.depth):
             if i == 0:
-                x = F.relu(self.conv1(x, edge_index, data.edge_attr))
+                x = self.conv1(x, edge_index, data.edge_attr)
+                if self.embedding != 'GIN':
+                    x = self.batch_norm1(x)
+                    x = F.relu(x)
                 x = F.dropout(x, training=self.training)
             elif i == 1:
-                x = F.relu(self.conv2(x, edge_index, data.edge_attr))
+                x = self.conv2(x, edge_index, data.edge_attr)
+                if self.embedding != 'GIN':
+                    x = self.batch_norm2(x)
+                    x = F.relu(x)
                 x = F.dropout(x, training=self.training)
                 self.graph_embed = x
             else:
