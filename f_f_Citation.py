@@ -95,7 +95,6 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
                     # do that for several times
                 if i == 4 and j == 4:
                     Aver = Aver + R
-                        #print(R)
                         
         if avg == 9:
 

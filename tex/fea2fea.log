@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  13 MAR 2021 20:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  14 MAR 2021 00:03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1277,13 +1277,13 @@ Package rerunfilecheck Info: File `fea2fea.out' has not changed.
 Here is how much of TeX's memory you used:
  22707 strings out of 479023
  369129 string characters out of 5859398
- 815139 words of memory out of 5000000
+ 815140 words of memory out of 5000000
  38993 multiletter control sequences out of 15000+600000
  599263 words of font info for 379 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
  97i,17n,131p,1267b,567s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsyb.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (6 pages, 7331516 bytes).
+Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (6 pages, 7331521 bytes).
 PDF statistics:
  549 PDF objects out of 1000 (max. 8388607)
  297 compressed objects within 3 object streams
