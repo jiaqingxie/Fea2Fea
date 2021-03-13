@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from model.GNN import Net
+from model.var_GNN import Net
 import numpy as np 
 import pandas as pd
 import os.path as osp
@@ -8,11 +8,15 @@ from torch_geometric.datasets import Planetoid
 import torch_geometric.transforms as T
 from graph_property import binning, G_property
 
-def train():
-    model.train()
-    optimizer.zero_grad()
-    F.nll_loss(model(data)[data.train_mask], data.y[data.train_mask]).backward()
-    optimizer.step()
+def train(task):
+    if task == 'node':
+        model.train()
+        optimizer.zero_grad()
+        F.nll_loss(model(data)[data.train_mask], data.y[data.train_mask]).backward()
+        optimizer.step()
+    elif task == 'graph':
+        pass
+
 
 def test():
     model.eval()
@@ -42,6 +46,7 @@ def option():
 if __name__ == "__main__":
     a = option() # add parser
     path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
+    device = 
     # if node dataset
     if a.task == 'node':
         dataset = Planetoid(path, name = a.dataset, transform=T.NormalizeFeatures())
@@ -59,8 +64,18 @@ if __name__ == "__main__":
         propert_j = property_file.iloc[:,[a.output_feature]]
         array_2 = np.array(propert_j)
         if a.hyperparameter == 'binning':
-            data.y = binning(array_2, k = 6,data_len =  len(data.y))
-            print("yes")
+            for bins in range(a.min_bins, a.max_bins +1):
+                data.y = binning(array_2, k = bins, data_len =  len(data.y))
+                # to GPU
+                model = Net(bins = bins).to(device)
+                data =  data.to(device)
+                # optimizer
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.04, weight_decay=5e-4)    
+                # training epoch
+                for epoch in range(1, 3000):
+
+
+            
 
         elif a.hyperparameter == 'depth':
             pass

@@ -34,20 +34,8 @@ def test():
         acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
         accs.append(acc)
     return accs
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-best_val_acc = test_acc = 0
-t = 0
-record_acc = 1
-
-train_accu_plot = []
-epoch_plot = []
-
+    
 #------------------ Start our algorithm1 ---------------------#
-
-
-
 for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['SAGE','GAT','GCN','GIN'])):
     R = [[0 for i in range(5)] for j in range(5)] # initialize our feature relationship matrix 
     dataset_name = dataset
@@ -57,6 +45,11 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
     property_file = pd.read_csv(name, sep = '\t')
     R[0][0] = 1.000
 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    best_val_acc = test_acc = 0
+    t = 0
+    record_acc = 1
     total_epoch = 0 # for drawing curves
     training_error = np.array([]) # for drawing curves
     

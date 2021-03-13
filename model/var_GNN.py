@@ -29,7 +29,7 @@ class Net(nn.Module):
             )
         mlp3 = nn.Sequential(
                 nn.Linear(hidden_dim, hidden_dim),
-                nn.BatchNorm1d(hidden),
+                #nn.BatchNorm1d(hidden),
                 nn.ReLU(),
         )
         self.bn = nn.BatchNorm1d(hidden_dim)
@@ -50,23 +50,30 @@ class Net(nn.Module):
         elif self.embedding == 'GIN':
             self.conv1 = GINConv(mlp1)
             self.conv2 = GINConv(mlp2)
-            self.conv3 = GIN
+            self.conv3 = GINConv(mlp3)
         else:
             pass 
         self.lin1 = nn.Linear(hidden_dim,16)
         self.lin2 = nn.Linear(16,bins)
-        self.latent = 0
+        self.graph_embed = 0
+        self.linear_embed = 0
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
         for i in range(depth):
-            x = F.relu(self.conv1(x, edge_index, data.edge_attr))
-        #x = F.relu(self.conv1(x))
-        x = F.dropout(x, training=self.training)
-        #x = F.relu(self.conv2(x))
-        x = F.relu(self.conv2(x, edge_index, data.edge_attr))
-        graph_embedding = F.dropout(x, training=self.training)
-        self.latent = graph_embedding
-        x = F.relu(self.lin1(graph_embedding))
+            if i == 0:
+                x = F.relu(self.conv1(x, edge_index, data.edge_attr))
+                x = F.dropout(x, training=self.training)
+            elif i == 1:
+                x = F.relu(self.conv2(x, edge_index, data.edge_attr))
+                x = F.dropout(x, training=self.training)
+                self.graph_embed = x
+            else:
+                x = F.relu(self.conv3(x, edge_index, data.edge_attr))
+                x = F.dropout(x, training=self.training)
+
+        x = F.relu(self.lin1(x))
+
         x = self.lin2(x)
+        self.linear_embed = x
         return F.log_softmax(x, dim =1)
