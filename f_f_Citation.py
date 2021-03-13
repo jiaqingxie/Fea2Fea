@@ -94,13 +94,14 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
                     #print(log.format(epoch, train_acc, best_val_acc, test_acc))
                     # do that for several times
                 if i == 4 and j == 4:
-                    if avg!= 9:
-                        Aver = Aver + R
+                    Aver = Aver + R
                         #print(R)
                         
         if avg == 9:
 
+            
             k = Aver / 10
+            np.set_printoptions(precision=3)
             k = pd.DataFrame(k)
             filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
             fig_name = '/' + dataset_name + '_' + embedding_method + '.txt'
@@ -120,7 +121,7 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
             cm.set_title(label)
             heatmap = cm.get_figure()
             heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
-            #plt.show()
+            plt.show()
             break
 
 
