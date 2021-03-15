@@ -1634,5 +1634,6 @@ INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLiberti
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txexs.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsya.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsyb.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb

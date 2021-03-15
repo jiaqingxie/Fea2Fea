@@ -77,43 +77,55 @@ if __name__ == "__main__":
             print("max bins : {}".format(a.max_bins))
             print("graph embedding method : {}".format(a.embedding))
             print("-------- start testing --------")
+
+            average = 10
             for bins in range(a.min_bins, a.max_bins +1):
-                best_val_acc = test_acc = 0
-                t = 0
-
-                data.y = binning(array_2, k = bins, data_len =  len(data.y))
-                # to GPU
-                model = Net(embedding = a.embedding ,bins = bins).to(device)
-                data =  data.to(device)
-                # optimizer
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)    
-                # training epoch
-                for epoch in range(1, 3000):
-                    train('node')
-                    train_acc, val_acc, tmp_test_acc = test('node')
 
 
-                    if val_acc > best_val_acc and tmp_test_acc > test_acc:
-                        best_val_acc = val_acc
-                        test_acc = tmp_test_acc
-                        '''
-                        if i == 0:
-                            R[i][j] = round(test_acc,3)
-                            R[j][i] = round(test_acc,3)
-                        else:
-                            R[i][j] = round(test_acc,3)
-                        '''
-                        t = 0
-                    t = t + 1
-                    if t > 600:
-                        break   
+                # test each case for 10 times
+                avg_test_acc = 0
+                for avg in range(average):
+                    best_val_acc = test_acc = 0
+                    t = 0
+
+                    data.y = binning(array_2, k = bins, data_len =  len(data.y))
+                    # to GPU
+                    model = Net(embedding = a.embedding ,bins = bins).to(device)
+                    data =  data.to(device)
+                    # optimizer
+                    optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)    
+                    # training epoch
+                    for epoch in range(1, 3000):
+                        train('node')
+                        train_acc, val_acc, tmp_test_acc = test('node')
 
 
-                    log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-                    #print(log.format(epoch, train_acc, best_val_acc, test_acc))
+                        if val_acc > best_val_acc and tmp_test_acc > test_acc:
+                            best_val_acc = val_acc
+                            test_acc = tmp_test_acc
+                            '''
+                            if i == 0:
+                                R[i][j] = round(test_acc,3)
+                                R[j][i] = round(test_acc,3)
+                            else:
+                                R[i][j] = round(test_acc,3)
+                            '''
+                            t = 0
+                        t = t + 1
+                        if t > 600:
+                            break   
+
+
+                        #log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
+                        #print(log.format(epoch, train_acc, best_val_acc, test_acc))
+                    # calculate average accuracy
+                    avg_test_acc+= test_acc
                 
+                avg_test_acc/=10
+                avg_test_acc = round(avg_test_acc, 3)
+
                 log2 = 'bins : {}, test acc : {:.4f}, task: input {} predict output {}'
-                print(log2.format(bins, test_acc, features[a.input_feature], features[a.output_feature]))
+                print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
                     
             
 
