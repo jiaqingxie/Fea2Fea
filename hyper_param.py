@@ -5,11 +5,13 @@ import pandas as pd
 import os.path as osp
 import torch 
 import torch.nn.functional as F
-from torch_geometric.datasets import Planetoid
+from torch_geometric.datasets import Planetoid, TUDataset
 import torch_geometric.transforms as T
+from torch_geometric.data import Dataset, DataLoader
 from graph_property import binning, G_property
+from f_f_TU import train, valid, test
 
-def train(task):
+def train_n(task):
     if task == 'node':
         model.train()
         optimizer.zero_grad()
@@ -23,7 +25,7 @@ def train(task):
         pass
 
 
-def test(task):
+def test_n(task):
     if task == 'node':
         model.eval()
         logits, accs = model(data), []
@@ -71,17 +73,15 @@ if __name__ == "__main__":
         propert_j = property_file.iloc[:,[a.output_feature]]
         array_2 = np.array(propert_j)
         # if task is different bins
+        print("dataset : {}".format(a.dataset))
+        print("dataset type : {}".format(a.task))
+        print("min bins : {}".format(a.min_bins))
+        print("max bins : {}".format(a.max_bins))
+        print("graph embedding method : {}".format(a.embedding))
+        print("-------- start testing --------")
         if a.hyperparameter == 'binning':
-            print("dataset : {}".format(a.dataset))
-            print("min bins : {}".format(a.min_bins))
-            print("max bins : {}".format(a.max_bins))
-            print("graph embedding method : {}".format(a.embedding))
-            print("-------- start testing --------")
-
             average = 10
             for bins in range(a.min_bins, a.max_bins +1):
-
-
                 # test each case for 10 times
                 avg_test_acc = 0
                 for avg in range(average):
@@ -96,34 +96,21 @@ if __name__ == "__main__":
                     optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)    
                     # training epoch
                     for epoch in range(1, 3000):
-                        train('node')
-                        train_acc, val_acc, tmp_test_acc = test('node')
-
-
+                        train_n('node')
+                        train_acc, val_acc, tmp_test_acc = test_n('node')
                         if val_acc > best_val_acc and tmp_test_acc > test_acc:
                             best_val_acc = val_acc
                             test_acc = tmp_test_acc
-                            '''
-                            if i == 0:
-                                R[i][j] = round(test_acc,3)
-                                R[j][i] = round(test_acc,3)
-                            else:
-                                R[i][j] = round(test_acc,3)
-                            '''
+
                             t = 0
                         t = t + 1
-                        if t > 600:
+                        if t > 500:
                             break   
-
-
-                        #log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-                        #print(log.format(epoch, train_acc, best_val_acc, test_acc))
                     # calculate average accuracy
                     avg_test_acc+= test_acc
                 
                 avg_test_acc/=10
                 avg_test_acc = round(avg_test_acc, 3)
-
                 log2 = 'bins : {}, test acc : {:.4f}, task: input {} predict output {}'
                 print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
                     
@@ -134,5 +121,63 @@ if __name__ == "__main__":
     
     # else if graph dataset
     elif a.task == 'graph':
-        pass
+        dataset = TUDataset(root = '/home/jiaqing/桌面/Fea2Fea/data/' + a.dataset, name = a.dataset, use_node_attr = False)
+        
+
+
+        # data loader
+        train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
+        test_len = len(dataset) - train_len - valid_len
+        # !!
+        # you should change the batch size to 32 if you want to have tests on NCI1 dataset.
+        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False)
+        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False)
+        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False)
+        print("dataset : {}".format(a.dataset))
+        print("dataset type : {}".format(a.task))
+        print("min bins : {}".format(a.min_bins))
+        print("max bins : {}".format(a.max_bins))
+        print("graph embedding method : {}".format(a.embedding))
+        print("-------- start testing --------")
+        if a.hyperparameter == 'binning':
+            average = 10
+            for bins in range(a.min_bins, a.max_bins +1):
+                # test each case for 10 times
+                avg_test_acc = 0
+                for avg in range(average):
+                    best_val_acc = test_acc = 0
+                    t = 0
+
+                    model = Net(embedding = a.embedding ,bins = bins).to(device)
+                    optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
+                    for epoch in range(1, 200):
+                        # for train
+                        t_loss = train(a.input_feature, a.output_feature, a.dataset, model, 'train', optimizer, train_loader, device, k = bins)
+                        # for valid 
+                        v_acc = valid(a.input_feature, a.output_feature, a.dataset, model, 'valid', optimizer, valid_loader, device,  k = bins)
+                        # for test
+                        t_acc = test(a.input_feature, a.output_feature, a.dataset, model, 'test', optimizer, test_loader, device, k = bins)
+
+                        if v_acc > best_val_acc:
+                            best_val_acc = v_acc
+                            test_acc = t_acc
+                            best_epoch = epoch
+                            op_iters=0
+
+                        op_iters+=1
+
+                        if op_iters > 20:
+                            break
+                    avg_test_acc+= test_acc
+                avg_test_acc/=10
+                avg_test_acc = round(avg_test_acc, 3)
+                log2 = 'bins : {}, test acc : {:.3f}, task: input {} predict output {}'
+                print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
+                    
+
+
+
+        elif a.hyperparameter == 'depth':
+            pass
+
     

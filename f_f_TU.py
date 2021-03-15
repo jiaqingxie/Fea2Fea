@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset,DataLoader
 import torch.nn as nn
 from torch_geometric.datasets import TUDataset
 import torch_geometric.transforms as T
@@ -14,7 +13,7 @@ from torch_geometric.nn import SAGEConv,SplineConv
 import math
 import matplotlib.pyplot as plt
 import seaborn as sns
-from torch_geometric.data import DataLoader
+from torch_geometric.data import DataLoader, Dataset
 from torch_scatter import scatter_mean
 from graph_property import G_property,binning
 #import torch_xla.core.xla_model as xm
@@ -45,7 +44,7 @@ def reserve(task, dn,  loader):
         matrix.to_csv(name, sep = '\t', index=False)
         t+=1
 
-def train(i, j, dn, model, task, optimizer, train_loader):
+def train(i, j, dn, model, task, optimizer, train_loader, device, k = 6):
     total_loss = 0
     model.train()
     total_num_nodes = 0
@@ -57,12 +56,12 @@ def train(i, j, dn, model, task, optimizer, train_loader):
         propert_i = property_file.iloc[:,[i]]
         array = np.array(propert_i)
         load.x = torch.tensor(array).float()
-
+        #print(load.x.shape)
 
         propert_j = property_file.iloc[:,[j]]
         array_2 = np.array(propert_j)
         number = len(array_2)
-        load.y = binning(array_2, k = 6,data_len =  number)
+        load.y = binning(array_2, k = k, data_len =  number)
         # --------- training loop ---------- #
         
         load = load.to(device)
@@ -78,7 +77,7 @@ def train(i, j, dn, model, task, optimizer, train_loader):
     train_loss = total_loss / total_num_nodes
     return train_loss
 
-def valid(i, j, dn, model, task, optimizer, valid_loader):
+def valid(i, j, dn, model, task, optimizer, valid_loader, device, k = 6):
     correct = 0
     model.eval()
     total_num_nodes = 0
@@ -95,7 +94,7 @@ def valid(i, j, dn, model, task, optimizer, valid_loader):
         propert_j = property_file.iloc[:,[j]]
         array_2 = np.array(propert_j)
         number = len(array_2)
-        load.y = binning(array_2, k = 6,data_len =  number)
+        load.y = binning(array_2, k = k,data_len =  number)
         
         with torch.no_grad():
             load = load.to(device)
@@ -106,7 +105,7 @@ def valid(i, j, dn, model, task, optimizer, valid_loader):
     valid_acc = correct / total_num_nodes
     return valid_acc
 
-def test(i, j, dn,  model, task, optimizer, test_loader):
+def test(i, j, dn,  model, task, optimizer, test_loader, device, k = 6):
     correct = 0
     model.eval()
     total_num_nodes = 0
@@ -124,7 +123,7 @@ def test(i, j, dn,  model, task, optimizer, test_loader):
         propert_j = property_file.iloc[:,[j]]
         array_2 = np.array(propert_j)
         number = len(array_2)
-        load.y = binning(array_2, k = 6,data_len =  number)
+        load.y = binning(array_2, k = k,data_len =  number)
         
         with torch.no_grad():
             load = load.to(device)
@@ -150,9 +149,9 @@ if __name__ == '__main__':
         # print(len(dataset))
         train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
         test_len = len(dataset) - train_len - valid_len
-        train_loader = DataLoader(dataset[0:train_len], batch_size = 32, shuffle=False)
-        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 32, shuffle = False)
-        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 32, shuffle = False)
+        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False)
+        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False)
+        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False)
         # for each batch, calculate the feature properties
         #reserve('train', dn, train_loader)
         #reserve('valid', dn, valid_loader)
@@ -178,11 +177,11 @@ if __name__ == '__main__':
                             R[j][i] = 0
                             break
                     # for train
-                    t_loss = train(i, j, dn, model, 'train', optimizer, train_loader)
+                    t_loss = train(i, j, dn, model, 'train', optimizer, train_loader, device)
                     # for valid 
-                    v_acc = valid(i, j, dn, model, 'valid', optimizer, valid_loader)
+                    v_acc = valid(i, j, dn, model, 'valid', optimizer, valid_loader, device)
                     # for test
-                    t_acc = test(i, j, dn, model, 'test', optimizer, test_loader)
+                    t_acc = test(i, j, dn, model, 'test', optimizer, test_loader, device)
                     print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
                         epoch, t_loss, v_acc, t_acc ))
 
