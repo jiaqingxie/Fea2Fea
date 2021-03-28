@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  16 MAR 2021 01:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  27 MAR 2021 21:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -783,20 +783,175 @@ Package grfext Info: Graphics extension search list:
 (grfext)             \AppendGraphicsExtensions on input line 504.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
-)))
-Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 92.
-\c@theorem=\count317
+))) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+Package: pgf 2020/12/27 v3.1.8b (3.1.8b)
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2020/12/27 v3.1.8b (3.1.8b)
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen267
+\pgfmath@count=\count317
+\pgfmath@box=\box65
+\pgfmath@toks=\toks44
+\pgfmath@stack@operand=\toks45
+\pgfmath@stack@operation=\toks46
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithmetics.code.tex))) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count318
+)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfint.code.tex) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@picminx=\dimen268
+\pgf@picmaxx=\dimen269
+\pgf@picminy=\dimen270
+\pgf@picmaxy=\dimen271
+\pgf@pathminx=\dimen272
+\pgf@pathmaxx=\dimen273
+\pgf@pathminy=\dimen274
+\pgf@pathmaxy=\dimen275
+\pgf@xx=\dimen276
+\pgf@xy=\dimen277
+\pgf@yx=\dimen278
+\pgf@yy=\dimen279
+\pgf@zx=\dimen280
+\pgf@zy=\dimen281
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@path@lastx=\dimen282
+\pgf@path@lasty=\dimen283
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@shorten@end@additional=\dimen284
+\pgf@shorten@start@additional=\dimen285
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgfpic=\box66
+\pgf@hbox=\box67
+\pgf@layerbox@main=\box68
+\pgf@picture@serial@count=\count319
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgflinewidth=\dimen286
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@pt@x=\dimen287
+\pgf@pt@y=\dimen288
+\pgf@pt@temp=\dimen289
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex
+File: pgfcoreobjects.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgfarrowsep=\dimen290
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@max=\dimen291
+\pgf@sys@shading@range@num=\count320
+\pgf@shadingcount=\count321
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgfexternal@startupbox=\box69
+)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex
+File: pgfcorerdf.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+))) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgfnodeparttextbox=\box70
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@nodesepstart=\dimen292
+\pgf@nodesepend=\dimen293
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2020/12/27 v3.1.8b (3.1.8b)
+)) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/utilities/pgffor.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)) (/usr/local/texlive/2020/texmf-dist/tex/latex/pgf/math/pgfmath.sty (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2020/12/27 v3.1.8b (3.1.8b)
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
+\pgffor@iter=\dimen294
+\pgffor@skip=\dimen295
+\pgffor@stack=\toks47
+\pgffor@toks=\toks48
+)) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+Package: tikz 2020/12/27 v3.1.8b (3.1.8b)
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgf@plot@mark@count=\count322
+\pgfplotmarksize=\dimen296
+)
+\tikz@lastx=\dimen297
+\tikz@lasty=\dimen298
+\tikz@lastxsaved=\dimen299
+\tikz@lastysaved=\dimen300
+\tikz@lastmovetox=\dimen301
+\tikz@lastmovetoy=\dimen302
+\tikzleveldistance=\dimen303
+\tikzsiblingdistance=\dimen304
+\tikz@figbox=\box71
+\tikz@figbox@bg=\box72
+\tikz@tempbox=\box73
+\tikz@tempbox@bg=\box74
+\tikztreelevel=\count323
+\tikznumberofchildren=\count324
+\tikznumberofcurrentchild=\count325
+\tikz@fig@count=\count326
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgfmatrixcurrentrow=\count327
+\pgfmatrixcurrentcolumn=\count328
+\pgf@matrix@numberofcolumns=\count329
+)
+\tikz@expandcount=\count330
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+))) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\pgfarrowinset=\dimen305
+\pgfarrowlength=\dimen306
+\pgfarrowwidth=\dimen307
+\pgfarrowlinewidth=\dimen308
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/tkz-graph/tkz-graph.sty
+2021/01/20 v 2.00 tkz-graph.sty
+Package: tkz-graph 2021/01/20 2.00 base for graphs
+(/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrows.code.tex
+File: tikzlibraryarrows.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+ (/usr/local/texlive/2020/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
+File: pgflibraryarrows.code.tex 2020/12/27 v3.1.8b (3.1.8b)
+\arrowsize=\dimen309
+))
+\c@tkz@gr@a=\count331
+\c@tkz@gr@b=\count332
+\c@tkz@gr@c=\count333
+\c@tkz@gr@e=\count334
+\c@tkz@gr@d=\count335
+\c@tkz@gr@p=\count336
+\c@tkz@gr@i=\count337
+\c@tkz@gr@n=\count338
+\c@tkz@gr@ta=\count339
+\c@tkz@gr@tb=\count340
+)
+Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 96.
+\c@theorem=\count341
  (/usr/local/texlive/2020/texmf-dist/tex/latex/preprint/balance.sty
 Package: balance 1999/02/23 4.3 (PWD)
-\oldvsize=\dimen267
+\oldvsize=\dimen310
 ) Excluding comment 'screenonly' Include comment 'printonly' Include comment 'anonsuppress' (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2021-03-02 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count318
-\l__pdf_internal_box=\box65
+\l__color_backend_stack_int=\count342
+\l__pdf_internal_box=\box75
 ) (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.aux
-
-LaTeX Warning: Label `tab:commands' multiply defined.
-
 
 LaTeX Warning: Label `tab:commands' multiply defined.
 
@@ -806,84 +961,84 @@ LaTeX Warning: Label `tab:commands' multiply defined.
 )
 \openout1 = `fea2fea.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 92.
-LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line 92.
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 96.
+LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/omlnxlmi.fd
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 92.
-LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 92.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 96.
+LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 92.
-LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 92.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 96.
+LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 92.
-LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 92.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 96.
+LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/lmxntxexx.fd
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    ... okay on input line 96.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 92.
-LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF on input line 92.
+(Font)              scaled to size 7.0pt on input line 96.
+LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd
 File: OT1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for OT1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 92.
+(Font)              scaled to size 7.3pt on input line 96.
 <<ot1.cmap>>
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 92.
+(Font)              scaled to size 5.5pt on input line 96.
 <<oml.cmap>>
-LaTeX Font Info:    Trying to load font information for U+msa on input line 92.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 92.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 92.
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2018/04/14 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 92.
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 92.
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
-LaTeX Info: Redefining \microtypecontext on input line 92.
+LaTeX Info: Redefining \microtypecontext on input line 96.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 92.
+LaTeX Info: Redefining \showhyphens on input line 96.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -891,34 +1046,34 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package hyperref Info: Link coloring OFF on input line 92.
+Package hyperref Info: Link coloring OFF on input line 96.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count319
+\c@section@level=\count343
 )
-LaTeX Info: Redefining \ref on input line 92.
-LaTeX Info: Redefining \pageref on input line 92.
-LaTeX Info: Redefining \nameref on input line 92.
+LaTeX Info: Redefining \ref on input line 96.
+LaTeX Info: Redefining \pageref on input line 96.
+LaTeX Info: Redefining \nameref on input line 96.
  (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.out) (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.out)
 \@outlinefile=\write5
 \openout5 = `fea2fea.out'.
 
  (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count320
-\scratchdimen=\dimen268
-\scratchbox=\box66
-\nofMPsegments=\count321
-\nofMParguments=\count322
-\everyMPshowfont=\toks44
-\MPscratchCnt=\count323
-\MPscratchDim=\dimen269
-\MPnumerator=\count324
-\makeMPintoPDFobject=\count325
-\everyMPtoPDFconversion=\toks45
+\scratchcounter=\count344
+\scratchdimen=\dimen311
+\scratchbox=\box76
+\nofMPsegments=\count345
+\nofMParguments=\count346
+\everyMPshowfont=\toks49
+\MPscratchCnt=\count347
+\MPscratchDim=\dimen312
+\MPnumerator=\count348
+\makeMPintoPDFobject=\count349
+\everyMPtoPDFconversion=\toks50
 )
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -954,8 +1109,8 @@ LaTeX Info: Redefining \nameref on input line 92.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@mv@tabular=\count326
-\c@mv@boldtabular=\count327
+\c@mv@tabular=\count350
+\c@mv@boldtabular=\count351
 (/usr/local/texlive/2020/texmf-dist/tex/latex/upquote/upquote.sty
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verbatim
 )
@@ -963,57 +1118,57 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 155.
-LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF on input line 155.
+(Font)              scaled to size 17.28pt on input line 159.
+LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF on input line 159.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/LinuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 155.
+(Font)              scaled to size 17.28pt on input line 159.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 17.28pt on input line 155.
+(Font)              scaled to size 17.28pt on input line 159.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 155.
+(Font)              scaled to size 12.0pt on input line 159.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 155.
+(Font)              scaled to size 10.0pt on input line 159.
 
 
 Class acmart Warning: No city present for an affiliation.
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 7.0pt on input line 155.
-LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF on input line 155.
+(Font)              scaled to size 7.0pt on input line 159.
+LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF on input line 159.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd
 File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 155.
+(Font)              scaled to size 7.0pt on input line 159.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 155.
+(Font)              scaled to size 9.0pt on input line 159.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.95pt on input line 155.
+(Font)              scaled to size 10.95pt on input line 159.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 155.
+(Font)              scaled to size 8.0pt on input line 159.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 155.
+(Font)              scaled to size 8.0pt on input line 159.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 155.
+(Font)              scaled to size 8.0pt on input line 159.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 155.
+(Font)              scaled to size 8.0pt on input line 159.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.2pt on input line 155.
+(Font)              scaled to size 6.2pt on input line 159.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msb.cfg
@@ -1026,62 +1181,59 @@ Package epstopdf Info: Source file: <fig/LesMiserables.eps>
 (epstopdf)                    date: 2021-03-06 20:12:12
 (epstopdf)                    size: 32511 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/LesMiserables-eps-converted-to.pdf fig/LesMiserables.eps>
-(epstopdf)             \includegraphics on input line 161.
+(epstopdf)             \includegraphics on input line 165.
 Package epstopdf Info: Output file is already uptodate.
 <fig/LesMiserables-eps-converted-to.pdf, id=101, 1396.21625pt x 970.62625pt>
 File: fig/LesMiserables-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/LesMiserables-eps-converted-to.pdf>
-Package pdftex.def Info: fig/LesMiserables-eps-converted-to.pdf  used on input line 161.
+Package pdftex.def Info: fig/LesMiserables-eps-converted-to.pdf  used on input line 165.
 (pdftex.def)             Requested size: 227.83119pt x 158.38396pt.
 
 
-Class acmart Warning: A possible image without description on input line 163.
+Class acmart Warning: A possible image without description on input line 167.
 
 <Pipeline.jpg, id=102, 1017.20026pt x 429.40425pt>
 File: Pipeline.jpg Graphic file (type jpg)
 <use Pipeline.jpg>
-Package pdftex.def Info: Pipeline.jpg  used on input line 167.
+Package pdftex.def Info: Pipeline.jpg  used on input line 171.
 (pdftex.def)             Requested size: 506.295pt x 213.72531pt.
 
-Class acmart Warning: A possible image without description on input line 169.
+Class acmart Warning: A possible image without description on input line 173.
 
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 172.
+(Font)              scaled to size 9.0pt on input line 176.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 193.
+(Font)              scaled to size 9.0pt on input line 197.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1852) has occurred while \output is active []
 
  [1.1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
  </home/jiaqing/桌面/Fea2Fea/tex/fig/LesMiserables-eps-converted-to.pdf>]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 9.0pt on input line 206.
+(Font)              scaled to size 9.0pt on input line 210.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 7.3pt on input line 206.
+(Font)              scaled to size 7.3pt on input line 210.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
-(Font)              scaled to size 5.5pt on input line 206.
+(Font)              scaled to size 5.5pt on input line 210.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 206.
+(Font)              scaled to size 7.3pt on input line 210.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 206.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+(Font)              scaled to size 5.5pt on input line 210.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 9.0pt on input line 216.
+(Font)              scaled to size 9.0pt on input line 220.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 227.
+(Font)              scaled to size 9.0pt on input line 238.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 227.
+(Font)              scaled to size 7.0pt on input line 238.
  [2.2 </home/jiaqing/桌面/Fea2Fea/tex/Pipeline.jpg>]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 6.0pt on input line 243.
+(Font)              scaled to size 6.0pt on input line 247.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/it' will be
-(Font)              scaled to size 9.0pt on input line 258.
+(Font)              scaled to size 9.0pt on input line 262.
 Package epstopdf Info: Source file: <fig/Aver_path_len_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
 (epstopdf)                    size: 33360 bytes
@@ -1089,12 +1241,12 @@ Package epstopdf Info: Source file: <fig/Aver_path_len_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 20:12:13
 (epstopdf)                    size: 17461 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf fig/Aver_path_len_planetoid_vp.eps>
-(epstopdf)             \includegraphics on input line 286.
+(epstopdf)             \includegraphics on input line 307.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf, id=158, 722.7pt x 722.7pt>
+<fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf, id=160, 722.7pt x 722.7pt>
 File: fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf  used on input line 286.
+Package pdftex.def Info: fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf  used on input line 307.
 (pdftex.def)             Requested size: 136.7018pt x 136.69688pt.
 Package epstopdf Info: Source file: <fig/Clustering_coefficient_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1103,12 +1255,12 @@ Package epstopdf Info: Source file: <fig/Clustering_coefficient_planetoid_vp.eps
 (epstopdf)                    date: 2021-03-06 20:12:13
 (epstopdf)                    size: 16047 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf fig/Clustering_coefficient_planetoid_vp.eps>
-(epstopdf)             \includegraphics on input line 287.
+(epstopdf)             \includegraphics on input line 308.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf, id=159, 722.7pt x 722.7pt>
+<fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf, id=161, 722.7pt x 722.7pt>
 File: fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf  used on input line 287.
+Package pdftex.def Info: fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf  used on input line 308.
 (pdftex.def)             Requested size: 136.7018pt x 136.69688pt.
 Package epstopdf Info: Source file: <fig/Degree_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1117,12 +1269,12 @@ Package epstopdf Info: Source file: <fig/Degree_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 20:12:13
 (epstopdf)                    size: 16098 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Degree_planetoid_vp-eps-converted-to.pdf fig/Degree_planetoid_vp.eps>
-(epstopdf)             \includegraphics on input line 288.
+(epstopdf)             \includegraphics on input line 309.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Degree_planetoid_vp-eps-converted-to.pdf, id=160, 722.7pt x 722.7pt>
+<fig/Degree_planetoid_vp-eps-converted-to.pdf, id=162, 722.7pt x 722.7pt>
 File: fig/Degree_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Degree_planetoid_vp-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Degree_planetoid_vp-eps-converted-to.pdf  used on input line 288.
+Package pdftex.def Info: fig/Degree_planetoid_vp-eps-converted-to.pdf  used on input line 309.
 (pdftex.def)             Requested size: 136.7018pt x 136.69688pt.
 Package epstopdf Info: Source file: <fig/Pagerank_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1131,35 +1283,54 @@ Package epstopdf Info: Source file: <fig/Pagerank_planetoid_vp.eps>
 (epstopdf)                    date: 2021-03-06 20:12:13
 (epstopdf)                    size: 16843 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Pagerank_planetoid_vp-eps-converted-to.pdf fig/Pagerank_planetoid_vp.eps>
-(epstopdf)             \includegraphics on input line 289.
+(epstopdf)             \includegraphics on input line 310.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Pagerank_planetoid_vp-eps-converted-to.pdf, id=161, 722.7pt x 722.7pt>
+<fig/Pagerank_planetoid_vp-eps-converted-to.pdf, id=163, 722.7pt x 722.7pt>
 File: fig/Pagerank_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Pagerank_planetoid_vp-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Pagerank_planetoid_vp-eps-converted-to.pdf  used on input line 289.
+Package pdftex.def Info: fig/Pagerank_planetoid_vp-eps-converted-to.pdf  used on input line 310.
 (pdftex.def)             Requested size: 136.7018pt x 136.69688pt.
 
 
-Class acmart Warning: A possible image without description on input line 293.
+Class acmart Warning: A possible image without description on input line 314.
 
 
-Overfull \hbox (1.41354pt too wide) in paragraph at lines 303--304
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Overfull \hbox (1.41354pt too wide) in paragraph at lines 324--325
  []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Planetoid.[] \T1/LinuxLibertineT-TLF/m/n/9 (-20) Plan-e-toid datasets are ci-ta-tion datasets in-clud-ing \T1/LinuxLibertineT-TLF/m/sc/9 (-20) Cora\T1/LinuxLibertineT-TLF/m/n/9 (-20) ,
  []
 
 [3.3]
-Underfull \hbox (badness 10000) in paragraph at lines 322--323
+Underfull \hbox (badness 10000) in paragraph at lines 343--344
 
  []
 
 
-Overfull \hbox (2.10234pt too wide) in paragraph at lines 324--325
+Overfull \hbox (2.10234pt too wide) in paragraph at lines 345--346
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) We mainly use Py-torch frame-work to-gether with torch_geometric
  []
 
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4.4 </home/jiaqing/桌面/Fea2Fea/tex/fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Degree_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Pagerank_planetoid_vp-eps-converted-to.pdf>]
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 402.
-[4.4 </home/jiaqing/桌面/Fea2Fea/tex/fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Degree_planetoid_vp-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Pagerank_planetoid_vp-eps-converted-to.pdf>]
+(Font)              scaled to size 9.0pt on input line 422.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 10.95pt on input line 443.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
+(Font)              scaled to size 10.95pt on input line 443.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 5.0pt on input line 449.
+
+
+Class acmart Warning: A possible image without description on input line 617.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
 Package epstopdf Info: Source file: <fig/Cora_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
 (epstopdf)                    size: 70762 bytes
@@ -1167,12 +1338,12 @@ Package epstopdf Info: Source file: <fig/Cora_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:13
 (epstopdf)                    size: 363262 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Cora_1to3_tSNE-eps-converted-to.pdf fig/Cora_1to3_tSNE.eps>
-(epstopdf)             \includegraphics on input line 429.
+(epstopdf)             \includegraphics on input line 689.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Cora_1to3_tSNE-eps-converted-to.pdf, id=319, 433.62pt x 433.62pt>
+<fig/Cora_1to3_tSNE-eps-converted-to.pdf, id=333, 433.62pt x 433.62pt>
 File: fig/Cora_1to3_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Cora_1to3_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Cora_1to3_tSNE-eps-converted-to.pdf  used on input line 429.
+Package pdftex.def Info: fig/Cora_1to3_tSNE-eps-converted-to.pdf  used on input line 689.
 (pdftex.def)             Requested size: 86.81323pt x 86.80847pt.
 Package epstopdf Info: Source file: <fig/Citeseer_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1181,12 +1352,12 @@ Package epstopdf Info: Source file: <fig/Citeseer_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:14
 (epstopdf)                    size: 386163 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Citeseer_1to3_tSNE-eps-converted-to.pdf fig/Citeseer_1to3_tSNE.eps>
-(epstopdf)             \includegraphics on input line 430.
+(epstopdf)             \includegraphics on input line 690.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Citeseer_1to3_tSNE-eps-converted-to.pdf, id=320, 433.62pt x 433.62pt>
+<fig/Citeseer_1to3_tSNE-eps-converted-to.pdf, id=334, 433.62pt x 433.62pt>
 File: fig/Citeseer_1to3_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Citeseer_1to3_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Citeseer_1to3_tSNE-eps-converted-to.pdf  used on input line 430.
+Package pdftex.def Info: fig/Citeseer_1to3_tSNE-eps-converted-to.pdf  used on input line 690.
 (pdftex.def)             Requested size: 86.81323pt x 86.80847pt.
 Package epstopdf Info: Source file: <fig/PubMed_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1195,12 +1366,12 @@ Package epstopdf Info: Source file: <fig/PubMed_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:15
 (epstopdf)                    size: 2589929 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/PubMed_1to3_tSNE-eps-converted-to.pdf fig/PubMed_1to3_tSNE.eps>
-(epstopdf)             \includegraphics on input line 431.
+(epstopdf)             \includegraphics on input line 691.
 Package epstopdf Info: Output file is already uptodate.
-<fig/PubMed_1to3_tSNE-eps-converted-to.pdf, id=321, 433.62pt x 433.62pt>
+<fig/PubMed_1to3_tSNE-eps-converted-to.pdf, id=335, 433.62pt x 433.62pt>
 File: fig/PubMed_1to3_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/PubMed_1to3_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/PubMed_1to3_tSNE-eps-converted-to.pdf  used on input line 431.
+Package pdftex.def Info: fig/PubMed_1to3_tSNE-eps-converted-to.pdf  used on input line 691.
 (pdftex.def)             Requested size: 86.81323pt x 86.80847pt.
 Package epstopdf Info: Source file: <fig/Cora_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1209,12 +1380,12 @@ Package epstopdf Info: Source file: <fig/Cora_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:15
 (epstopdf)                    size: 356314 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Cora_2to1_tSNE-eps-converted-to.pdf fig/Cora_2to1_tSNE.eps>
-(epstopdf)             \includegraphics on input line 436.
+(epstopdf)             \includegraphics on input line 696.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Cora_2to1_tSNE-eps-converted-to.pdf, id=322, 433.62pt x 433.62pt>
+<fig/Cora_2to1_tSNE-eps-converted-to.pdf, id=336, 433.62pt x 433.62pt>
 File: fig/Cora_2to1_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Cora_2to1_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Cora_2to1_tSNE-eps-converted-to.pdf  used on input line 436.
+Package pdftex.def Info: fig/Cora_2to1_tSNE-eps-converted-to.pdf  used on input line 696.
 (pdftex.def)             Requested size: 84.40309pt x 84.40007pt.
 Package epstopdf Info: Source file: <fig/Citeseer_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1223,12 +1394,12 @@ Package epstopdf Info: Source file: <fig/Citeseer_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:15
 (epstopdf)                    size: 337379 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Citeseer_2to1_tSNE-eps-converted-to.pdf fig/Citeseer_2to1_tSNE.eps>
-(epstopdf)             \includegraphics on input line 437.
+(epstopdf)             \includegraphics on input line 697.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Citeseer_2to1_tSNE-eps-converted-to.pdf, id=323, 433.62pt x 433.62pt>
+<fig/Citeseer_2to1_tSNE-eps-converted-to.pdf, id=337, 433.62pt x 433.62pt>
 File: fig/Citeseer_2to1_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Citeseer_2to1_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Citeseer_2to1_tSNE-eps-converted-to.pdf  used on input line 437.
+Package pdftex.def Info: fig/Citeseer_2to1_tSNE-eps-converted-to.pdf  used on input line 697.
 (pdftex.def)             Requested size: 84.40309pt x 84.40007pt.
 Package epstopdf Info: Source file: <fig/PubMed_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1237,24 +1408,23 @@ Package epstopdf Info: Source file: <fig/PubMed_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:16
 (epstopdf)                    size: 2572588 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/PubMed_2to1_tSNE-eps-converted-to.pdf fig/PubMed_2to1_tSNE.eps>
-(epstopdf)             \includegraphics on input line 438.
+(epstopdf)             \includegraphics on input line 698.
 Package epstopdf Info: Output file is already uptodate.
-<fig/PubMed_2to1_tSNE-eps-converted-to.pdf, id=324, 433.62pt x 433.62pt>
+<fig/PubMed_2to1_tSNE-eps-converted-to.pdf, id=338, 433.62pt x 433.62pt>
 File: fig/PubMed_2to1_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/PubMed_2to1_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/PubMed_2to1_tSNE-eps-converted-to.pdf  used on input line 438.
+Package pdftex.def Info: fig/PubMed_2to1_tSNE-eps-converted-to.pdf  used on input line 698.
 (pdftex.def)             Requested size: 84.40309pt x 84.40007pt.
 
-
-Class acmart Warning: A possible image without description on input line 443.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Class acmart Warning: A possible image without description on input line 703.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+LaTeX Warning: `h' float specifier changed to `ht'.
 
- [5.5] (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.bbl) (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
+(/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.bbl
+Underfull \vbox (badness 2080) has occurred while \output is active []
+
+ [5.5 </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf>]) (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 ) (/usr/local/texlive/2020/texmf-dist/tex/generic/stringenc/se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
@@ -1266,34 +1436,40 @@ Class acmart Warning: Some images may lack descriptions.
 Class acmart Warning: CCS concepts are mandatory for papers over two pages.
 
 
-Package balance Warning: You have called \balance in second column
-(balance)                Columns might not be balanced.
+Overfull \vbox (37.14742pt too high) has occurred while \output is active []
 
-[6.6 </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf>]
+
+Overfull \vbox (37.14742pt too high) has occurred while \output is active []
+
+ [6.6] [7.7
+
+] [8.8
+
+]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     571.
+(LaTeX3)     760.
 
  (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `fea2fea.out' has not changed.
-(rerunfilecheck)             Checksum: A48CAFBA26816472C25357040D1840BF;3789.
+(rerunfilecheck)             Checksum: 878FED0DEA944C260710CB979E09D318;3789.
  ) 
 Here is how much of TeX's memory you used:
- 22711 strings out of 479023
- 369223 string characters out of 5859398
- 821539 words of memory out of 5000000
- 38993 multiletter control sequences out of 15000+600000
- 599528 words of font info for 381 fonts, out of 8000000 for 9000
+ 33040 strings out of 479023
+ 595116 string characters out of 5859398
+ 1058662 words of memory out of 5000000
+ 49098 multiletter control sequences out of 15000+600000
+ 616678 words of font info for 398 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 97i,17n,131p,1267b,542s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 97i,17n,131p,1267b,964s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsya.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsyb.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (6 pages, 7334589 bytes).
+Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (8 pages, 7343502 bytes).
 PDF statistics:
- 556 PDF objects out of 1000 (max. 8388607)
- 301 compressed objects within 4 object streams
- 80 named destinations out of 1000 (max. 500000)
- 112905 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 587 PDF objects out of 1000 (max. 8388607)
+ 330 compressed objects within 4 object streams
+ 99 named destinations out of 1000 (max. 500000)
+ 121097 words of extra memory for PDF output out of 128383 (max. 10000000)
 

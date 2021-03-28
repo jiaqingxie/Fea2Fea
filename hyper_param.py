@@ -10,6 +10,7 @@ import torch_geometric.transforms as T
 from torch_geometric.data import Dataset, DataLoader
 from graph_property import binning, G_property
 from f_f_TU import train, valid, test
+import matplotlib.pyplot as plt
 
 def train_n(task):
     if task == 'node':
@@ -114,10 +115,91 @@ if __name__ == "__main__":
                 log2 = 'bins : {}, test acc : {:.4f}, task: input {} predict output {}'
                 print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
                     
-            
-
         elif a.hyperparameter == 'depth':
-            pass
+            average = 10
+            #  draw bars 
+            plt_acc = [] # mean accuracy
+            plt_dep = []
+            plt_all = []
+            plt_std = []
+            for dep in range(a.min_depth, a.max_depth + 1, 2):
+                avg_test_acc = 0
+                plt_dep.append(dep)
+                for avg in range(average):
+                    best_val_acc = test_acc = 0
+                    t = 0
+
+
+                    # choose k = 6
+                    data.y = binning(array_2, k = 6, data_len =  len(data.y))
+                    # to GPU
+                    model = Net(embedding = a.embedding , depth = dep, bins = 6).to(device)
+                    data =  data.to(device)
+                    # optimizer
+                    optimizer = torch.optim.Adam(model.parameters(), lr=0.04, weight_decay=5e-4)    
+                    # training epoch
+                    for epoch in range(1, 3000):
+                        train_n('node')
+                        train_acc, val_acc, tmp_test_acc = test_n('node')
+                        if val_acc > best_val_acc and tmp_test_acc > test_acc:
+                            best_val_acc = val_acc
+                            test_acc = tmp_test_acc
+
+                            t = 0
+                        t = t + 1
+                        if t > 500:
+                            break   
+                    # calculate average accuracy
+                    avg_test_acc+= test_acc
+                    plt_all.append(test_acc)
+
+                plt_std.append(np.std(plt_all))
+                
+                
+                avg_test_acc/=10
+                avg_test_acc = round(avg_test_acc, 3)
+                
+                plt_acc.append(avg_test_acc)
+                log2 = 'depth : {}, test acc : {:.4f}, task: input {} predict output {}'
+                print(log2.format(dep, avg_test_acc, features[a.input_feature], features[a.output_feature]))
+
+            #plt.bar() 
+            
+            # ----- bar plot ------ #
+            """
+            x = np.arange(len(plt_dep))  # the label locations
+            width = 0.35  # the width of the bars
+
+            fig, ax = plt.subplots()
+            rects1 = ax.bar(x - width/2, plt_acc, width, label='model depth')
+            #rects2 = ax.bar(x + width/2, women_means, width, label='Women')
+
+            # Add some text for labels, title and custom x-axis tick labels, etc.
+            ax.set_ylabel('Scores')
+            ax.set_title('Scores by group and gender')
+            ax.set_xticks(x)
+            ax.set_xticklabels(plt_dep)
+            ax.legend()
+
+            plt.show()
+            """
+
+            # ----- line plot ----- #
+            plt.figure(figsize=(8,8))
+            plt_dep = np.array(plt_dep)
+            plt_acc = np.array(plt_acc)
+            plt_std = np.array(plt_std)
+
+            plt.scatter(plt_dep,plt_acc)
+            plt.plot(plt_dep, plt_acc)
+            plt.fill_between(plt_dep, plt_acc - 0.001 * plt_std, plt_acc + 0.001 * plt_std, facecolor='green', alpha=0.3)
+            
+            plt.xlabel('depth')
+            plt.ylabel('avr_acc')
+            plt.savefig('depth_results.eps', dpi = 800, format = 'eps')
+            plt.show()
+
+                    
     
     # else if graph dataset
     elif a.task == 'graph':

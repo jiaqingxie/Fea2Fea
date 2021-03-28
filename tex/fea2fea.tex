@@ -30,6 +30,10 @@
 \usepackage{svg}
 \usepackage{amsmath}
 \usepackage{epstopdf}
+\usepackage{tikz}  
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{tkz-graph}
+\usepackage{graphicx}  
 %% NOTE that a single column version is required for 
 %% submission and peer review. This can be done by changing
 %% the \doucmentclass[...]{acmart} in this template to 
@@ -94,7 +98,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{Fea2Fea : Feature to Feature Prediction and Augmentation on Small Graphs}
+\title{Feature Augmentation on Small Graphs}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -263,15 +267,32 @@ The task for the graph feature to feature prediction is implemented by baseline 
 
 
 \subsection{Feature Concatenation Methods}
-
-\paragraph{SkipLast}
-
+\begin{algorithm}
+  \caption{Get Matrix of Feature Mutual Relationship}
+  \KwIn{Graph $\mathcal G$($\mathcal V, \mathcal E$);  node property length $\mathcal K$; Input property matrix   $\mathbf{x}_{\mathcal{G}}\in\mathbb{R}^{|\mathcal{V}|\times \mathcal{K}} $, second dimension order is constant feature, degree, clustering coefficient, pagerank and average path length; model architecture $\mathcal M$, including GNN embedding(GCN, GraphSAGE, GIN, GAT) with MLP model; metrics $\mathcal P$ }
+  \KwOut{ Feature mutual relationship matrix $\mathcal R \in \mathbb{R}^{\mathcal K \times \mathcal K}$}
+  $\mathcal R \gets 0$\\
+  \For{$i \gets 1$ \textbf{to} $\mathcal K$}{
+      $\mathcal R(i,i) \gets 1$\\
+      $\textbf{I}_{\mathcal G} \gets \textbf{x}_{\mathcal G}(:,i)$\\
+      \If{i == $\mathcal{K}$}{
+      \Return{$\mathcal R$}\;
+      }
+      \For{ $j \gets i + 1$ \textbf{to} $\mathcal K$
+      }{
+  
+      $\textbf{O}_{\mathcal G} \gets \textup{Bin}\left(\textbf{x}_{\mathcal G}(:,j)\right)$\\
+      $\textbf{O}^{'}_{\mathcal G} \gets$ $\mathcal{M}\left(\textbf{I}_{\mathcal G}, \textbf{O}_{\mathcal G}\right)$\\
+      $\mathcal{R}(i,j), \mathcal{R}(j,i) \gets \mathcal P(\textbf{O}^{'}_{\mathcal G},\textbf{O}_{\mathcal G} )$
+      }
+  }
+  \end{algorithm}
 
 \paragraph{Concatenation by importance}
 
 \paragraph{Inner Product Concatenation}
 
-
+\paragraph{SkipLast}
 
 
 \subsection{}
@@ -279,7 +300,7 @@ The task for the graph feature to feature prediction is implemented by baseline 
 
 \section{Experimemts}
 
-\begin{figure*}[!htbp]
+\begin{figure*}[h]
 \centering
 \begin{center}
  \hspace*{-1.5in}
@@ -398,60 +419,224 @@ Through the violin plot we find that most of the clustering coefficients are 0 i
   \end{tabular}
 \end{table*}
 \subsubsection{GNN  performance}
+We test the baseline GNN models to conclude their performance on \textit{Planetoid} datasets and \textit{TUDatasets}.
+We need to ensure that model parameters are the same when testing each baseline model. 
+The depth of the graph embedding method is set to 2 and the bin of number of classes is set to 6. For the first graph embedding layer,
+input dimension is 1 and output dimension is 256, while for the second graph embedding layer input dimension is 256 and output dimension is 64.
+A relu unit and dropout layer is followed by each graph embedding layer. After the graph embedding block, multi-layer perceptrons are connected.
+The input dimension is 64 for the MLP block while the output dimension is equal to value of bins, which is 6.  
 
-The experiments for testing the GNN robustness are on single feature to single feature predictions. Datasets are Planetoid and TUDataset.
+According to the results on node datasets,
+\textbf{GIN} performs the best among all baseline models. Of all 48 test tasks on three different dataset,
+it takes up the 41 best test results. The results is based on the average of 10 times of testing.
+We figure out that the feature \textit{degree} can be predicted precisely on \textit{Planetoid} dataset.
+Predicting accuracy can reach 1.000 when testing {\sc Cora} dataset. For {\sc Citeseer} and {\sc PubMed} dataset,
+accuracy on predicting \textit{degree} can reach 0.999 and 0.998. Feature \textit{Pagerank} can be predicted to a large extent for 
+{\sc Cora} but more difficult for {\sc Citeseer} and {\sc PubMed}. Feature \textit{Clustering coefficient} can be predicted easily on
+{\sc Citeseer} and {\sc PubMed} dataset while it's more difficult for \textbf{GIN} to predict \textit{Clustering coefficient}.
+Overall it's not easy for all baseline models to predict average path length when model depth is shallow.
 
 
-The results of the experiments for planetoid datasets show that \emph{GIN} has the best performance on single feature to feature prediction. 
-Especially when predicting \emph{Degree} feature, average accuracy for \emph{GIN} is equal to 1.000.  
-However, it's difficult for a \emph{GNN} to predict average path length. 
+\begin{center}
+  \begin{figure}[!htp]
+  \begin{tikzpicture}[auto,node distance=1cm,thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, scale=0.8]
+  \node[main node] (A) at (0,5) {A};
+  \node[main node] (B) at (2,6.5) {B};
+  \node[main node] (E) at (4,5) {E};
+  \node[main node] (C) at (0.5,3) {C};
+  \node[main node] (D) at (3.5,3) {D};
+
+  \path [->] (A) edge node { \tiny $-1.11$} (B);
+  \path [->] (B) edge node { \tiny $2.11$} (E);
+  \path [->] (A) edge node { \tiny $2.11$} (D);
+  \path [->] (A) edge node {$4$} (C);
+  \path [->] (B) edge node { \tiny$2.11$} (C);
+  \path [->] let \p1=($(D)-(B)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+   ($ (B.\n1)!2pt!90:(D.\n2) $) edge node { \tiny $2.11$} ($ (D.\n2)!2pt!-90:(B.\n1) $);
+  \path [->] let \p1=($(A)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+   ($ (E.\n1)!2pt!90:(A.\n2) $) edge node { \tiny $2.11$} ($ (A.\n2)!2pt!-90:(E.\n1) $);
+
+  \path [->] let \p1=($(B)-(D)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+   ($ (D.\n1)!2pt!90:(B.\n2) $) edge node { \tiny $-2.11$} ($ (B.\n2)!2pt!-90:(D.\n1) $);
+
+   \path [->] let \p1=($(C)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+   ($ (E.\n1)!2pt!90:(C.\n2) $) edge node { \tiny $-2.11$} ($ (C.\n2)!2pt!-90:(E.\n1) $);
+   \path [->] let \p1=($(E)-(C)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+   ($ (C.\n1)!2pt!90:(E.\n2) $) edge node { \tiny $-1.11$} ($ (E.\n2)!2pt!-90:(C.\n1) $);
+
+  \path [->,bend left=10] (D) edge node {\tiny $5$} (C);
+  \path [->,bend left=10] (C) edge node {$-5$} (D);
+  \path [->] (E) edge node {$-3$} (D);
+  \end{tikzpicture}
+  \begin{tikzpicture}[auto,node distance=1cm,thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, scale=0.8]
+    \node[main node ] (A) at (0,5) {A};
+    \node[main node ] (B) at (2,6.5) {B};
+    \node[main node] (E) at (4,5) {E};
+    \node[main node] (C) at (0.5,3) {C};
+    \node[main node] (D) at (3.5,3) {D};
+  
+    \path [->] (A) edge node { \tiny $-1.11$} (B);
+    \path [->] (B) edge node { \tiny $2.11$} (E);
+    \path [->] (A) edge node { \tiny $2.11$} (D);
+    \path [->] (A) edge node {$4$} (C);
+    \path [->] (B) edge node { \tiny$2.11$} (C);
+    \path [->] let \p1=($(D)-(B)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+     ($ (B.\n1)!2pt!90:(D.\n2) $) edge node { \tiny $2.11$} ($ (D.\n2)!2pt!-90:(B.\n1) $);
+    \path [->] let \p1=($(A)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+     ($ (E.\n1)!2pt!90:(A.\n2) $) edge node { \tiny $2.11$} ($ (A.\n2)!2pt!-90:(E.\n1) $);
+  
+    \path [->] let \p1=($(B)-(D)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+     ($ (D.\n1)!2pt!90:(B.\n2) $) edge node { \tiny $-2.11$} ($ (B.\n2)!2pt!-90:(D.\n1) $);
+  
+     \path [->] let \p1=($(C)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+     ($ (E.\n1)!2pt!90:(C.\n2) $) edge node { \tiny $-2.11$} ($ (C.\n2)!2pt!-90:(E.\n1) $);
+     \path [->] let \p1=($(E)-(C)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+     ($ (C.\n1)!2pt!90:(E.\n2) $) edge node { \tiny $-1.11$} ($ (E.\n2)!2pt!-90:(C.\n1) $);
+  
+    \path [->,bend left=10] (D) edge node {\tiny $5$} (C);
+    \path [->,bend left=10] (C) edge node {$-5$} (D);
+    \path [->] (E) edge node {$-3$} (D);
+    \end{tikzpicture}
+    \begin{tikzpicture}[auto,node distance=1cm,thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, scale=0.8]
+      \node[main node ] (A) at (0,5) {A};
+      \node[main node ] (B) at (2,6.5) {B};
+      \node[main node] (E) at (4,5) {E};
+      \node[main node] (C) at (0.5,3) {C};
+      \node[main node] (D) at (3.5,3) {D};
+    
+      \path [->] (A) edge node { \tiny $-1.11$} (B);
+      \path [->] (B) edge node { \tiny $2.11$} (E);
+      \path [->] (A) edge node { \tiny $2.11$} (D);
+      \path [->] (A) edge node {$4$} (C);
+      \path [->] (B) edge node { \tiny$2.11$} (C);
+      \path [->] let \p1=($(D)-(B)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+       ($ (B.\n1)!2pt!90:(D.\n2) $) edge node { \tiny $2.11$} ($ (D.\n2)!2pt!-90:(B.\n1) $);
+      \path [->] let \p1=($(A)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+       ($ (E.\n1)!2pt!90:(A.\n2) $) edge node { \tiny $2.11$} ($ (A.\n2)!2pt!-90:(E.\n1) $);
+    
+      \path [->] let \p1=($(B)-(D)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+       ($ (D.\n1)!2pt!90:(B.\n2) $) edge node { \tiny $-2.11$} ($ (B.\n2)!2pt!-90:(D.\n1) $);
+    
+       \path [->] let \p1=($(C)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+       ($ (E.\n1)!2pt!90:(C.\n2) $) edge node { \tiny $-2.11$} ($ (C.\n2)!2pt!-90:(E.\n1) $);
+       \path [->] let \p1=($(E)-(C)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+       ($ (C.\n1)!2pt!90:(E.\n2) $) edge node { \tiny $-1.11$} ($ (E.\n2)!2pt!-90:(C.\n1) $);
+    
+      \path [->,bend left=10] (D) edge node {\tiny $5$} (C);
+      \path [->,bend left=10] (C) edge node {$-5$} (D);
+      \path [->] (E) edge node {$-3$} (D);
+      \end{tikzpicture}
+      \begin{tikzpicture}[auto,node distance=1cm,thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, scale=0.8]
+        \node[main node ] (A) at (0,5) {A};
+        \node[main node ] (B) at (2,6.5) {B};
+        \node[main node] (E) at (4,5) {E};
+        \node[main node] (C) at (0.5,3) {C};
+        \node[main node] (D) at (3.5,3) {D};
+      
+        \path [->] (A) edge node { \tiny $-1.11$} (B);
+        \path [->] (B) edge node { \tiny $2.11$} (E);
+        \path [->] (A) edge node { \tiny $2.11$} (D);
+        \path [->] (A) edge node {$4$} (C);
+        \path [->] (B) edge node { \tiny$2.11$} (C);
+        \path [->] let \p1=($(D)-(B)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+         ($ (B.\n1)!2pt!90:(D.\n2) $) edge node { \tiny $2.11$} ($ (D.\n2)!2pt!-90:(B.\n1) $);
+        \path [->] let \p1=($(A)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+         ($ (E.\n1)!2pt!90:(A.\n2) $) edge node { \tiny $2.11$} ($ (A.\n2)!2pt!-90:(E.\n1) $);
+      
+        \path [->] let \p1=($(B)-(D)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+         ($ (D.\n1)!2pt!90:(B.\n2) $) edge node { \tiny $-2.11$} ($ (B.\n2)!2pt!-90:(D.\n1) $);
+      
+         \path [->] let \p1=($(C)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+         ($ (E.\n1)!2pt!90:(C.\n2) $) edge node { \tiny $-2.11$} ($ (C.\n2)!2pt!-90:(E.\n1) $);
+         \path [->] let \p1=($(E)-(C)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+         ($ (C.\n1)!2pt!90:(E.\n2) $) edge node { \tiny $-1.11$} ($ (E.\n2)!2pt!-90:(C.\n1) $);
+      
+        \path [->,bend left=10] (D) edge node {\tiny $5$} (C);
+        \path [->,bend left=10] (C) edge node {$-5$} (D);
+        \path [->] (E) edge node {$-3$} (D);
+        \end{tikzpicture}
+        \begin{tikzpicture}[auto,node distance=1cm,thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, scale=0.8]
+          \node[main node ] (A) at (0,5) {A};
+          \node[main node ] (B) at (2,6.5) {B};
+          \node[main node] (E) at (4,5) {E};
+          \node[main node] (C) at (0.5,3) {C};
+          \node[main node] (D) at (3.5,3) {D};
+        
+          \path [->] (A) edge node { \tiny $-1.11$} (B);
+          \path [->] (B) edge node { \tiny $2.11$} (E);
+          \path [->] (A) edge node { \tiny $2.11$} (D);
+          \path [->] (A) edge node {$4$} (C);
+          \path [->] (B) edge node { \tiny$2.11$} (C);
+          \path [->] let \p1=($(D)-(B)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+           ($ (B.\n1)!2pt!90:(D.\n2) $) edge node { \tiny $2.11$} ($ (D.\n2)!2pt!-90:(B.\n1) $);
+          \path [->] let \p1=($(A)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+           ($ (E.\n1)!2pt!90:(A.\n2) $) edge node { \tiny $2.11$} ($ (A.\n2)!2pt!-90:(E.\n1) $);
+        
+          \path [->] let \p1=($(B)-(D)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+           ($ (D.\n1)!2pt!90:(B.\n2) $) edge node { \tiny $-2.11$} ($ (B.\n2)!2pt!-90:(D.\n1) $);
+        
+           \path [->] let \p1=($(C)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+           ($ (E.\n1)!2pt!90:(C.\n2) $) edge node { \tiny $-2.11$} ($ (C.\n2)!2pt!-90:(E.\n1) $);
+           \path [->] let \p1=($(E)-(C)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+           ($ (C.\n1)!2pt!90:(E.\n2) $) edge node { \tiny $-1.11$} ($ (E.\n2)!2pt!-90:(C.\n1) $);
+        
+          \path [->,bend left=10] (D) edge node {\tiny $5$} (C);
+          \path [->,bend left=10] (C) edge node {$-5$} (D);
+          \path [->] (E) edge node {$-3$} (D);
+          \end{tikzpicture}
+          \begin{tikzpicture}[auto,node distance=1cm,thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, scale=0.8]
+            \node[main node ] (A) at (0,5) {A};
+            \node[main node ] (B) at (2,6.5) {B};
+            \node[main node] (E) at (4,5) {E};
+            \node[main node] (C) at (0.5,3) {C};
+            \node[main node] (D) at (3.5,3) {D};
+          
+            \path [->] (A) edge node { \tiny $-1.11$} (B);
+            \path [->] (B) edge node { \tiny $2.11$} (E);
+            \path [->] (A) edge node { \tiny $2.11$} (D);
+            \path [->] (A) edge node {$4$} (C);
+            \path [->] (B) edge node { \tiny$2.11$} (C);
+            \path [->] let \p1=($(D)-(B)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+             ($ (B.\n1)!2pt!90:(D.\n2) $) edge node { \tiny $2.11$} ($ (D.\n2)!2pt!-90:(B.\n1) $);
+            \path [->] let \p1=($(A)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+             ($ (E.\n1)!2pt!90:(A.\n2) $) edge node { \tiny $2.11$} ($ (A.\n2)!2pt!-90:(E.\n1) $);
+          
+            \path [->] let \p1=($(B)-(D)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+             ($ (D.\n1)!2pt!90:(B.\n2) $) edge node { \tiny $-2.11$} ($ (B.\n2)!2pt!-90:(D.\n1) $);
+          
+             \path [->] let \p1=($(C)-(E)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+             ($ (E.\n1)!2pt!90:(C.\n2) $) edge node { \tiny $-2.11$} ($ (C.\n2)!2pt!-90:(E.\n1) $);
+             \path [->] let \p1=($(E)-(C)$),\n1={atan2(\y1,\x1)},\n2={180+\n1} in
+             ($ (C.\n1)!2pt!90:(E.\n2) $) edge node { \tiny $-1.11$} ($ (E.\n2)!2pt!-90:(C.\n1) $);
+          
+            \path [->,bend left=10] (D) edge node {\tiny $5$} (C);
+            \path [->,bend left=10] (C) edge node {$-5$} (D);
+            \path [->] (E) edge node {$-3$} (D);
+            \end{tikzpicture}
+    \caption{jiaqing}
+  \end{figure}
+\end{center}
+
+\subsubsection{hyper-parameter tunning}
+
+We also compare the performance between node datasets (for node classifications) and graph datasets (for graph classifications).
+
+We also compare the performance between node datasets (for node classifications) and graph datasets (for graph classifications).
+
+We also compare the performance between node datasets (for node classifications) and graph datasets (for graph classifications).
 
 
 
 We also compare the performance between node datasets (for node classifications) and graph datasets (for graph classifications).
 
 
-\paragraph{Binning results}
-  As we mentioned before, the number of bins depends on how we set the number of classes for certain feature.
-The performance test of graph neural network has selected the best GNN model for binning test, which is \textbf{GIN}.
-Here, we perform two experiments. First, we change the GNN stack to find the best parameters of the GIN model. Secondly, we
-Draw a violin chart or distribution map to find out the feature distribution of each data set. Figure 3 shows the feature distribution of the Planetoid dataset.
-However, each distribution is not suitable for Gaussian distribution, especially in the case of clustering coefficients. More than half of the features are 0, resulting in sparse vectors.
-But we want to accurately predict the clustering coefficient, so we set bins containing all zeros as partitions, and set the retention rates of other bins as a percentage division rule based on non-zero values.
+We also compare the performance between node datasets (for node classifications) and graph datasets (for graph classifications).
 
 
+We also compare the performance between node datasets (for node classifications) and graph datasets (for graph classifications).
 
 
-\begin{figure}[htb]
-\centering
-\begin{center}
- \hspace*{-1in}
-    \includegraphics[width=0.36\linewidth]{fig/Cora_1to3_tSNE.eps}
-    \includegraphics[width=0.36\linewidth]{fig/Citeseer_1to3_tSNE.eps}
-    \includegraphics[width=0.36\linewidth]{fig/PubMed_1to3_tSNE.eps}
-    \hspace*{-1in}
-
-    \caption{tSNE on graph embeddings with Degree predicting PageRank}
-  \hspace*{-1.5in}
-    \includegraphics[width=0.35\linewidth]{fig/Cora_2to1_tSNE.eps}
-    \includegraphics[width=0.35\linewidth]{fig/Citeseer_2to1_tSNE.eps}
-    \includegraphics[width=0.35\linewidth]{fig/PubMed_2to1_tSNE.eps}
-    \hspace*{-1.5in}
-
-    \caption{tSNE on graph embeddings with Clustering predicting Degree}
-\end{center}
-\end{figure}
-
-
-
-
-
-
-
-
-
-
-\begin{table}[htb]
+\begin{table}[h]
   \caption{Hyper-parameter : number of bins on node datasets}
   \label{tab:commands}
   \begin{tabular}{*{7}{c}} \toprule
@@ -484,12 +669,47 @@ But we want to accurately predict the clustering coefficient, so we set bins con
 6 & 0.696 & 0.174 & 0.274 & 0.662 & 0.171 & 0.232\\
 7 & 0.505 & 0.144 & 0.251 & 0.601 & 0.148 & 0.289\\
 8 & 0.525 & 0.127 & 0.241 & 0.389 & 0.128 & 0.266\\
-9 & 0.408 & 0.115 & 0.238 & 0.437 & 0.121 & \\
-10 & 0.510 & 0.107 & 0.238 & 0.335 & 0.108 & \\
+9 & 0.408 & 0.115 & 0.238 & 0.437 & 0.121 & 0.269\\
+10 & 0.510 & 0.107 & 0.238 & 0.335 & 0.108 & 0.257\\
 
 \bottomrule
   \end{tabular}
 \end{table}
+
+\subsubsection{graph embedding vs linear embedding}
+
+
+
+
+
+\begin{figure}[h]
+\centering
+\begin{center}
+ \hspace*{-1in}
+    \includegraphics[width=0.36\linewidth]{fig/Cora_1to3_tSNE.eps}
+    \includegraphics[width=0.36\linewidth]{fig/Citeseer_1to3_tSNE.eps}
+    \includegraphics[width=0.36\linewidth]{fig/PubMed_1to3_tSNE.eps}
+    \hspace*{-1in}
+
+    \caption{tSNE on graph embeddings with Degree predicting PageRank}
+  \hspace*{-1.5in}
+    \includegraphics[width=0.35\linewidth]{fig/Cora_2to1_tSNE.eps}
+    \includegraphics[width=0.35\linewidth]{fig/Citeseer_2to1_tSNE.eps}
+    \includegraphics[width=0.35\linewidth]{fig/PubMed_2to1_tSNE.eps}
+    \hspace*{-1.5in}
+
+    \caption{tSNE on graph embeddings with Clustering predicting Degree}
+\end{center}
+\end{figure}
+
+
+
+
+
+
+
+
+
 
 
 \subsection{Feature Augmentation Results}
@@ -509,39 +729,8 @@ But we want to accurately predict the clustering coefficient, so we set bins con
 
 
 
-single \\(finish)
-concatenated\\(on-going)
-original with concatenated\\(on-going)
-GNN and our own model\\(on-going)
-
-
-
-
-
-
-Multi-graph input(Graph Classification), we need to compute each graph's property. Batch size is 1 in this case. (Graph classification problem instead of node classification problem)
-
-
-We have the 
-
-
-violin plot here and also the rectified-bin algo.
-
-intro  + selected property\\
-feature distribution pics\\
-comparison by graph \\
-set by binning method -> 1)classification or regression 2) how many classes  by binning 3) using normalization or not
-
-
-
-innovation1: different from 
-
-
 
 \subsection{Comparison between datasets}
-visualization, graph and node, and also which is easy to interpret through feature and which not
-
-
 
 
 

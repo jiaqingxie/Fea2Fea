@@ -82,7 +82,9 @@ class Net(nn.Module):
                 x = F.dropout(x, training=self.training)
                 self.graph_embed = x
             else:
-                x = F.relu(self.conv3(x, edge_index, data.edge_attr))
+                if self.embedding != 'GIN':
+                    x = F.relu(self.conv3(x, edge_index, data.edge_attr))
+                x = self.conv3(x, edge_index, data.edge_attr)
                 x = F.dropout(x, training=self.training)
 
         x = F.relu(self.lin1(x))
