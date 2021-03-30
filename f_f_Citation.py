@@ -45,6 +45,7 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
     name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset_name + '_property.txt'
     property_file = pd.read_csv(name, sep = '\t')
     
+    
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -97,8 +98,6 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
                     Aver = Aver + R
                         
         if avg == 9:
-
-            
             k = Aver / 10
             np.set_printoptions(precision=3)
             k = pd.DataFrame(k)
@@ -122,9 +121,3 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
             heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
             plt.show()
             break
-
-
-
-
-
-

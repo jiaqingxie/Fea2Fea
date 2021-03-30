@@ -76,7 +76,7 @@ def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pa
             
             avg_path_len_G[i] = k
             #print(i)
-        avg_path_len_G_sequence = sorted(avg_path_len_G, reverse=True)
+        #avg_path_len_G_sequence = sorted(avg_path_len_G, reverse=True)
         return avg_path_len_G,G
  
 

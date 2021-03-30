@@ -168,7 +168,7 @@
 
 \begin{figure*}
     \centering
-    \includegraphics[width=1\textwidth]{Pipeline.jpg}
+    \includegraphics[width=0.8\textwidth]{Pipeline.jpg}
     \caption{Baeline model for feature mutual prediction task}
 \end{figure*}
 
@@ -219,10 +219,6 @@ h_{v}^{(k)} = \textup{MLP}^{(k)}\left( \left( 1 + \varepsilon^{(k)}\right) \cdot
 \end{equation}
 Here $h_{v}^{k}$ is the representation of node v at k-th iteration. It can be also written by $f\circ\varphi$. {\sc Gin} uses MLP to learn $f$ and $\varphi$. Injective function avoids two multisets generate the same embeddings from GNN. Meanwhile, similar graph embeddings have similar embeddings in GIN. Output module is essential in GIN, which includes a concatenation process and a readout module. Readout module is sum in GIN, while max and mean dissatisfy injective property. GraphSAGE embedding with mean aggregator performs as well as GIN. They have great performance on graph but not generally on node classification.
 
-
-
-
-
 \paragraph{GAT} GAT is the abbreviation of \textbf{Graph Attention Network}\cite{velivckovic2017graph}. It takes the advantage of attention mechanism, which is first proposed in a transformer architecture in NLP domain. The attention weight between node i and one of its neigbours node j can be expressed as $\alpha_{ij}$: 
 \begin{equation}
 \setlength\abovedisplayskip{5pt}%shrink space
@@ -238,35 +234,82 @@ is representation of one of node i's neighbours. $\vec{\mathbf{a}}^{T} \in \math
 \end{equation}
 It'a a linear combination with non-linearity $\sigma(\cdot)$. The combination method of multi-head attention in GAT is take averaging result. The advantage of GAT is that we can perform inductive learning without knowing everything about the whole graph.
 
-\subsection{Feature to Feature Approach}
+\subsection{Feature to Feature Prediction}
+
+
+
+
 
 \begin{algorithm}
 \caption{Get Matrix of Feature Mutual Relationship}
-\KwIn{Graph $\mathcal G$($\mathcal V, \mathcal E$);  node property length $\mathcal K$; Input property matrix   $\mathbf{x}_{\mathcal{G}}\in\mathbb{R}^{|\mathcal{V}|\times \mathcal{K}} $, second dimension order is constant feature, degree, clustering coefficient, pagerank and average path length; model architecture $\mathcal M$, including GNN embedding(GCN, GraphSAGE, GIN, GAT) with MLP model; metrics $\mathcal P$ }
+\KwIn{Graph $\mathcal G$($\mathcal V, \mathcal E$);  node property length $\mathcal K$; Input feature matrix 
+  $\mathbf{x}_{\mathcal{G}}\in\mathbb{R}^{|\mathcal{V}|\times \mathcal{K}} $, second dimension order is constant 
+  feature, degree, clustering coefficient, pagerank and average path length or more features; 
+  model architecture $\mathcal M$, including GNN embedding(GCN, GraphSAGE, GIN, GAT) with MLP model; 
+  metrics $\mathcal P$ }
 \KwOut{ Feature mutual relationship matrix $\mathcal R \in \mathbb{R}^{\mathcal K \times \mathcal K}$}
 $\mathcal R \gets 0$\\
 \For{$i \gets 1$ \textbf{to} $\mathcal K$}{
-    $\mathcal R(i,i) \gets 1$\\
     $\textbf{I}_{\mathcal G} \gets \textbf{x}_{\mathcal G}(:,i)$\\
     \If{i == $\mathcal{K}$}{
     \Return{$\mathcal R$}\;
     }
-    \For{ $j \gets i + 1$ \textbf{to} $\mathcal K$
+    \For{ $j \gets 1$ \textbf{to} $\mathcal K$
     }{
 
     $\textbf{O}_{\mathcal G} \gets \textup{Bin}\left(\textbf{x}_{\mathcal G}(:,j)\right)$\\
     $\textbf{O}^{'}_{\mathcal G} \gets$ $\mathcal{M}\left(\textbf{I}_{\mathcal G}, \textbf{O}_{\mathcal G}\right)$\\
-    $\mathcal{R}(i,j), \mathcal{R}(j,i) \gets \mathcal P(\textbf{O}^{'}_{\mathcal G},\textbf{O}_{\mathcal G} )$
+    $\mathcal{R}(i,j) \gets \mathcal P(\textbf{O}^{'}_{\mathcal G},\textbf{O}_{\mathcal G} )$
     }
 }
 \end{algorithm}
 
-The task for the graph feature to feature prediction is implemented by baseline models, aiming to test a GNN model's robustness on small graphs. Here the input is one signal feature $\mathbf{x}_{\mathcal{G}}$
+Given a graph $\mathcal G$($\mathcal V, \mathcal E$). We want to achieve the desired feature 
+matrix $\textbf{x}_{\mathcal G} \in  \mathbb{R}^{|\mathcal{V}|\times \mathcal K}$ from $\mathcal G$ which 
+requires an adjacency matrix $\mathcal A_{g} \in \mathbb{R}^{|\mathcal{V}|*|\mathcal{V}|}$ of $\mathcal G$. 
+Suppose that we choose five of all graph features to show exploratory results, which are constant feature (Cons), 
+degree (Deg), clustering coefficient (Clu), average path length (AvgLen) and PageRank (PR).
+
+Constant feature of one node u $\mathop{Cons}\limits_{u \in \mathcal{V}}(u)$ is given by c, 
+where c is equal to a constant value. We set to 1 in this paper for normalization. 
+Degree of node u is equal to $\mathop{Deg}\limits_{u \in \mathcal{V}}(u)$ is equal to the number of node u's neighbours. 
+Clustering coefficient of node u $\mathop{Clu}\limits_{u \in \mathcal{V}}(u)$ = $\frac{2e_{jk}}{k_{i} * (k_{i} - 
+1)}$, where $j,k \in \mathcal{V}$,$e_{jk}$ represents the total possible edges between node u's neighbours and
+$k_{i}$ is the number of node u's neighbours. $\mathop{PR}\limits_{u \in \mathcal{V}}(u)$ is given by:
+\begin{equation}
+  \mathop{PR}\limits_{u \in \mathcal{V}}(u) = \frac{1-q}{|\mathcal V|} + q \times \sum_{v \in {\mathcal N} 
+  (u)}\frac{\mathop{PR}(v)}{\mathcal L(v)}\\
+\end{equation}
+where $\mathcal N(\cdot)$ means the node u's neighbours and $\mathcal L(\cdot)$ means the outbound link numbers of the node u
+to its neighbours. In the traditional analysis of pagerank algorithm, the object is directed graph. However we can treat
+undirected graph as bidirectional graph, so outbound links is equal to the edge numbers from node u to its neigbours.
+q is the residual probability, which is defualt as 0.85. We treat it as a hyper-parameter. $\mathop{Avglen}
+\limits_{u \in \mathcal{V}}(u)$ is calculated by:
+\begin{equation}
+  \mathop{Avglen}
+\limits_{u \in \mathcal{V}}(u) = \frac{1}{\mathcal V '}\sum_{v \in {\mathcal V}\neq u} I(u,v) * d_{min}(u,v)\\
+\end{equation}
+where $I(u,v)$ indicates whether there's a path from node u to node v. If node v is reachable according to node u,
+then $I(u,v)$ is equal to 1 else it is 0. $\mathcal V'$ is equal to the total number of reachable nodes for node u,
+more specifically, $\mathcal V'$ = $\sum_{v \in {\mathcal V}\neq u} I(u,v) $. $d_{min}(u,v)$ determines the shortest path
+length from node u to node v. 
+
+The algorithm 1 shows a complete process of how to construct a matrix for mutual feature prediction. Suppose that
+we have successfully compute a feature matrix $\textbf{x}_{\mathcal G} \in  \mathbb{R}^{|\mathcal{V}|\times \mathcal K}$.
+Specifically $\mathcal K$ is equal to 5 here since five of graph features are being researched. The features have been indexed. Suppose we have constructed 
+a model $\mathcal M$ which uses the baseline graph embedding methods together with multi-layer perceptrons. 
+Given a feature, we can find its column index from $\textbf{x}_{\mathcal G}$ and extract them by only taking that column,
+such as constant feature: $\textbf{x}_{\mathcal G}(:,1)$ and average path length: $\textbf{x}_{\mathcal G}(:,4)$. We need to extract two columns, one
+for input $\textbf{I}_{\mathcal G}$ and the other for output $\textbf{O}_{\mathcal G}$. We need to set bins for the output since the main task is classification not regression task. After outputs are classified into 
+each own class, we use that constructed model $\mathcal M$ to predict output  $\textbf{O}^{'}_{\mathcal G}$. We use a metrics to evaluate the result between 
+$\textbf{O}^{'}_{\mathcal G}$ and $\textbf{O}_{\mathcal G}$, which is the classification accuracy here. 
+Finally we will achieve a feature mutual relationshiop matrix $\mathcal R$.
+The binning results on the datasets that we have chosen are dicussed in part 4.3. We should be careful that constant feature can be only 
+taken as input but not as output. It is the most basic feature for all graphs which could not lead to a self classification problem.
 
 
 
-
-\subsection{Feature Concatenation Methods}
+\subsection{Feature Concatenation}
 \begin{algorithm}
   \caption{Get Matrix of Feature Mutual Relationship}
   \KwIn{Graph $\mathcal G$($\mathcal V, \mathcal E$);  node property length $\mathcal K$; Input property matrix   $\mathbf{x}_{\mathcal{G}}\in\mathbb{R}^{|\mathcal{V}|\times \mathcal{K}} $, second dimension order is constant feature, degree, clustering coefficient, pagerank and average path length; model architecture $\mathcal M$, including GNN embedding(GCN, GraphSAGE, GIN, GAT) with MLP model; metrics $\mathcal P$ }
@@ -287,18 +330,44 @@ The task for the graph feature to feature prediction is implemented by baseline 
       }
   }
   \end{algorithm}
+  We have a feature list $\mathcal F$ = $\{ \mathcal F_{1}, \mathcal F_{2},..., \mathcal F_{n}\}$, which contains n 
+  features of the graph. The value $\mathcal R(i,j)$ in relationship matrix indicates if $ \mathcal R_{i}$ and
+  $\mathcal R_{j}$ are predictable to each other mutually. Moreover, we want to add additional features to $\mathcal R_{i}$
+  to see if this will predict $\mathcal R_{j}$ more accurately. However we cannot add features arbitrarily since adding similar features might 
+  bring about redundancy in data. In this paper we provide three main ideas for concatenating features.
+\paragraph{simple concatenation}
+If we 
 
-\paragraph{Concatenation by importance}
-
-\paragraph{Inner Product Concatenation}
-
-\paragraph{SkipLast}
 
 
-\subsection{}
+
+
+
+
+\paragraph{Neural Tensor Network}
+Apart from concatenating two or more features directly, we use try to use neural tensor network,
+which is presented by:
+
+\begin{equation}
+  g_{new} = u^{T} a(f_{1}^{T} W_{R} f_{2} + V [ f_{1}, f_{2} ] + b) \\ 
+\end{equation}
+
+
+
+
+\paragraph{SkipLast}We
+
+We now go through the algorithm 2.
+
+
+
+
+\subsection{model architectures}
 
 
 \section{Experimemts}
+
+
 
 \begin{figure*}[h]
 \centering
@@ -398,23 +467,25 @@ Through the violin plot we find that most of the clustering coefficients are 0 i
   \caption{Feature to Feature Prediction Results on TUDatasets (bins = 6)}
   \label{tab:commands}
   \begin{tabular}{*{13}{c}} \toprule
-{Aim}  & \multicolumn{4}{c}{{\sc NC1}} & \multicolumn{4}{c}{{\sc Proteins}} & \multicolumn{4}{c}{{\sc Enzymes}}\\
+{Aim}  & \multicolumn{4}{c}{{\sc Proteins}} & \multicolumn{4}{c}{{\sc Enzymes}} & \multicolumn{4}{c}{{\sc NCI1}}\\
 \cmidrule(lr){2-5}\cmidrule(lr){6-9}\cmidrule(lr){10-13}
 & GCN & GIN & SAGE & GAT & GCN & GIN & SAGE & GAT & GCN & GIN & SAGE & GAT \\ \hline
-{1 -> 2} & \checkmark & $\times$ & &\\
-{1 -> 3} \\
-{1 -> 4} \\
-{1 -> 5}\\
-{2 -> 3}\\
-{2 -> 4}\\
-{2 -> 5}\\
-{3 -> 2} \\	
-{4 -> 2} \\
-{4 -> 3} \\
-{4 -> 5} \\
-{5 -> 2} \\
-{5 -> 3} \\
-{5 -> 4} \\
+{1 -> 2} & 0.560 & \B 0.662 & 0.469 & 0.469 & 0.630 & \B 0.881 & 0.418 & 0.418 & 0.833 & \B 0.916 & 0.406 & 0.401\\
+{1 -> 3} & 0.299 & \B 0.436 & 0.202 & 0.202 & 0.315 & \B 0.344 & 0.262 & 0.261 & / & / & / & / \\
+{1 -> 4} & 0.645 & \B 0.648 & 0.170 & 0.170 & 0.597 & \B 0.639 & 0.181 & 0.169 & 0.630 & \B 0.636 & 0.172 & 0.169\\
+{1 -> 5} & \B 0.182 & 0.171 & 0.171 & 0.171 & 0.169 & \B 0.200 & 0.173 & 0.169 & 0.217 & \B 0.223 & 0.172 & 0.170\\
+{2 -> 3} & 0.435 & 0.387 & \B 0.454 & 0.312 & 0.397 & 0.359 & \B 0.407 & 0.314 & / & / & / & / \\
+{2 -> 4} & 0.622 & 0.699 & \B 0.722 & 0.239 & 0.623 & 0.679 & \B 0.702 & 0.249 & 0.689 & 0.705 & \B 0.740 & 0.304\\
+{2 -> 5} & \B 0.212 & 0.184 & 0.200 & 0.171 & 0.233 & 0.216 & \B 0.245 & 0.173 & \B 0.237 & 0.222 & 0.235 & 0.177\\
+{3 -> 2} & 0.537 & \B 0.652 & 0.482 & 0.469 & 0.569 & \B 0.788 & 0.544 & 0.418 & / & / & / & / \\
+{3 -> 4} & \B 0.575 & 0.465 & 0.467 & 0.549 & \B 0.539 & 0.395 & 0.369 & 0.198 & / & / & / & / \\
+{3 -> 5} & 0.227 & 0.196 & \B 0.254 & 0.228 & 0.197 & 0.169 & \B 0.203 & 0.169 & / & / & / & / \\	
+{4 -> 2} & 0.430 & \B 0.662 & 0.446 & 0.469 & 0.240 & 0.336 & \B 0.458 & 0.418 & 0.100 & \B 0.827 & 0.417 & 0.341\\
+{4 -> 3} & 0.247 & \B 0.330 & 0.278 & 0.219 & 0.269 & \B 0.305 & 0.270 & 0.262 & / & / & / & / \\
+{4 -> 5} & 0.171 & \B 0.172 & 0.171 & 0.171 & 0.169 & \B 0.180 & 0.171 & 0.168 & 0.169 & \B 0.339 & 0.173 & 0.170\\
+{5 -> 2} & 0.522 & \B 0.657 & 0.482 & 0.469 & 0.572 & \B 0.881 & 0.484 & 0.418 & 0.784 & \B 0.919 & 0.836 & 0.401\\
+{5 -> 3} & 0.276 & 0.258 & \B 0.328 & 0.202 & 0.283 & 0.308 & \B 0.354 & 0.262 & / & / & / & / \\
+{5 -> 4} & \B 0.579 & 0.453 & 0.395 & 0.170 & \B 0.542 & 0.430 & 0.360 & 0.170 & \B 0.629 & 0.534 & 0.588 & 0.180\\
 \bottomrule
   \end{tabular}
 \end{table*}

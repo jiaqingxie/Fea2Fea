@@ -143,88 +143,96 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')    
 
     for dn, embedding_method in list(itertools.product(dataset_name, GNN_model)):
+        Aver = np.zeros((5,5))
         # make sure that your dataset is reserved in /tmp/dn/dn/...
         dataset = TUDataset(root = '/home/jiaqing/桌面/Fea2Fea/data/' + dn, name = dn, use_node_attr = False)
         # batch size is the parameter
         # print(len(dataset))
         train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
         test_len = len(dataset) - train_len - valid_len
-        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False)
-        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False)
-        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False)
+        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False) #### batch size 32 for NCI1
+        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False) #### batch size 32 for NCI1
+        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False) #### batch size 32 for NCI1
         # for each batch, calculate the feature properties
+        # if you have reserved once, you do not need to reserve again since it takes a lot of time!!! so comment them
         #reserve('train', dn, train_loader)
         #reserve('valid', dn, valid_loader)
         #reserve('test', dn, test_loader)
+        avg_num = 10 
 
-        R = [[0 for i in range(5)] for j in range(5)] # initialize our feature relationship matrix 
-        R[0][0] = 1.000
-        # i is the featire taken as input,  j is the predicted feature
-        for i in range(5):
-            for j in range(1,5):
-                model = Net(embedding=embedding_method).to(device)
-                optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
-                #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.8)
-                # record epoch
-                best_epoch = 0
-                best_valid_acc = 0
-                best_test_acc = 0
-                op_iters = 0
-                for epoch in range(1, 200):
-                    if dn == 'NCI1':
-                        if j == 2 or i == 2:
-                            R[i][j] = 0
-                            R[j][i] = 0
+        for avg in range(avg_num):
+
+            R = np.zeros((5,5)) # initialize our feature relationship matrix 
+            R[0][0] = 1.000
+            # i is the featire taken as input,  j is the predicted feature
+            for i in range(5):
+                for j in range(1,5):
+                    model = Net(embedding=embedding_method).to(device)
+                    optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
+                    #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.8)
+                    # record epoch
+                    best_epoch = 0
+                    best_valid_acc = 0
+                    best_test_acc = 0
+                    op_iters = 0
+                    for epoch in range(1, 200):
+                        if dn == 'NCI1':
+                            if j == 2 or i == 2:
+                                R[i][j] = 0
+                                R[j][i] = 0
+                                break
+                        # for train
+                        t_loss = train(i, j, dn, model, 'train', optimizer, train_loader, device)
+                        # for valid 
+                        v_acc = valid(i, j, dn, model, 'valid', optimizer, valid_loader, device)
+                        # for test
+                        t_acc = test(i, j, dn, model, 'test', optimizer, test_loader, device)
+                        #print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
+                        #   epoch, t_loss, v_acc, t_acc ))
+
+                        if v_acc > best_valid_acc:
+                            best_valid_acc = v_acc
+                            best_test_acc = t_acc
+                            best_epoch = epoch
+                            
+                            if i == 0:
+                                R[i][j] = round(t_acc,3)
+                                R[j][i] = round(t_acc,3)
+                            else:
+                                R[i][j] = round(t_acc,3)
+                            op_iters=0
+                        op_iters+=1
+                        if op_iters > 20:
                             break
-                    # for train
-                    t_loss = train(i, j, dn, model, 'train', optimizer, train_loader, device)
-                    # for valid 
-                    v_acc = valid(i, j, dn, model, 'valid', optimizer, valid_loader, device)
-                    # for test
-                    t_acc = test(i, j, dn, model, 'test', optimizer, test_loader, device)
-                    print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
-                        epoch, t_loss, v_acc, t_acc ))
-
-                    if v_acc > best_valid_acc:
-                        best_valid_acc = v_acc
-                        best_test_acc = t_acc
-                        best_epoch = epoch
-                        
-                        if i == 0:
-                            R[i][j] = round(t_acc,3)
-                            R[j][i] = round(t_acc,3)
-                        else:
-                            R[i][j] = round(t_acc,3)
-                        op_iters=0
-                    op_iters+=1
-                    if op_iters > 20:
-                        break
                     if i == 4 and j == 4:
-                        #print(R)
-                        k = np.array(R)
-                        k = pd.DataFrame(k)
-                        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset'
-                        fig_name = '/' +dn + '_' + embedding_method + '.txt'
-                        fig_path = filepath + fig_name
-                        k.to_csv(fig_path, header = None, index = None, sep = '\t')
-                        #----------- save Heatmap Matrix-----------#
-                        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset'
-                        fig_name = '/' +dn + '_' + embedding_method + '_property' + '.eps'
-                        fig_path = filepath + fig_name
-                        xlabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
-                        ylabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
-                        cm = sns.heatmap(R,annot=True,cmap="Blues",cbar = False, square=True,
-                                    xticklabels = xlabels, yticklabels = ylabels)
-                        cm.set_xticklabels(cm.get_xticklabels(), rotation=30)
-                        cm.set_yticklabels(cm.get_xticklabels(), rotation=0)
-                        label = embedding_method
-                        cm.set_title(label)
-                        heatmap = cm.get_figure()
-                        heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
-                        plt.show()
-                        break
-                    print('Current optimal valid_acc {:.4f} at epoch {} with test acc {:.4f}'.format(best_valid_acc , best_epoch, best_test_acc))
+                        Aver+=R
 
-                    #scheduler.step()
-                
+            if avg == 9:                
+                k = Aver / 10
+                np.set_printoptions(precision=3)
+                k = pd.DataFrame(k)
+                filepath = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset'
+                fig_name = '/' +dn + '_' + embedding_method + '.txt'
+                fig_path = filepath + fig_name
+                k.to_csv(fig_path, header = None, index = None, sep = '\t')
+                #----------- save Heatmap Matrix-----------#
+                filepath = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset'
+                fig_name = '/' +dn + '_' + embedding_method + '_property' + '.eps'
+                fig_path = filepath + fig_name
+                xlabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
+                ylabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
+                cm = sns.heatmap(k,annot=True,cmap="Blues",cbar = False, square=True,
+                            xticklabels = xlabels, yticklabels = ylabels)
+                cm.set_xticklabels(cm.get_xticklabels(), rotation=30)
+                cm.set_yticklabels(cm.get_xticklabels(), rotation=0)
+                label = embedding_method
+                cm.set_title(label)
+                heatmap = cm.get_figure()
+                heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
+                plt.show()
+                break
+            
+
+            #scheduler.step()
+                    
 
