@@ -251,9 +251,7 @@ It'a a linear combination with non-linearity $\sigma(\cdot)$. The combination me
 $\mathcal R \gets 0$\\
 \For{$i \gets 1$ \textbf{to} $\mathcal K$}{
     $\textbf{I}_{\mathcal G} \gets \textbf{x}_{\mathcal G}(:,i)$\\
-    \If{i == $\mathcal{K}$}{
-    \Return{$\mathcal R$}\;
-    }
+
     \For{ $j \gets 1$ \textbf{to} $\mathcal K$
     }{
 
@@ -261,6 +259,9 @@ $\mathcal R \gets 0$\\
     $\textbf{O}^{'}_{\mathcal G} \gets$ $\mathcal{M}\left(\textbf{I}_{\mathcal G}, \textbf{O}_{\mathcal G}\right)$\\
     $\mathcal{R}(i,j) \gets \mathcal P(\textbf{O}^{'}_{\mathcal G},\textbf{O}_{\mathcal G} )$
     }
+    \If{i == $\mathcal{K}$}{
+      \Return{$\mathcal R$}\;
+      }
 }
 \end{algorithm}
 
@@ -335,6 +336,7 @@ taken as input but not as output. It is the most basic feature for all graphs wh
   $\mathcal R_{j}$ are predictable to each other mutually. Moreover, we want to add additional features to $\mathcal R_{i}$
   to see if this will predict $\mathcal R_{j}$ more accurately. However we cannot add features arbitrarily since adding similar features might 
   bring about redundancy in data. In this paper we provide three main ideas for concatenating features.
+  
 \paragraph{simple concatenation}
 If we 
 

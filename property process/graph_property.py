@@ -85,16 +85,6 @@ def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pa
     if centrality_bool:  #degree centrality of nodes
         pass
 
-
-    #print(nx.degree_centrality(G))
-
-    #if average_shortest_path_length_bool:
-
-    #
-    #print(nx.pagerank(G, alpha=0.9))
-    #print(nx.shortest_path_length(G,source=0,target=4))
-    #sns.distplot(clustering)
-
 def binning(Array, k, data_len):
     Array = Array.reshape(data_len,)
     Array = Array.tolist()
