@@ -22,16 +22,16 @@ class Net(nn.Module):
         self.linear_embed = 0
 
         mlp1 = nn.Sequential(
-                nn.Linear(1, 512),
-                nn.BatchNorm1d(512),
+                nn.Linear(1, 256),
+                nn.BatchNorm1d(256),
                 nn.ReLU(),
-                nn.Linear(512,256),
+                nn.Linear(256,128),
             )
         mlp2 = nn.Sequential(
-                nn.Linear(256,128 ),
-                nn.BatchNorm1d(128),
+                nn.Linear(128,64 ),
+                nn.BatchNorm1d(64),
                 nn.ReLU(),
-                nn.Linear(128,64),
+                nn.Linear(64,64),
             )
         mlp3 = nn.Sequential(
                 nn.Linear(self.hidden_dim, self.hidden_dim),
@@ -41,8 +41,8 @@ class Net(nn.Module):
         self.bn = nn.BatchNorm1d(hidden_dim)
         self.embedding = embedding
         if self.embedding == 'SAGE':
-            self.conv1 = SAGEConv(1,128,normalize=True)
-            self.conv2 = SAGEConv(128,64 ,normalize=True)
+            self.conv1 = SAGEConv(1,256,normalize=True)
+            self.conv2 = SAGEConv(256,64 ,normalize=True)
             self.conv3 = SAGEConv(hidden_dim, hidden_dim, normalize=True)
         elif self.embedding == 'GAT':
             self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
@@ -84,7 +84,8 @@ class Net(nn.Module):
             else:
                 if self.embedding != 'GIN':
                     x = F.relu(self.conv3(x, edge_index, data.edge_attr))
-                x = self.conv3(x, edge_index, data.edge_attr)
+                else:
+                    x = self.conv3(x, edge_index, data.edge_attr)
                 x = F.dropout(x, training=self.training)
 
         x = F.relu(self.lin1(x))
