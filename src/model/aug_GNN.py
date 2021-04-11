@@ -29,7 +29,7 @@ class SimpleConcat(nn.Module):
 class BiLinear(nn.Module):
     def __init__(self, embed_1, embed_2, embed_dim, neurons, classes):
         super(BiLinear, self).__init__()
-        self.embed_1 = embed_1
+        self.embed_1 = embed_1e
         self.embed_2 = embed_2
         self.embed_dim = embed_dim
         self.neurons = neurons

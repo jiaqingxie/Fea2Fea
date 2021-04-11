@@ -2,7 +2,26 @@
 ![](https://img.shields.io/badge/license-MIT-000000.svg)
 ![](https://img.shields.io/badge/github-v0.1.0-519dd9.svg)
 # Feature Augmentation on Small Graphs
-Undergraduate Research Project, supervised by Rex Ying
+
+## author: Jiaqing Xie, Rex Ying
+
+### paper citation
+
+
+
+## Installation
+
+## Dependencies
+
+## pipeline
+
+
+## Dataset
+### 1. node datasets (Planetoid)
+
+### 2. graph datasets (TUDataset)
+
+### 3.
 
 ## single feature to feature prediction
 
@@ -10,12 +29,13 @@ Undergraduate Research Project, supervised by Rex Ying
    python f_f_Citation.py 
    python f_f_TU.py
 ```
-## parameter tunning
+## hyperparameter tunning
 
 ```python
     python hyper_param.py --param
 ```
 
+hyperparameter list: 
 
 | Name     | `EXPERIMENT_NAME` | Description  |
 |----------|:-------------------:|--------------|
@@ -30,3 +50,17 @@ Undergraduate Research Project, supervised by Rex Ying
 | Reddit*      | `REDDIT-BINARY`  | Reddit-Binary Graphs ([source](https://ls11-www.cs.tu-dortmund.de/staff/morris/graphkerneldatasets)). |
 | Mutagenicity*      | `Mutagenicity`  | Predicting the mutagenicity of molecules ([source](https://ls11-www.cs.tu-dortmund.de/staff/morris/graphkerneldatasets)). |
 | Tox 21*      | `Tox21_AHR`  | Predicting a compound's toxicity ([source](https://ls11-www.cs.tu-dortmund.de/staff/morris/graphkerneldatasets)). |
+
+
+## choosing optimal R and graph embedding method.
+
+
+
+## collect all possible concatenation
+
+
+## Run feature concatenation tests
+
+## visualization 
+
+## jupyter notebook playground
