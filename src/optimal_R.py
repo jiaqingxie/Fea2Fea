@@ -2,10 +2,14 @@
 import numpy as np 
 import pandas as pd
 from argparse import ArgumentParser
+from utils import powerset, subset
 
 def option():
     parser = ArgumentParser()
     parser.add_argument('--dataset', default='Cora', type=str, help='dataset')
+    parser.add_argument('--threshold', default=0.8, type=float, help='threshold')
+    parser.add_argument('--task', default='getR', type=str, help='getR or getConcat')
+    parser.add_argument('--aim_feature', default=1, type=int, help='graph features')
     return parser.parse_args()
 
 def get_optimal_R():
@@ -22,9 +26,9 @@ def get_optimal_R():
     optimal_method = [[0] * 5 for i in range(0, 5)]
 
     if o.dataset in planetoid:
-        path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' # add your path here
+        path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' # add your path of R here
     elif o.dataset in tudataset:
-        path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' # add your path here
+        path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' # add your path of R here
     for ge in graph_embed:
 
         df = pd.read_csv(path + o.dataset + '_' + ge +'.txt', sep = '\t',header=None) # a matrix
@@ -42,21 +46,65 @@ def get_optimal_R():
     optimal_method = pd.DataFrame(optimal_method)
 
     # obtain optimal R and corresponding graph embedding method
-    fig_name1 = o.dataset + '_optimal_R.txt'
-    fig_name2 = o.dataset + '_optimal_method.txt'
-    fig_path1 = path + fig_name1
-    fig_path2 = path + fig_name2
-    optimal_R.to_csv(fig_path1, header = None, index = None, sep = '\t')
-    optimal_method.to_csv(fig_path2, header = None, index = None, sep = '\t')
+    txt_name1 = o.dataset + '_optimal_R.txt'
+    txt_name2 = o.dataset + '_optimal_method.txt'
+    txt_path1 = path + txt_name1
+    txt_path2 = path + txt_name2
+    optimal_R.to_csv(txt_path1, header = None, index = None, sep = '\t')
+    optimal_method.to_csv(txt_path2, header = None, index = None, sep = '\t')
+    return optimal_R, optimal_method
                     
-def all_possible_concatenation():
+def all_possible_concatenation(threshold):
+    '''
+    print all possible feature concatenation situations
+    '''
+    planetoid = ['Cora', 'Citeseer', 'PubMed']
+    tudataset = ['ENZYMES','PROTEINS', 'NCI1']
+
+    o = option()
+    if o.dataset in planetoid:
+        path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' 
+    elif o.dataset in tudataset:
+        path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' 
+    txt_name = o.dataset + '_optimal_R.txt'
+    txt_path = path + txt_name
+    df = pd.read_csv(txt_path, sep = '\t',header=None)
+    aim_feature = o.aim_feature
+    rows = len(df.axes[0])
+    cols = len(df.axes[1])
+    ans = set()
+    # alrorithm, traverse
+    sets = [i for i in range(5)]
+    sets = list(powerset(sets))
+
+    for row in range(0,rows):
+        for col in range(0, cols):
+            if df.iloc[row,col] < threshold and row!= o.aim_feature and row!= col:
+                ans.add((row, col))
+            else:
+                pass
     
+    print("all possible concatenations:")
 
-
+    comb = []
+    for i in range(2,5):
+        print(str(i) + " features: ")
+        tmp = []
+        for j in range(len(sets)):
+            if len(sets[j]) == i:
+                ans2 = subset(sets[j], ans)
+                if ans2 == True:
+                    tmp.append(sets[j])
+            else:
+                continue
+        print(tmp)
+        for ele in tmp:
+            comb.append(ele)
+    return comb
+        
 if __name__ == '__main__':
-
-    get_optimal_R()
-    
-
-
-
+    o = option()
+    if o.task == 'getR':
+        a, b = get_optimal_R()
+    if o.task == 'getConcat':
+        ans = all_possible_concatenation(o.threshold)
