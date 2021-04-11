@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from argparse import ArgumentParser
 from utils import powerset, subset
+import os, sys
 
 def option():
     parser = ArgumentParser()
@@ -12,11 +13,10 @@ def option():
     parser.add_argument('--aim_feature', default=1, type=int, help='graph features')
     return parser.parse_args()
 
-def get_optimal_R():
+def get_optimal_R(o):
     '''
     return the optimal R for the given task and correspomding graph embedding method   
     '''
-    o = option()
     
     graph_embed  = ['SAGE','GAT','GCN','GIN']
     planetoid = ['Cora', 'Citeseer', 'PubMed']
@@ -29,6 +29,9 @@ def get_optimal_R():
         path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' # add your path of R here
     elif o.dataset in tudataset:
         path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' # add your path of R here
+    else:
+        print("please input a correct dataset name")
+        sys.exit()
     for ge in graph_embed:
 
         df = pd.read_csv(path + o.dataset + '_' + ge +'.txt', sep = '\t',header=None) # a matrix
@@ -54,18 +57,20 @@ def get_optimal_R():
     optimal_method.to_csv(txt_path2, header = None, index = None, sep = '\t')
     return optimal_R, optimal_method
                     
-def all_possible_concatenation(threshold):
+def all_possible_concatenation(o):
     '''
     print all possible feature concatenation situations
     '''
     planetoid = ['Cora', 'Citeseer', 'PubMed']
     tudataset = ['ENZYMES','PROTEINS', 'NCI1']
 
-    o = option()
     if o.dataset in planetoid:
         path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' 
     elif o.dataset in tudataset:
         path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' 
+    else:
+        print("please input a correct dataset name")
+        sys.exit()
     txt_name = o.dataset + '_optimal_R.txt'
     txt_path = path + txt_name
     df = pd.read_csv(txt_path, sep = '\t',header=None)
@@ -79,7 +84,7 @@ def all_possible_concatenation(threshold):
 
     for row in range(0,rows):
         for col in range(0, cols):
-            if df.iloc[row,col] < threshold and row!= o.aim_feature and row!= col:
+            if df.iloc[row,col] < o.threshold and row!= o.aim_feature and row!= col:
                 ans.add((row, col))
             else:
                 pass
@@ -105,6 +110,6 @@ def all_possible_concatenation(threshold):
 if __name__ == '__main__':
     o = option()
     if o.task == 'getR':
-        a, b = get_optimal_R()
+        a, b = get_optimal_R(o)
     if o.task == 'getConcat':
-        ans = all_possible_concatenation(o.threshold)
+        ans = all_possible_concatenation(o)
