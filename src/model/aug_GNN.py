@@ -6,15 +6,39 @@ from torch_geometric.nn import GATConv, GCNConv, SAGEConv, GINConv
 
 
 class augGNN(nn.Module):
-    def __init__(self, input_dim, output_dim, embed_dim, NTN_neurons, classes):
-        super(augGNN, self).__init_()
+    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 80, classes = 6, graph_conv = 'GIN', method = 'SimpleConcat'):
+        super(augGNN, self).__init__()
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.embed_dim = embed_dim
         self.NTN_neurons = NTN_neurons
-    
-    def forward(self):
-        pass
+        self.method = method
+        self.graph_conv = graph_conv
+        self.classes = classes
+        self.block = GNNBlock(1, self.output_dim, self.embed_dim, self.graph_conv, 2)
+        self.linear1 = nn.Linear(self.input_dim * self.embed_dim, self.classes)
+        self.linear2 = nn.Linear(self.classes, self.classes)
+
+    def forward(self, data):
+        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
+        x = 0
+        if self.method == 'SimpleConcat':
+            tmp = len(x.shape[1]) # less or equal than 4 if total features are 5
+            x = self.block(data.x[:,tmp-1]) # 1 -> 128
+            x = x.resize(len(x),1)
+            while tmp > 1:
+                tmp-=1
+                tt = self.block(data.x[:,tmp-1])
+                tt = tt.resize(len(tt), 1)
+                x = torch.cat((x,tt), dim = 1)
+            # finish concatenation, go through two mlps
+            x = F.relu(self.linear1(x))
+            x = self.linear2(x)
+            return x
+        elif self.method == 'Bilinear':
+            pass
+        elif self.method == 'NTN':
+            pass
 
 class SimpleConcat(nn.Module):
     def __init__(self, embed_1, embed_2):
@@ -86,9 +110,9 @@ class NeuralTensorNetwork:
         out = out + out2 + self.b
         return out
 
-class GraphBlock(nn.Module):
-    def __init__(self, input_dim, output_dim, embed_dim, graph_conv, depth):
-        super(GraphBlock, self).__init__()
+class GNNBlock(nn.Module):
+    def __init__(self, input_dim,  embed_dim, graph_conv, depth):
+        super(GNNBlock, self).__init__()
         self.input_dim = input_dim
         self.output_dim = input_dim
         self.graph_conv = graph_conv
@@ -127,8 +151,6 @@ class GraphBlock(nn.Module):
             self.conv3 = GINConv(mlp3)
         else:
             pass 
-        self.lin1 = nn.Linear(embed_dim,16)
-        self.lin2 = nn.Linear(16,bins)
         self.batch_norm1 = nn.BatchNorm1d(256)
         self.batch_norm2 = nn.BatchNorm1d(64)
 
@@ -157,3 +179,7 @@ class GraphBlock(nn.Module):
         
 class SkipLastGNN:
     pass
+
+
+if __name__ == '__main__':
+    model = augGNN()

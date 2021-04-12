@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  1 APR 2021 21:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.6)  11 APR 2021 22:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -958,6 +958,12 @@ LaTeX Warning: Label `tab:commands' multiply defined.
 
 LaTeX Warning: Label `tab:commands' multiply defined.
 
+
+LaTeX Warning: Label `tab:commands' multiply defined.
+
+
+LaTeX Warning: Label `tab:commands' multiply defined.
+
 )
 \openout1 = `fea2fea.aux'.
 
@@ -1183,7 +1189,7 @@ Package epstopdf Info: Source file: <fig/LesMiserables.eps>
 (epstopdf)             Command: <repstopdf --outfile=fig/LesMiserables-eps-converted-to.pdf fig/LesMiserables.eps>
 (epstopdf)             \includegraphics on input line 165.
 Package epstopdf Info: Output file is already uptodate.
-<fig/LesMiserables-eps-converted-to.pdf, id=101, 1396.21625pt x 970.62625pt>
+<fig/LesMiserables-eps-converted-to.pdf, id=105, 1396.21625pt x 970.62625pt>
 File: fig/LesMiserables-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/LesMiserables-eps-converted-to.pdf>
 Package pdftex.def Info: fig/LesMiserables-eps-converted-to.pdf  used on input line 165.
@@ -1196,16 +1202,12 @@ Package epstopdf Info: Source file: <output.eps>
 (epstopdf)                    date: 2021-04-01 21:53:32
 (epstopdf)                    size: 777503 bytes
 (epstopdf)             Output file: <output-eps-converted-to.pdf>
-(epstopdf)                    date: 2021-04-01 01:18:55
-(epstopdf)                    size: 221233 bytes
+(epstopdf)                    date: 2021-04-01 21:54:13
+(epstopdf)                    size: 203461 bytes
 (epstopdf)             Command: <repstopdf --outfile=output-eps-converted-to.pdf output.eps>
 (epstopdf)             \includegraphics on input line 171.
-runsystem(repstopdf --outfile=output-eps-converted-to.pdf output.eps)...executed safely (allowed).
-
-Package epstopdf Info: Result file: <output-eps-converted-to.pdf>
-(epstopdf)                    date: 2021-04-01 21:54:13
-(epstopdf)                    size: 203461 bytes.
-<output-eps-converted-to.pdf, id=102, 1223.42067pt x 682.85112pt>
+Package epstopdf Info: Output file is already uptodate.
+<output-eps-converted-to.pdf, id=106, 1223.42067pt x 682.85112pt>
 File: output-eps-converted-to.pdf Graphic file (type pdf)
 <use output-eps-converted-to.pdf>
 Package pdftex.def Info: output-eps-converted-to.pdf  used on input line 171.
@@ -1263,7 +1265,7 @@ Package epstopdf Info: Source file: <fig/Aver_path_len_planetoid_vp.eps>
 (epstopdf)             Command: <repstopdf --outfile=fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf fig/Aver_path_len_planetoid_vp.eps>
 (epstopdf)             \includegraphics on input line 378.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf, id=241, 722.7pt x 722.7pt>
+<fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf, id=245, 722.7pt x 722.7pt>
 File: fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf>
 Package pdftex.def Info: fig/Aver_path_len_planetoid_vp-eps-converted-to.pdf  used on input line 378.
@@ -1277,7 +1279,7 @@ Package epstopdf Info: Source file: <fig/Clustering_coefficient_planetoid_vp.eps
 (epstopdf)             Command: <repstopdf --outfile=fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf fig/Clustering_coefficient_planetoid_vp.eps>
 (epstopdf)             \includegraphics on input line 379.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf, id=242, 722.7pt x 722.7pt>
+<fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf, id=246, 722.7pt x 722.7pt>
 File: fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf>
 Package pdftex.def Info: fig/Clustering_coefficient_planetoid_vp-eps-converted-to.pdf  used on input line 379.
@@ -1291,7 +1293,7 @@ Package epstopdf Info: Source file: <fig/Degree_planetoid_vp.eps>
 (epstopdf)             Command: <repstopdf --outfile=fig/Degree_planetoid_vp-eps-converted-to.pdf fig/Degree_planetoid_vp.eps>
 (epstopdf)             \includegraphics on input line 380.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Degree_planetoid_vp-eps-converted-to.pdf, id=243, 722.7pt x 722.7pt>
+<fig/Degree_planetoid_vp-eps-converted-to.pdf, id=247, 722.7pt x 722.7pt>
 File: fig/Degree_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Degree_planetoid_vp-eps-converted-to.pdf>
 Package pdftex.def Info: fig/Degree_planetoid_vp-eps-converted-to.pdf  used on input line 380.
@@ -1305,7 +1307,7 @@ Package epstopdf Info: Source file: <fig/Pagerank_planetoid_vp.eps>
 (epstopdf)             Command: <repstopdf --outfile=fig/Pagerank_planetoid_vp-eps-converted-to.pdf fig/Pagerank_planetoid_vp.eps>
 (epstopdf)             \includegraphics on input line 381.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Pagerank_planetoid_vp-eps-converted-to.pdf, id=244, 722.7pt x 722.7pt>
+<fig/Pagerank_planetoid_vp-eps-converted-to.pdf, id=248, 722.7pt x 722.7pt>
 File: fig/Pagerank_planetoid_vp-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Pagerank_planetoid_vp-eps-converted-to.pdf>
 Package pdftex.def Info: fig/Pagerank_planetoid_vp-eps-converted-to.pdf  used on input line 381.
@@ -1343,7 +1345,10 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 5.0pt on input line 522.
 
 
-Class acmart Warning: A possible image without description on input line 690.
+Class acmart Warning: A possible image without description on input line 687.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1355,12 +1360,12 @@ Package epstopdf Info: Source file: <fig/Cora_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:13
 (epstopdf)                    size: 363262 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Cora_1to3_tSNE-eps-converted-to.pdf fig/Cora_1to3_tSNE.eps>
-(epstopdf)             \includegraphics on input line 762.
+(epstopdf)             \includegraphics on input line 796.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Cora_1to3_tSNE-eps-converted-to.pdf, id=268, 433.62pt x 433.62pt>
+<fig/Cora_1to3_tSNE-eps-converted-to.pdf, id=272, 433.62pt x 433.62pt>
 File: fig/Cora_1to3_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Cora_1to3_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Cora_1to3_tSNE-eps-converted-to.pdf  used on input line 762.
+Package pdftex.def Info: fig/Cora_1to3_tSNE-eps-converted-to.pdf  used on input line 796.
 (pdftex.def)             Requested size: 86.81323pt x 86.80847pt.
 Package epstopdf Info: Source file: <fig/Citeseer_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1369,12 +1374,12 @@ Package epstopdf Info: Source file: <fig/Citeseer_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:14
 (epstopdf)                    size: 386163 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Citeseer_1to3_tSNE-eps-converted-to.pdf fig/Citeseer_1to3_tSNE.eps>
-(epstopdf)             \includegraphics on input line 763.
+(epstopdf)             \includegraphics on input line 797.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Citeseer_1to3_tSNE-eps-converted-to.pdf, id=269, 433.62pt x 433.62pt>
+<fig/Citeseer_1to3_tSNE-eps-converted-to.pdf, id=273, 433.62pt x 433.62pt>
 File: fig/Citeseer_1to3_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Citeseer_1to3_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Citeseer_1to3_tSNE-eps-converted-to.pdf  used on input line 763.
+Package pdftex.def Info: fig/Citeseer_1to3_tSNE-eps-converted-to.pdf  used on input line 797.
 (pdftex.def)             Requested size: 86.81323pt x 86.80847pt.
 Package epstopdf Info: Source file: <fig/PubMed_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1383,12 +1388,12 @@ Package epstopdf Info: Source file: <fig/PubMed_1to3_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:15
 (epstopdf)                    size: 2589929 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/PubMed_1to3_tSNE-eps-converted-to.pdf fig/PubMed_1to3_tSNE.eps>
-(epstopdf)             \includegraphics on input line 764.
+(epstopdf)             \includegraphics on input line 798.
 Package epstopdf Info: Output file is already uptodate.
-<fig/PubMed_1to3_tSNE-eps-converted-to.pdf, id=270, 433.62pt x 433.62pt>
+<fig/PubMed_1to3_tSNE-eps-converted-to.pdf, id=274, 433.62pt x 433.62pt>
 File: fig/PubMed_1to3_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/PubMed_1to3_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/PubMed_1to3_tSNE-eps-converted-to.pdf  used on input line 764.
+Package pdftex.def Info: fig/PubMed_1to3_tSNE-eps-converted-to.pdf  used on input line 798.
 (pdftex.def)             Requested size: 86.81323pt x 86.80847pt.
 Package epstopdf Info: Source file: <fig/Cora_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1397,12 +1402,12 @@ Package epstopdf Info: Source file: <fig/Cora_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:15
 (epstopdf)                    size: 356314 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Cora_2to1_tSNE-eps-converted-to.pdf fig/Cora_2to1_tSNE.eps>
-(epstopdf)             \includegraphics on input line 769.
+(epstopdf)             \includegraphics on input line 803.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Cora_2to1_tSNE-eps-converted-to.pdf, id=271, 433.62pt x 433.62pt>
+<fig/Cora_2to1_tSNE-eps-converted-to.pdf, id=275, 433.62pt x 433.62pt>
 File: fig/Cora_2to1_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Cora_2to1_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Cora_2to1_tSNE-eps-converted-to.pdf  used on input line 769.
+Package pdftex.def Info: fig/Cora_2to1_tSNE-eps-converted-to.pdf  used on input line 803.
 (pdftex.def)             Requested size: 84.40309pt x 84.40007pt.
 Package epstopdf Info: Source file: <fig/Citeseer_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1411,12 +1416,12 @@ Package epstopdf Info: Source file: <fig/Citeseer_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:15
 (epstopdf)                    size: 337379 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/Citeseer_2to1_tSNE-eps-converted-to.pdf fig/Citeseer_2to1_tSNE.eps>
-(epstopdf)             \includegraphics on input line 770.
+(epstopdf)             \includegraphics on input line 804.
 Package epstopdf Info: Output file is already uptodate.
-<fig/Citeseer_2to1_tSNE-eps-converted-to.pdf, id=272, 433.62pt x 433.62pt>
+<fig/Citeseer_2to1_tSNE-eps-converted-to.pdf, id=276, 433.62pt x 433.62pt>
 File: fig/Citeseer_2to1_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/Citeseer_2to1_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/Citeseer_2to1_tSNE-eps-converted-to.pdf  used on input line 770.
+Package pdftex.def Info: fig/Citeseer_2to1_tSNE-eps-converted-to.pdf  used on input line 804.
 (pdftex.def)             Requested size: 84.40309pt x 84.40007pt.
 Package epstopdf Info: Source file: <fig/PubMed_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 09:50:24
@@ -1425,15 +1430,15 @@ Package epstopdf Info: Source file: <fig/PubMed_2to1_tSNE.eps>
 (epstopdf)                    date: 2021-03-06 20:12:16
 (epstopdf)                    size: 2572588 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/PubMed_2to1_tSNE-eps-converted-to.pdf fig/PubMed_2to1_tSNE.eps>
-(epstopdf)             \includegraphics on input line 771.
+(epstopdf)             \includegraphics on input line 805.
 Package epstopdf Info: Output file is already uptodate.
-<fig/PubMed_2to1_tSNE-eps-converted-to.pdf, id=273, 433.62pt x 433.62pt>
+<fig/PubMed_2to1_tSNE-eps-converted-to.pdf, id=277, 433.62pt x 433.62pt>
 File: fig/PubMed_2to1_tSNE-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/PubMed_2to1_tSNE-eps-converted-to.pdf>
-Package pdftex.def Info: fig/PubMed_2to1_tSNE-eps-converted-to.pdf  used on input line 771.
+Package pdftex.def Info: fig/PubMed_2to1_tSNE-eps-converted-to.pdf  used on input line 805.
 (pdftex.def)             Requested size: 84.40309pt x 84.40007pt.
 
-Class acmart Warning: A possible image without description on input line 776.
+Class acmart Warning: A possible image without description on input line 810.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1462,28 +1467,28 @@ Package balance Warning: You have called \balance in second column
 [6.6] [7.7 </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_1to3_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Cora_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/Citeseer_2to1_tSNE-eps-converted-to.pdf> </home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf>]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     833.
+(LaTeX3)     865.
 
  (/home/jiaqing/桌面/Fea2Fea/tex/fea2fea.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `fea2fea.out' has not changed.
-(rerunfilecheck)             Checksum: 14CD7F069143594952F2084365ED9AFE;3854.
+(rerunfilecheck)             Checksum: 68916F50B1074342EBBEE441B4C38469;3937.
  ) 
 Here is how much of TeX's memory you used:
- 33047 strings out of 479023
- 595341 string characters out of 5859398
- 1101069 words of memory out of 5000000
- 49098 multiletter control sequences out of 15000+600000
- 617857 words of font info for 405 fonts, out of 8000000 for 9000
+ 33052 strings out of 479023
+ 595425 string characters out of 5859398
+ 1112475 words of memory out of 5000000
+ 49099 multiletter control sequences out of 15000+600000
+ 617968 words of font info for 406 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
  97i,17n,131p,1267b,966s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsyb.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (7 pages, 7480157 bytes).
+Output written on /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.pdf (7 pages, 7481313 bytes).
 PDF statistics:
- 632 PDF objects out of 1000 (max. 8388607)
- 328 compressed objects within 4 object streams
- 99 named destinations out of 1000 (max. 500000)
- 119049 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 638 PDF objects out of 1000 (max. 8388607)
+ 334 compressed objects within 4 object streams
+ 102 named destinations out of 1000 (max. 500000)
+ 119057 words of extra memory for PDF output out of 128383 (max. 10000000)
 
