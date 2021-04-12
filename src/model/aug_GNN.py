@@ -9,32 +9,31 @@ class augGNN(nn.Module):
     def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 80, classes = 6, graph_conv = 'GIN', method = 'SimpleConcat'):
         super(augGNN, self).__init__()
         self.input_dim = input_dim
-        self.output_dim = output_dim
         self.embed_dim = embed_dim
         self.NTN_neurons = NTN_neurons
         self.method = method
         self.graph_conv = graph_conv
         self.classes = classes
-        self.block = GNNBlock(1, self.output_dim, self.embed_dim, self.graph_conv, 2)
+        self.block = GNNBlock(1, self.embed_dim, self.graph_conv, 2)
         self.linear1 = nn.Linear(self.input_dim * self.embed_dim, self.classes)
         self.linear2 = nn.Linear(self.classes, self.classes)
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
-        x = 0
         if self.method == 'SimpleConcat':
-            tmp = len(x.shape[1]) # less or equal than 4 if total features are 5
-            x = self.block(data.x[:,tmp-1]) # 1 -> 128
-            x = x.resize(len(x),1)
+            tmp = x.shape[1] # less or equal than 4 if total features are 5
+            x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 128
+            #x = x.resize(len(x),1)
             while tmp > 1:
                 tmp-=1
-                tt = self.block(data.x[:,tmp-1])
-                tt = tt.resize(len(tt), 1)
+                tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
+                #tt = tt.resize(len(tt), 1)
                 x = torch.cat((x,tt), dim = 1)
             # finish concatenation, go through two mlps
+            #print(x.shape)
             x = F.relu(self.linear1(x))
             x = self.linear2(x)
-            return x
+            return F.log_softmax(x, dim =1)
         elif self.method == 'Bilinear':
             pass
         elif self.method == 'NTN':
@@ -114,7 +113,7 @@ class GNNBlock(nn.Module):
     def __init__(self, input_dim,  embed_dim, graph_conv, depth):
         super(GNNBlock, self).__init__()
         self.input_dim = input_dim
-        self.output_dim = input_dim
+        self.embed_dim = embed_dim
         self.graph_conv = graph_conv
         self.depth = depth
 
@@ -130,21 +129,25 @@ class GNNBlock(nn.Module):
                 nn.ReLU(),
                 nn.Linear(64,64),
             )
-
-        self.bn = nn.BatchNorm1d(embed_dim)
+        mlp3 = nn.Sequential(
+                nn.Linear(self.embed_dim, self.embed_dim),
+                nn.BatchNorm1d(self.embed_dim),
+                nn.ReLU(),
+        )
+        self.bn = nn.BatchNorm1d(self.embed_dim)
         if self.graph_conv == 'SAGE':
             self.conv1 = SAGEConv(1,256,normalize=True)
             self.conv2 = SAGEConv(256,64 ,normalize=True)
-            self.conv3 = SAGEConv(embed_dim, embed_dim, normalize=True)
+            self.conv3 = SAGEConv(self.embed_dim, self.embed_dim, normalize=True)
         elif self.graph_conv == 'GAT':
             self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
             self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
                            dropout=0.6)
-            self.conv3 = GATConv(embed_dim, embed_dim, heads = 1, concat= False, dropout= 0.6)
+            self.conv3 = GATConv(self.embed_dim, self.embed_dim, heads = 1, concat= False, dropout= 0.6)
         elif self.graph_conv == 'GCN':
             self.conv1 = GCNConv(1,256,cached=False)
             self.conv2 = GCNConv(256,64,cached=False)
-            self.conv3 = GCNConv(embed_dim, embed_dim, cached=False)
+            self.conv3 = GCNConv(self.embed_dim, self.embed_dim, cached=False)
         elif self.graph_conv == 'GIN':
             self.conv1 = GINConv(mlp1)
             self.conv2 = GINConv(mlp2)
@@ -154,26 +157,26 @@ class GNNBlock(nn.Module):
         self.batch_norm1 = nn.BatchNorm1d(256)
         self.batch_norm2 = nn.BatchNorm1d(64)
 
-    def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    def forward(self, data, edge_index, edge_attr):
+        x = data
         for i in range(self.depth):
             if i == 0:
-                x = self.conv1(x, edge_index, data.edge_attr)
-                if self.embedding != 'GIN':
+                x = self.conv1(x, edge_index, edge_attr)
+                if self.graph_conv != 'GIN':
                     x = self.batch_norm1(x)
                     x = F.relu(x)
                 x = F.dropout(x, training=self.training)
             elif i == 1:
-                x = self.conv2(x, edge_index, data.edge_attr)
-                if self.embedding != 'GIN':
+                x = self.conv2(x, edge_index, edge_attr)
+                if self.graph_conv != 'GIN':
                     x = self.batch_norm2(x)
                     x = F.relu(x)
                 x = F.dropout(x, training=self.training)
             else:
-                if self.embedding != 'GIN':
-                    x = F.relu(self.conv3(x, edge_index, data.edge_attr))
+                if self.graph_conv != 'GIN':
+                    x = F.relu(self.conv3(x, edge_index))
                 else:
-                    x = self.conv3(x, edge_index, data.edge_attr)
+                    x = self.conv3(x, edge_index, edge_attr)
                 x = F.dropout(x, training=self.training)
         return x
         

@@ -62,7 +62,7 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
             propert_i = property_file.iloc[:,[i]]
             array = np.array(propert_i)
             data.x = torch.tensor(array).float()
-            for j in range(1,5):
+            for j in range(5):
                 propert_j = property_file.iloc[:,[j]]
                 array_2 = np.array(propert_j)
                 number = len(data.y)
