@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch_geometric.nn import GATConv, GCNConv, SAGEConv, GINConv
 
 class augGNN(nn.Module):
-    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 80, classes = 6, graph_conv = 'GIN', method = 'Bilinear'):
+    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 80, classes = 6, graph_conv = 'GIN', method = 'SimpleConcat'):
         super(augGNN, self).__init__()
         self.input_dim = input_dim
         self.embed_dim = embed_dim
@@ -17,9 +17,12 @@ class augGNN(nn.Module):
         self.linear1 = nn.Linear(self.input_dim * self.embed_dim, self.classes)
         self.linear2 = nn.Linear(self.classes, self.classes)
         self.concat1 = SimpleConcat()
-        #self.concat2 = BiLinear(64, 20)
-        self.bilinear = nn.Bilinear(64, 64, 96)
-        self.linear3 = nn.Linear(96,6)
+        self.concat2 = nn.ModuleList()
+        self.in1_features = self.embed_dim
+        for i in range(input_dim-1):
+            self.concat2.append(nn.Bilinear(int(self.in1_features), int(self.embed_dim), int(1/2 * self.in1_features + self.embed_dim)))
+            self.in1_features = int(1/2 * self.in1_features + self.embed_dim)
+        self.linear3 = nn.Linear(self.in1_features,self.classes)
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
@@ -36,16 +39,17 @@ class augGNN(nn.Module):
             return F.log_softmax(x, dim =1)
         elif self.method == 'Bilinear':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
+            i = 0
             x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 64
             while tmp > 1:
                 tmp-=1
                 tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
                 #self.bilinear = nn.Bilinear(x.shape[1], tt.shape[1], tt.shape[1] + 1/2 * x.shape[1])
-                x = self.bilinear(x,tt)
+                #x = self.bilinear(x,tt)
+                x = self.concat2[i](x,tt)
+                i+=1
                 #x = self.concat2(x, tt)
-            #finish concatenation, go through two mlps then softmax
-            #self.linear1 = nn.Linear(x.shape[1], 1 /2 * x.shape[1])
-            #self.linear2 = nn.Linear(1 /2 * x.shape[1], self.classes)
+            #finish concatenation, go through two mlps then softmax 
             x = F.relu(self.linear3(x))
             x = self.linear2(x)
             return F.log_softmax(x, dim =1)
@@ -58,29 +62,6 @@ class SimpleConcat(nn.Module):
 
     def forward(self, embed_1, embed_2):
         out = torch.cat((embed_1, embed_2), dim = 1)
-        return out
-
-class BiLinear(nn.Module):
-    def __init__(self, embed_dim, neurons):
-        super(BiLinear, self).__init__()
-        self.embed_dim = embed_dim
-        self.neurons = neurons
-        self.set_weights()
-        self.init_param()
-        
-    def set_weights(self):
-        self.W = nn.Parameter(torch.Tensor(self.embed_dim, self.embed_dim, self.neurons))
-        self.b = nn.Parameter(torch.Tensor(self.neurons,1))
-    
-    def init_param(self):
-        nn.init.xavier_normal_(self.W)
-        nn.init.xavier_normal_(self.b)
-    
-    def forward(self, embed_1, embed_2):
-        out = torch.mm(embed_1, self.W.view(self.embed_dim, -1))
-        out = out.view(self.embed_dim, self.neurons)
-        out = torch.mm(torch.t(out), embed_2)
-        out = out + self.b
         return out
 
 class NeuralTensorNetwork:
@@ -106,8 +87,6 @@ class NeuralTensorNetwork:
         nn.init.xavier_normal_(self.b)
     
     def forward(self):
-        print(torch.t(embed_1).shape)
-        print( self.W.view(self.embed_dim, -1).shape)
         out = torch.mm(torch.t(embed_1), self.W.view(self.embed_dim, -1))
         out = out.view(self.dim, self.neurons)
         out = torch.mm(torch.t(out), self.embed_2)

@@ -44,10 +44,7 @@ if __name__ == '__main__':
     number = len(data.y)
     data.y = binning(data.y, k = 6,data_len =  number)
     model =  augGNN().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.8)
-
-    
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)
 
     data =  data.to(device)
 
@@ -69,4 +66,3 @@ if __name__ == '__main__':
         
         log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
         print(log.format(epoch, train_acc, best_val_acc, test_acc))
-        scheduler.step()
