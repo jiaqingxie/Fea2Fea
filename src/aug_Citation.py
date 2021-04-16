@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # read property file as the input of graph data
     name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + o.dataset + '_property.txt'
     property_file = pd.read_csv(name, sep = '\t')
-    data.x = np.array(property_file.iloc[:,0:2])
+    data.x = np.array(property_file.iloc[:,1:3])
     data.x = torch.tensor(data.x).float()
     data.y = np.array(property_file.iloc[:,[4]])
     print(property_file.iloc[:,[1]])
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
         print(log.format(epoch, train_acc, best_val_acc, test_acc))
 
-    plt.figure(figsize=(10,6))
-    plt.scatter(count,train_accu)
+
+
     plt.plot(count, train_accu)
     plt.show()

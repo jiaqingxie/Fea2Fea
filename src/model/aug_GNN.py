@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch_geometric.nn import GATConv, GCNConv, SAGEConv, GINConv
 
 class augGNN(nn.Module):
-    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 64, classes = 6, graph_conv = 'GIN', method = 'NTN'):
+    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 64, classes = 6, graph_conv = 'GIN', method = 'SimpleConcat'):
         super(augGNN, self).__init__()
         self.input_dim = input_dim
         self.embed_dim = embed_dim
@@ -24,7 +24,7 @@ class augGNN(nn.Module):
             self.concat2.append(nn.Bilinear(int(self.in1_features), int(self.embed_dim), int(1/2 * self.in1_features + self.embed_dim)))
             self.in1_features = int(1/2 * self.in1_features + self.embed_dim)
         self.linear3 = nn.Linear(self.in1_features,self.classes)
-        self.linear4 = nn.Linear(64, 6)
+        self.linear4 = nn.Linear(embed_dim, 6)
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
@@ -104,10 +104,9 @@ class NeuralTensorNetwork(nn.Module):
         feed_forward_product = torch.mm(self.concat(e1,e2), self.V) # V*[e1,e2]
         
 
-        bilinear_tensor_product = [torch.sum((e2 * torch.mm(e1, self.W[0]))+ self.b, dim=1 ) ]
-        #print(bilinear_tensor_product[0].shape)
+        bilinear_tensor_product = []
 
-        for i in range(k)[1:]:
+        for i in range(k):
             btp = torch.sum((e2 * torch.mm(e1, self.W[i]))+ self.b, dim=1)
             bilinear_tensor_product.append(btp)
 

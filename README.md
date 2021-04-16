@@ -1,19 +1,34 @@
 ![](https://img.shields.io/badge/language-python-orange.svg)
 ![](https://img.shields.io/badge/license-MIT-000000.svg)
-![](https://img.shields.io/badge/github-v0.1.0-519dd9.svg)
+![](https://img.shields.io/badge/github-v0.2.1-519dd9.svg)
 # Feature Augmentation on Small Graphs
+torch based program for graph feature to feature predictions
 
-## author: Jiaqing Xie, Rex Ying
-
-### paper citation
-
-
+please do not use them for writing results currently since it has not been under reviewed.
 
 ## Installation
+1. please ensure that torch has been installed successfully in your computer, check with:
+```bash
+$ python -c "import torch; print(torch.__version__)"
+>>> 1.8.0
+```
+2. please install torch_geometric with correct torch version and cuda version.
+In our experiment environment, torch version is 1.8.0 and cuda version is 11.1
+for both GPU(GTX 2060Super) and torch. (It's important since different versions will cause imcompatible situations)
+```bash
+pip install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+pip install torch-cluster -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+pip install torch-spline-conv -f https://pytorch-geometric.com/whl/torch-1.8.0+cu111.html
+pip install torch-geometric
+```
+3. please install networkx. this package is used for calculating graph features and generating synthetic graphs.
+```bash
+pip install networkx
+```
 
-## Dependencies
+## pipeline model
 
-## pipeline
 
 
 ## Dataset
@@ -23,9 +38,13 @@
 
 ### 3.
 
-## single feature to feature prediction
+## Calculating graph features
 
-```python
+## single feature to feature prediction
+For single feature to single feature prediction, go to the src folder and run f_f_Citation.py if you
+want to run experiments on Planetoid datasets. If you want to perform experiments on TUDatasets, then
+please run f_f_TU.py
+```bash
    python f_f_Citation.py 
    python f_f_TU.py
 ```
