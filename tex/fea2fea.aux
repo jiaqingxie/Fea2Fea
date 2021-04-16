@@ -21,7 +21,7 @@
 \providecommand \oddpage@label [2]{}
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Question: In LesMiserables dataset, if already know the character Valjean has 35 neighbours(degrees), can we predict the feature PageRank of Valjean through graph neural network?) \relax }}{1}{figure.caption.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Question: In LesMiserables dataset, if already know the character Valjean has 35 neighbours(degrees), can we predict the feature PageRank of Valjean through graph neural network instead of finding its closed-form solution? \relax }}{1}{figure.caption.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Works}{1}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Graph Representation Learning}{1}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Feature Importance}{1}{subsection.2.2}\protected@file@percent }
@@ -40,25 +40,37 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Feature to Feature Prediction}{3}{subsection.3.2}\protected@file@percent }
 \@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Get Matrix of Feature Mutual Relationship\relax }}{3}{algocf.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Feature Concatenation}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{simple concatenation}{3}{section*.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Neural Tensor Network}{3}{section*.13}\protected@file@percent }
 \@writefile{loa}{\contentsline {algocf}{\numberline {2}{\ignorespaces Get Matrix of Feature Mutual Relationship\relax }}{4}{algocf.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{SkipLast}{4}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Neural Tensor Network}{4}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{SkipLast}{4}{section*.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}model architectures}{4}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}time complexity analysis in each task}{4}{subsection.3.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Experimemts}{4}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Datasets}{4}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Planetoid}{4}{section*.16}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{TUDataset}{4}{section*.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{PPI}{4}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Planetoid}{4}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{TUDataset}{4}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{PPI}{4}{section*.17}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Experiment Set-up}{4}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Feature properties of graphs}{4}{subsection.4.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Violin plots of graph properties on planetoid datasets\relax }}{5}{figure.caption.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{binning methods}{5}{section*.19}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Violin plots of graph properties on planetoid datasets\relax }}{5}{figure.caption.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Feature properties of graphs}{5}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{binning methods}{5}{section*.18}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Feature to feature prediction results}{5}{subsection.4.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}GNN performance}{5}{subsubsection.4.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Feature Augmentation Results}{5}{subsection.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}hyper-parameter tunning}{5}{subsubsection.4.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.2}graph embedding vs linear embedding}{5}{figure.caption.26}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Feature to Feature Prediction Results on Citation Datasets (bins = 6)\relax }}{6}{table.caption.19}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:commands}{{1}{6}{Feature to Feature Prediction Results on Citation Datasets (bins = 6)\relax }{table.caption.19}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Feature to Feature Prediction Results on TUDatasets (bins = 6)\relax }}{6}{table.caption.20}\protected@file@percent }
+\newlabel{tab:commands}{{2}{6}{Feature to Feature Prediction Results on TUDatasets (bins = 6)\relax }{table.caption.20}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Feature Augmentation Results}{6}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}hyper-parameter tunning}{6}{subsubsection.4.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Feature Augmentation Results on Planetoid Datasets (bins = 6)\relax }}{7}{table.caption.22}\protected@file@percent }
+\newlabel{tab:commands}{{3}{7}{Feature Augmentation Results on Planetoid Datasets (bins = 6)\relax }{table.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces jiaqing\relax }}{7}{figure.caption.21}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Hyper-parameter : number of bins on node datasets\relax }}{7}{table.caption.23}\protected@file@percent }
+\newlabel{tab:commands}{{4}{7}{Hyper-parameter : number of bins on node datasets\relax }{table.caption.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Hyper-parameter : number of bins on graph datasets\relax }}{7}{table.caption.24}\protected@file@percent }
+\newlabel{tab:commands}{{5}{7}{Hyper-parameter : number of bins on graph datasets\relax }{table.caption.24}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.2}graph embedding vs linear embedding}{7}{figure.caption.25}\protected@file@percent }
 \bibstyle{ACM-Reference-Format}
 \bibdata{references}
 \bibcite{hamilton2017inductive}{{1}{2017}{{Hamilton et~al\mbox  {.}}}{{Hamilton, Ying, and Leskovec}}}
@@ -70,28 +82,17 @@
 \newlabel{tocindent1}{6.25499pt}
 \newlabel{tocindent2}{10.34999pt}
 \newlabel{tocindent3}{18.198pt}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Feature to Feature Prediction Results on Citation Datasets (bins = 6)\relax }}{6}{table.caption.20}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:commands}{{1}{6}{Feature to Feature Prediction Results on Citation Datasets (bins = 6)\relax }{table.caption.20}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Feature to Feature Prediction Results on TUDatasets (bins = 6)\relax }}{6}{table.caption.21}\protected@file@percent }
-\newlabel{tab:commands}{{2}{6}{Feature to Feature Prediction Results on TUDatasets (bins = 6)\relax }{table.caption.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Additional Features}{6}{subsection.4.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}self-generated graphs}{6}{subsection.4.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{}{6}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Regression tasks}{6}{subsection.4.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Comparison between datasets}{6}{subsection.4.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and Discussions}{6}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Future works}{6}{section*.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{6}{section*.30}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}niubi}{6}{appendix.A}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Feature Augmentation Results on Planetoid Datasets (bins = 6)\relax }}{7}{table.caption.23}\protected@file@percent }
-\newlabel{tab:commands}{{3}{7}{Feature Augmentation Results on Planetoid Datasets (bins = 6)\relax }{table.caption.23}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Hyper-parameter : number of bins on node datasets\relax }}{7}{table.caption.24}\protected@file@percent }
-\newlabel{tab:commands}{{4}{7}{Hyper-parameter : number of bins on node datasets\relax }{table.caption.24}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Hyper-parameter : number of bins on graph datasets\relax }}{7}{table.caption.25}\protected@file@percent }
-\newlabel{tab:commands}{{5}{7}{Hyper-parameter : number of bins on graph datasets\relax }{table.caption.25}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces tSNE on graph embeddings with Degree predicting PageRank\relax }}{7}{figure.caption.26}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces tSNE on graph embeddings with Clustering predicting Degree\relax }}{7}{figure.caption.26}\protected@file@percent }
-\newlabel{TotPages}{{7}{7}{}{page.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces tSNE on graph embeddings with Degree predicting PageRank\relax }}{8}{figure.caption.25}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces tSNE on graph embeddings with Clustering predicting Degree\relax }}{8}{figure.caption.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Additional Features and Graph Convolution Methods}{8}{subsection.4.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Synthetic Graphs}{8}{subsection.4.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{}{8}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Regression tasks}{8}{subsection.4.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Comparison between datasets}{8}{subsection.4.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and Discussions}{8}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Future works}{8}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}niubi}{8}{appendix.A}\protected@file@percent }
+\newlabel{TotPages}{{8}{8}{}{page.8}{}}
 \gdef\svg@ink@ver@settings{{\m@ne }{inkscape}{\m@ne }}
-\gdef \@abspage@last{7}
+\gdef \@abspage@last{8}

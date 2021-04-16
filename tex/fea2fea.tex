@@ -89,7 +89,7 @@
 %% citations and references.
 %% Uncommenting
 %% the next command will enable that style.
-%%\citestyle{acmauthoryear}
+%%\citestyle{acmauthoryear}Feature
 
 %%
 %% end of the preamble, start of the body of the document source.
@@ -163,7 +163,8 @@
 \begin{figure}[!h]
     \centering
     \includegraphics[width = 0.45\textwidth]{fig/LesMiserables.eps}
-    \caption{Question: In LesMiserables dataset, if already know the character Valjean has 35 neighbours(degrees), can we predict the feature PageRank of Valjean through graph neural network?) }
+    \caption{Question: In LesMiserables dataset, if already know the character Valjean has 35 neighbours(degrees), can we predict the feature PageRank of Valjean through graph neural network 
+    instead of finding its closed-form solution?  }
 \end{figure}
 
 \begin{figure*}
@@ -315,8 +316,24 @@ taken as input but not as output. It is the most basic feature for all graphs wh
   \caption{Get Matrix of Feature Mutual Relationship}
   \KwIn{Graph $\mathcal G$($\mathcal V, \mathcal E$);  node property length $\mathcal K$; Input property matrix   $\mathbf{x}_{\mathcal{G}}\in\mathbb{R}^{|\mathcal{V}|\times \mathcal{K}} $, second dimension order is constant feature, degree, clustering coefficient, pagerank and average path length; model architecture $\mathcal M$, including GNN embedding(GCN, GraphSAGE, GIN, GAT) with MLP model; metrics $\mathcal P$ }
   \KwOut{ Feature mutual relationship matrix $\mathcal R \in \mathbb{R}^{\mathcal K \times \mathcal K}$}
-  $\mathcal R \gets 0$\\
-  \For{$i \gets 1$ \textbf{to} $\mathcal K$}{
+  $\mathcal T \gets 0.7$\\
+  Initalize $Comb \gets \{0,1,...,\mathcal K, \{0,1\},...,\{0,1,2,3,\mathcal K\}\}$ \\
+
+  \For{$comb$ $\in$ $Comb$}{
+    \If{length of $comb$ < 2}{
+      continue\;
+      }
+    \Else{
+      \For{$ {\forall}$ $\mathcal F_{i}, F_{j}$ $\in$ $comb$}{
+        \If{$\mathcal R(i,j)$ > $\mathcal T$ or $\mathcal R(j,i)$ > $\mathcal T$ }{
+          Remove $comb$ from $Comb$;
+        }
+      }
+    }
+    
+  }
+  %Achieve all possible concatenation and perform feature concatenation\\
+  \For{$comb$ $\in$ $Comb$}{
       $\mathcal R(i,i) \gets 1$\\
       $\textbf{I}_{\mathcal G} \gets \textbf{x}_{\mathcal G}(:,i)$\\
       \If{i == $\mathcal{K}$}{
@@ -324,25 +341,34 @@ taken as input but not as output. It is the most basic feature for all graphs wh
       }
       \For{ $j \gets i + 1$ \textbf{to} $\mathcal K$
       }{
-  
+
       $\textbf{O}_{\mathcal G} \gets \textup{Bin}\left(\textbf{x}_{\mathcal G}(:,j)\right)$\\
       $\textbf{O}^{'}_{\mathcal G} \gets$ $\mathcal{M}\left(\textbf{I}_{\mathcal G}, \textbf{O}_{\mathcal G}\right)$\\
       $\mathcal{R}(i,j), \mathcal{R}(j,i) \gets \mathcal P(\textbf{O}^{'}_{\mathcal G},\textbf{O}_{\mathcal G} )$
       }
   }
   \end{algorithm}
-  We have a feature list $\mathcal F$ = $\{ \mathcal F_{1}, \mathcal F_{2},..., \mathcal F_{n}\}$, which contains n 
+  We have achieved a feature list $\mathcal F$ = $\{ \mathcal F_{1}, \mathcal F_{2},..., \mathcal F_{n}\}$, which contains n 
   features of the graph. The value $\mathcal R(i,j)$ in relationship matrix indicates if $ \mathcal R_{i}$ and
   $\mathcal R_{j}$ are predictable to each other mutually. Moreover, we want to add additional features to $\mathcal R_{i}$
   to see if this will predict $\mathcal R_{j}$ more accurately. However we cannot add features arbitrarily since adding similar features might 
-  bring about redundancy in data. In this paper we provide three main ideas for concatenating features.
+  bring about redundancy in data. In this paper we mainly use Neural Tensor Network(NTN) with threshold settings for concatenating features.
   
-\paragraph{simple concatenation}
-If we 
+  Threshold setting is an important mechanism for filtering input features when predicting a specific output feature.
+  When the value $\mathcal R(i,j)$ and $\mathcal R(i,j)$ is too large, it indicates that two features $\mathcal F_{i}$ and $\mathcal F_{j}$ are
+  highly correlated. One feature should be dropped off when two features predict another feature together. The problem comes to 
+  if $\mathcal R(i,j)$ and $\mathcal R(i,j)$ is not close to each other, which means that $\mathcal R(i,j)$ can be small enough while 
+  $\mathcal R(j,i)$ is relatively high. Under this circumstance, we do not accpet this combination since features still have shared 
+  similar information. If we set a low threshold such as 0.1, unfortunately, almost no feature groups are satisfied with this 
+  threshold, resulting in no feature combination.  Also the threshold should not be too low, since 
+  a high threshold will consider all the combinations (each feature combination does have the confidence to reach that 
+  threshold). 
 
 
 
 
+  Direct concatenation is the easiest way to think of. Initially, the input $\mathcal F_{i}$ $\in \mathcal R^{N * 1}$
+where i $\in$ 1,2,3,4,5. Suppose we've 
 
 
 
@@ -366,6 +392,8 @@ We now go through the algorithm 2.
 
 \subsection{model architectures}
 
+
+\subsection{time complexity analysis in each task}
 
 \section{Experimemts}
 
@@ -817,11 +845,11 @@ We also compare the performance between node datasets (for node classifications)
 
 
 
-\subsection{Additional Features}
+\subsection{Additional Features and Graph Convolution Methods}
 
 
 
-\subsection{self-generated graphs}
+\subsection{Synthetic Graphs}
 
 \paragraph{}
 

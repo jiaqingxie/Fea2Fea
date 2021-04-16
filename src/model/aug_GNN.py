@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch_geometric.nn import GATConv, GCNConv, SAGEConv, GINConv
 
 class augGNN(nn.Module):
-    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 80, classes = 6, graph_conv = 'GIN', method = 'SimpleConcat'):
+    def __init__(self, input_dim = 2, embed_dim = 64, NTN_neurons = 64, classes = 6, graph_conv = 'GIN', method = 'NTN'):
         super(augGNN, self).__init__()
         self.input_dim = input_dim
         self.embed_dim = embed_dim
@@ -18,11 +18,13 @@ class augGNN(nn.Module):
         self.linear2 = nn.Linear(self.classes, self.classes)
         self.concat1 = SimpleConcat()
         self.concat2 = nn.ModuleList()
+        self.concat3 = NeuralTensorNetwork(self.embed_dim, self.NTN_neurons)
         self.in1_features = self.embed_dim
         for i in range(input_dim-1):
             self.concat2.append(nn.Bilinear(int(self.in1_features), int(self.embed_dim), int(1/2 * self.in1_features + self.embed_dim)))
             self.in1_features = int(1/2 * self.in1_features + self.embed_dim)
         self.linear3 = nn.Linear(self.in1_features,self.classes)
+        self.linear4 = nn.Linear(64, 6)
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
@@ -44,17 +46,25 @@ class augGNN(nn.Module):
             while tmp > 1:
                 tmp-=1
                 tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
-                #self.bilinear = nn.Bilinear(x.shape[1], tt.shape[1], tt.shape[1] + 1/2 * x.shape[1])
-                #x = self.bilinear(x,tt)
                 x = self.concat2[i](x,tt)
                 i+=1
-                #x = self.concat2(x, tt)
             #finish concatenation, go through two mlps then softmax 
             x = F.relu(self.linear3(x))
             x = self.linear2(x)
             return F.log_softmax(x, dim =1)
         elif self.method == 'NTN':
-            pass
+            tmp = x.shape[1] # less or equal than 4 if total features are 5
+            i = 0
+            x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 64
+            while tmp > 1:
+                tmp-=1
+                tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
+                x = self.concat3(x,tt)
+                i+=1
+            #finish concatenation, go through two mlps then softmax 
+            x = F.relu(self.linear4(x))
+            x = self.linear2(x)
+            return F.log_softmax(x, dim =1)
 
 class SimpleConcat(nn.Module):
     def __init__(self):
@@ -64,35 +74,47 @@ class SimpleConcat(nn.Module):
         out = torch.cat((embed_1, embed_2), dim = 1)
         return out
 
-class NeuralTensorNetwork:
-    def __init__(self, embed_1, embed_2, embed_dim, neurons):
-        super(BiLinear, self).__init__()
-        self.embed_1 = embed_1
-        self.embed_2 = embed_2
+class NeuralTensorNetwork(nn.Module):
+    def __init__(self, embed_dim, output_dim):
+        super(NeuralTensorNetwork, self).__init__()
+
         self.embed_dim = embed_dim
-        self.neurons = neurons
+        self.output_dim = output_dim
         self.concat = SimpleConcat()
 
-        self.set_weights()
-        self.init_param()
+        self.setup_weights()
+        self.init_parameters()
         
-    def set_weights(self):
-        self.W = nn.Parameter(torch.Tensor(self.embed_dim, self.embed_dim, self.neurons))
-        self.V = nn.Parameter(torch.Tensor(self.neurons, 2 * self.embed_dim))
-        self.b = nn.Parameter(torch.Tensor(self.neurons,1))
+    def setup_weights(self):
+        self.W = nn.Parameter(torch.Tensor(self.output_dim, self.embed_dim, self.embed_dim))
+        self.V = nn.Parameter(torch.Tensor(2 * self.embed_dim, self.output_dim))
+        self.b = nn.Parameter(torch.Tensor(1, self.embed_dim))
     
-    def init_param(self):
+    def init_parameters(self):
         nn.init.xavier_normal_(self.W)
         nn.init.xavier_normal_(self.V)
         nn.init.xavier_normal_(self.b)
     
-    def forward(self):
-        out = torch.mm(torch.t(embed_1), self.W.view(self.embed_dim, -1))
-        out = out.view(self.dim, self.neurons)
-        out = torch.mm(torch.t(out), self.embed_2)
-        comb = self.concat(embed_1, embed_2)
-        out2 = torch.mm(self.V, comb)
-        out = out + out2 + self.b
+    def forward(self, embed_1, embed_2):
+        e1 = embed_1
+        e2 = embed_2
+        #print(e1.shape)
+        batch_size = e1.shape[0]
+        k = self.output_dim
+        feed_forward_product = torch.mm(self.concat(e1,e2), self.V) # V*[e1,e2]
+        
+
+        bilinear_tensor_product = [torch.sum((e2 * torch.mm(e1, self.W[0]))+ self.b, dim=1 ) ]
+        #print(bilinear_tensor_product[0].shape)
+
+        for i in range(k)[1:]:
+            btp = torch.sum((e2 * torch.mm(e1, self.W[i]))+ self.b, dim=1)
+            bilinear_tensor_product.append(btp)
+
+
+       # print(torch.cat(bilinear_tensor_product).shape)
+        #print(batch_size)
+        out = F.tanh(torch.reshape(torch.cat(bilinear_tensor_product, dim=0), (batch_size,k)) + feed_forward_product)
         return out
 
 class GNNBlock(nn.Module):

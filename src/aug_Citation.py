@@ -8,6 +8,7 @@ import torch_geometric.transforms as T
 from model.aug_GNN import augGNN
 import torch.nn.functional as F
 from graph_property import G_property, binning
+import matplotlib.pyplot as plt
 
 def train():
     model.train()
@@ -37,32 +38,42 @@ if __name__ == '__main__':
     # read property file as the input of graph data
     name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + o.dataset + '_property.txt'
     property_file = pd.read_csv(name, sep = '\t')
-    data.x = np.array(property_file.iloc[:,1:3])
+    data.x = np.array(property_file.iloc[:,0:2])
     data.x = torch.tensor(data.x).float()
     data.y = np.array(property_file.iloc[:,[4]])
     print(property_file.iloc[:,[1]])
     number = len(data.y)
     data.y = binning(data.y, k = 6,data_len =  number)
     model =  augGNN().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=1e-4)
 
     data =  data.to(device)
 
     t = 0
     best_val_acc = test_acc = 0 
+
+    train_accu = []
+    count = []
     for epoch in range(1, 3000):
-        
+        if epoch%5 == 0:
+            count.append(epoch)
+            train_accu.append(train_acc)
         train()
         train_acc, val_acc, tmp_test_acc = test()
-
+        
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             test_acc = tmp_test_acc
 
             t = 0
         t = t + 1
-        if t > 1200:
+        if t > 400:
             break   
         
         log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
         print(log.format(epoch, train_acc, best_val_acc, test_acc))
+
+    plt.figure(figsize=(10,6))
+    plt.scatter(count,train_accu)
+    plt.plot(count, train_accu)
+    plt.show()

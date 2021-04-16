@@ -1719,6 +1719,8 @@ INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/Pagerank_planetoid_vp-eps-converted-t
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/Pagerank_planetoid_vp-eps-converted-to.pdf
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/Pagerank_planetoid_vp-eps-converted-to.pdf
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTI-tlf-t1.tfm
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/vf/public/libertine/LinBiolinumTI-tlf-t1.vf
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTI-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTB-tlf-t1.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1.tfm
@@ -1788,8 +1790,8 @@ INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE.eps
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fig/PubMed_2to1_tSNE-eps-converted-to.pdf
-INPUT /usr/local/texlive/2020/texmf-dist/fonts/vf/public/libertine/LinBiolinumTI-tlf-t1.vf
-INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTI-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/vf/public/libertine/LinBiolinumTB-tlf-t1.vf
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTB-tlf-t1--base.tfm
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.bbl
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.bbl
 INPUT /home/jiaqing/桌面/Fea2Fea/tex/fea2fea.bbl
