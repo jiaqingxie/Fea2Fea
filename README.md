@@ -36,9 +36,10 @@ pip install networkx
 
 ### 2. graph datasets (TUDataset)
 
-### 3.
+### 3. Synthetic datasets
 
 ## Calculating graph features
+Graph features have been calculated already, where you can find it in \Result folder.
 
 ## single feature to feature prediction
 For single feature to single feature prediction, go to the src folder and run f_f_Citation.py if you
