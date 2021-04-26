@@ -3,7 +3,7 @@
 ![](https://img.shields.io/badge/github-v0.2.1-519dd9.svg)
 # Feature Augmentation on Small Graphs
 torch based program for graph feature to feature predictions
-
+this project is supervised by Rex Ying
 please do not use them for writing results currently since it has not been under reviewed.
 
 ## Installation
