@@ -35,9 +35,9 @@ def test():
         acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
         accs.append(acc)
     return accs
-#'SAGE','GAT','GCN','GIN'
+
 #------------------ Start our algorithm1 ---------------------#
-for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['MLP'])):
+for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['SAGE','GAT','GCN','GIN','MLP'])):
     
     Aver = np.zeros((5,5))
     dataset_name = dataset
@@ -59,11 +59,11 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
     for avg in range(avg_num):
         R = np.zeros((5,5)) # initialize our feature relationship matrix 
         R[0][0] = 1.000
-        for i in range(3,4):
+        for i in range(5):
             propert_i = property_file.iloc[:,[i]]
             array = np.array(propert_i)
             data.x = torch.tensor(array).float()
-            for j in range(3,4):
+            for j in range(1,5):
                 propert_j = property_file.iloc[:,[j]]
                 array_2 = np.array(propert_j)
                 number = len(data.y)
