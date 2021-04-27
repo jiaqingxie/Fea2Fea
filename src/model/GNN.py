@@ -71,3 +71,29 @@ class Net(nn.Module):
         x = F.relu(self.lin1(self.latent))
         x = self.lin2(x)
         return F.log_softmax(x, dim =1)
+
+
+class debug_MLP(nn.Module):
+    def __init__(self):
+        super(debug_MLP, self).__init__()
+        self.linear1 = nn.Linear(1, 64)
+        self.linear2 = nn.Linear(256, 64)
+        self.linear3 = nn.Linear(64, 6)
+        
+        mlp1 = nn.Sequential(
+                nn.Linear(1, 128),
+                nn.BatchNorm1d(128),
+                nn.ReLU(),
+                nn.Linear(128,64),
+            )
+        self.convs = GINConv(mlp1)
+
+    def forward(self, data):
+        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        #x = self.convs(x, edge_index, data.edge_attr)
+        #x = F.dropout(x, p = 0.5)
+        x = F.relu(self.linear1(x))
+        #x = F.relu(self.linear2(x))
+        x = self.linear3(x)
+        return F.log_softmax(x, dim =1)
+

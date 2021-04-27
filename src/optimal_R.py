@@ -80,6 +80,7 @@ def all_possible_concatenation(o):
     ans = set()
     # alrorithm, traverse
     sets = [i for i in range(5)]
+    #del sets[o.aim_feature]
     sets = list(powerset(sets))
 
     for row in range(0,rows):
@@ -113,3 +114,4 @@ if __name__ == '__main__':
         a, b = get_optimal_R(o)
     if o.task == 'getConcat':
         ans = all_possible_concatenation(o)
+        print(ans)

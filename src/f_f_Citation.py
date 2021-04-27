@@ -15,8 +15,9 @@ import math
 import matplotlib.pyplot as plt
 from graph_property import G_property, binning
 import seaborn as sns
+from torch.optim.lr_scheduler import StepLR
 
-from model.GNN import Net
+from model.GNN import Net, debug_MLP
 
 path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
 
@@ -34,9 +35,9 @@ def test():
         acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
         accs.append(acc)
     return accs
-
+#'SAGE','GAT','GCN','GIN'
 #------------------ Start our algorithm1 ---------------------#
-for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['SAGE','GAT','GCN','GIN'])):
+for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['MLP'])):
     
     Aver = np.zeros((5,5))
     dataset_name = dataset
@@ -58,18 +59,19 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
     for avg in range(avg_num):
         R = np.zeros((5,5)) # initialize our feature relationship matrix 
         R[0][0] = 1.000
-        for i in range(5):
+        for i in range(3,4):
             propert_i = property_file.iloc[:,[i]]
             array = np.array(propert_i)
             data.x = torch.tensor(array).float()
-            for j in range(5):
+            for j in range(3,4):
                 propert_j = property_file.iloc[:,[j]]
                 array_2 = np.array(propert_j)
                 number = len(data.y)
                 data.y = binning(array_2, k = 6,data_len =  number)
                 #print(data.y)
-                model =  Net(embedding=embedding_method).to(device)
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.04, weight_decay=5e-4)
+                model =  Net(embedding=embedding_method).to(device) if embedding_method != 'MLP' else debug_MLP().to(device)
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.02, weight_decay=5e-4)
+                scheduler = StepLR(optimizer, step_size=10, gamma=0.8)
                 data =  data.to(device)
                 t = 0
                 best_val_acc = test_acc = 0 
@@ -88,15 +90,16 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
                             R[i][j] = round(test_acc,3)
                         t = 0
                     t = t + 1
-                    if t > 200:
+                    if t > 800:
                         break   
                     
                     log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-                    #print(log.format(epoch, train_acc, best_val_acc, test_acc))
+                    print(log.format(epoch, train_acc, best_val_acc, test_acc))
                     # do that for several times
+                    scheduler.step()
                 if i == 4 and j == 4:
                     Aver = Aver + R
-                        
+                      
         if avg == 9:
             k = Aver / 10
             np.set_printoptions(precision=3)
@@ -121,3 +124,4 @@ for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citesee
             heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
             plt.show()
             break
+        
