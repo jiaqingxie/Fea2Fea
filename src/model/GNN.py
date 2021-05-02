@@ -76,7 +76,7 @@ class Net(nn.Module):
 class debug_MLP(nn.Module):
     def __init__(self):
         super(debug_MLP, self).__init__()
-        self.linear1 = nn.Linear(1, 64)
+        self.linear1 = nn.Linear(1, 256)
         self.linear2 = nn.Linear(256, 64)
         self.linear3 = nn.Linear(64, 6)
         
@@ -93,7 +93,8 @@ class debug_MLP(nn.Module):
         #x = self.convs(x, edge_index, data.edge_attr)
         #x = F.dropout(x, p = 0.5)
         x = F.relu(self.linear1(x))
-        #x = F.relu(self.linear2(x))
+
+        x = F.relu(self.linear2(x))
         x = self.linear3(x)
         return F.log_softmax(x, dim =1)
 
