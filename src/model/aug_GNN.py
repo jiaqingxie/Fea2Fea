@@ -16,12 +16,14 @@ class augGNN(nn.Module):
         self.block = GNNBlock(1, self.embed_dim, self.graph_conv, 2)
         self.linear1 = nn.Linear(self.input_dim * self.embed_dim, self.classes)
         self.linear2 = nn.Linear(self.classes, self.classes)
-        self.concat1 = SimpleConcat()
+        self.concat1 = nn.ModuleList()
         self.concat2 = nn.ModuleList()
-        self.concat3 = NeuralTensorNetwork(self.embed_dim, self.NTN_neurons)
+        self.concat3 = nn.ModuleList()
         self.in1_features = self.embed_dim
         for i in range(input_dim-1):
+            self.concat1.append(SimpleConcat())
             self.concat2.append(nn.Bilinear(int(self.in1_features), int(self.embed_dim), int(1/2 * self.in1_features + self.embed_dim)))
+            self.concat3.append(NeuralTensorNetwork(self.embed_dim, self.NTN_neurons))
             self.in1_features = int(1/2 * self.in1_features + self.embed_dim)
         self.linear3 = nn.Linear(self.in1_features,self.classes)
         self.linear4 = nn.Linear(embed_dim, 6)
@@ -30,11 +32,13 @@ class augGNN(nn.Module):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
         if self.method == 'SimpleConcat':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
+            i = 0
             x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 128
             while tmp > 1:
                 tmp-=1
                 tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
-                x = self.concat1(x, tt)
+                x = self.concat1[i](x, tt)
+                i+=1
             #finish concatenation, go through two mlps then softmax
             x = F.relu(self.linear1(x))
             x = self.linear2(x)
@@ -59,7 +63,7 @@ class augGNN(nn.Module):
             while tmp > 1:
                 tmp-=1
                 tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
-                x = self.concat3(x,tt)
+                x = self.concat3[i](x,tt)
                 i+=1
             #finish concatenation, go through two mlps then softmax 
             x = F.relu(self.linear4(x))

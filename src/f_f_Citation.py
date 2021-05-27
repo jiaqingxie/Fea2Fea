@@ -36,13 +36,13 @@ def test():
         acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
         accs.append(acc)
     return accs
-#'SAGE','GAT','GCN','GIN',
+#'MLP',
 #------------------ Start our algorithm1 ---------------------#
 
 if __name__ == '__main__':
 
     xlabels = ['Constant','Degree','Clustering_Coefficient','PageRank','Aver_Path_Len']
-    for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['MLP'])):
+    for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['SAGE','GAT','GCN','GIN'])):
         
         Aver = np.zeros((5,5))
         dataset_name = dataset
@@ -60,21 +60,22 @@ if __name__ == '__main__':
         t = 0
         record_acc = 1
         total_epoch = 0 # for drawing curves
-        avg_num = 1# for iteration to count average accuracy
+        avg_num = 10 # for iteration to count average accuracy
         
         for avg in range(avg_num):
             R = np.zeros((5,5)) # initialize our feature relationship matrix 
             R[0][0] = 1.000
-            for i in range(3, 5):
+            for i in range(0, 5):
                 propert_i = property_file.iloc[:,[i]]
                 array = np.array(propert_i)
                 data.x = torch.tensor(array).float()
-                for j in range(3,5):
+                for j in range(1,5):
                     propert_j = property_file.iloc[:,[j]]
                     array_2 = np.array(propert_j)
                     number = len(data.y)
                     data.y = binning(array_2, k = 6,data_len =  number)
                     # for self-prediction, debug : plot distribution/bins first 
+                    '''
                     if i == j:
                         fig = plt.figure(figsize=(6,5))
                         ax = plt.subplot(111)
@@ -100,7 +101,7 @@ if __name__ == '__main__':
                         plt.savefig('/home/jiaqing/桌面/Fea2Fea/images/binning/' + str(dataset_name) + '_' + xlabels[i] + '_bin6_s.eps', format = 'eps', dpi = 800)
                         #plt.savefig('/home/jiaqing/桌面/Fea2Fea/images/binning/' + str(dataset_name) + '_' + xlabels[i] + '_bin6.eps', format = 'eps', dpi = 800)
                         plt.show()
-
+                    '''
                     #print(data.y)
                     model =  Net(embedding=embedding_method).to(device) if embedding_method != 'MLP' else debug_MLP().to(device)
                     optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=5e-4)

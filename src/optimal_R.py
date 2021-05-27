@@ -4,13 +4,16 @@ import pandas as pd
 from argparse import ArgumentParser
 from utils import powerset, subset
 import os, sys
+import seaborn as sns
 
 def option():
     parser = ArgumentParser()
     parser.add_argument('--dataset', default='Cora', type=str, help='dataset')
+    parser.add_argument('--multiple_dataset', default=False, type=bool, help='multiple dataset testing or not')
     parser.add_argument('--threshold', default=0.8, type=float, help='threshold')
     parser.add_argument('--task', default='getR', type=str, help='getR or getConcat')
     parser.add_argument('--aim_feature', default=1, type=int, help='graph features')
+    parser.add_argument('--show_matrix', default=False, type=bool, help='show the gathered matrix')
     return parser.parse_args()
 
 def get_optimal_R(o):
@@ -18,7 +21,7 @@ def get_optimal_R(o):
     return the optimal R for the given task and correspomding graph embedding method   
     '''
     
-    graph_embed  = ['SAGE','GAT','GCN','GIN']
+    graph_embed  = ['SAGE','GAT','GCN','GIN', 'MLP']
     planetoid = ['Cora', 'Citeseer', 'PubMed']
     tudataset = ['ENZYMES','PROTEINS', 'NCI1']
 
@@ -47,6 +50,27 @@ def get_optimal_R(o):
     
     optimal_R = pd.DataFrame(optimal_R)
     optimal_method = pd.DataFrame(optimal_method)
+
+    if o.show_matrix:
+        if o.dataset in planetoid:
+            path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/'
+        else:
+            path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/'    
+        filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
+        fig_name = o.dataset + '_gathered_method_property.eps'
+        fig_path = filepath + fig_name
+        xlabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
+        ylabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
+        cm = sns.heatmap(optimal_R,annot=True,cmap="Blues",cbar = False, square=True,
+                    xticklabels = xlabels, yticklabels = ylabels)
+        cm.set_xticklabels(cm.get_xticklabels(), rotation=30)
+        cm.set_yticklabels(cm.get_xticklabels(), rotation=0)
+        label = 'Gathered'
+        cm.set_title(label)
+        heatmap = cm.get_figure()
+        heatmap.savefig(fig_path, dpi = 800,bbox_inches='tight')
+        #plt.show()
+    
 
     # obtain optimal R and corresponding graph embedding method
     txt_name1 = o.dataset + '_optimal_R.txt'

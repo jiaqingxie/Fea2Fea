@@ -14,9 +14,26 @@ def subset(a, b):
                 ans = False
     return ans
 
-
+def max_len_arr(arr):
+    '''
+    if arr is an array like: arr = [(0, 2), (0, 3), (0, 4), (2, 3), (2, 4), (3, 4), (0, 2, 3), (0, 2, 4), (0, 3, 4), (2, 3, 4), (0, 2, 3, 4)]
+    then this function will return the miminum element length in this array: 2 and
+    the maximum element length in this array: 3
+    '''
+    max_len = 0
+    min_len = 10001
+    for i in arr:
+        if len(i) >= max_len:
+            max_len = len(i)
+        if len(i) <= min_len:
+            min_len = len(i)
+    
+    return min_len, max_len
 
 if __name__ == '__main__':
-    s = list(powerset([1,2,3,4,5]))
+    #test1
+    a = [(0, 2), (0, 3), (0, 4), (2, 3), (2, 4), (3, 4), (0, 2, 3), (0, 2, 4), (0, 3, 4), (2, 3, 4), (0, 2, 3, 4)]
+    min_len, max_len = max_len_arr(a)
+    print(min_len, max_len)
 
     
