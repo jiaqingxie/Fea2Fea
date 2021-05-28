@@ -54,7 +54,7 @@ def get_optimal_R(o):
     if o.show_matrix:
         if o.dataset in planetoid:
             path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/'
-        else:
+        elif o.dataset in tudataset:
             path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/'    
         filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
         fig_name = o.dataset + '_gathered_method_property.eps'

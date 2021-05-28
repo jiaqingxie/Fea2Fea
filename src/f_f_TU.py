@@ -16,7 +16,7 @@ import seaborn as sns
 from torch_geometric.data import DataLoader, Dataset
 from torch_scatter import scatter_mean
 from graph_property import G_property,binning
-from model.GNN import Net
+from model.GNN import Net, debug_MLP
 
 def reserve(task, dn,  loader):
     t = 0
@@ -135,9 +135,9 @@ def test(i, j, dn,  model, task, optimizer, test_loader, device, k = 6):
 
 if __name__ == '__main__':
 
-    dataset_name = ['ENZYMES','PROTEINS', 'NCI1']
-
-    GNN_model = ['GIN','SAGE','GAT', 'GCN']
+    dataset_name = [  'ENZYMES','PROTEINS', 'NCI1']
+    #
+    GNN_model = ['GIN','SAGE','GAT', 'GCN', 'MLP']
  
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')    
 
@@ -149,9 +149,10 @@ if __name__ == '__main__':
         # print(len(dataset))
         train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
         test_len = len(dataset) - train_len - valid_len
-        train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False) #### batch size 32 for NCI1
-        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False) #### batch size 32 for NCI1
-        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False) #### batch size 32 for NCI1
+        batchsize = 16 if dn != 'NCI1' else 32
+        train_loader = DataLoader(dataset[0:train_len], batch_size = batchsize  , shuffle=False) #### batch size 32 for NCI1
+        valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
+        test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
         # for each batch, calculate the feature properties
         # if you have reserved once, you do not need to reserve again since it takes a lot of time!!! so comment them
         #reserve('train', dn, train_loader)
@@ -166,7 +167,7 @@ if __name__ == '__main__':
             # i is the featire taken as input,  j is the predicted feature
             for i in range(5):
                 for j in range(1,5):
-                    model = Net(embedding=embedding_method).to(device)
+                    model =  Net(embedding=embedding_method).to(device) if embedding_method != 'MLP' else debug_MLP().to(device)
                     optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
                     #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.8)
                     # record epoch

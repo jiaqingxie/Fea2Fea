@@ -32,9 +32,8 @@ def test():
 
 if __name__ == '__main__':
     o = option()
-    ans = all_possible_concatenation(o)
-    o.multiple_dataset = True
-
+    multiple_dataset = True
+    saved = []
     '''
     this program aims at a specific feature, if you want to get a
     threshold impact graph, find the python notebook under this folder
@@ -42,27 +41,25 @@ if __name__ == '__main__':
     '''
     #print(ans) will show all possible concatenation under one threshold
     # ans = [(0, 2), (0, 3), (0, 4), (2, 3), (2, 4), (3, 4), (0, 2, 3), (0, 2, 4), (0, 3, 4), (2, 3, 4), (0, 2, 3, 4)]
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # loading property matrix
-    #print(o.dataset)
-    if o.multiple_dataset:
+
+    if multiple_dataset:
         datasets = ['Cora', 'PubMed', 'Citeseer']
         #c = ['r', 'b', 'g']
     else:
-        datasets = o.dataset
-        #c = ['b']
+        datasets = o.dataset # set to defualt dataset
     plt.figure()
-    min_ans_len, max_ans_len = max_len_arr(ans)
-    saved = np.array([0 for i in range(min_ans_len, max_ans_len+1)])
-
+    
     for dataset in datasets:
+        o.dataset = dataset
+        ans = all_possible_concatenation(o)
+        min_ans_len, max_ans_len = max_len_arr(ans)
+        #saved = np.array([0 for i in range(min_ans_len, max_ans_len+1)])
+
         c_index = 0
         path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
         data_set = Planetoid(path, name = dataset, transform=T.NormalizeFeatures())
-
         data = data_set[0]
-        # read property file as the input of graph data
         name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset + '_property.txt'
         property_file = pd.read_csv(name, sep = '\t')
 
@@ -70,8 +67,6 @@ if __name__ == '__main__':
         #print(property_file.iloc[:,[1]])
         number = len(data.y)
         data.y = binning(data.y, k = 6,data_len =  number)
-
-        
 
         mean_acc = [[] for i in range(min_ans_len, max_ans_len+1)]
 
@@ -111,19 +106,19 @@ if __name__ == '__main__':
         mean_acc_ = [ sum(mean_acc[i])/len(mean_acc[i]) for i in range(len(mean_acc))]
         mean_acc_ = [float('{:.4f}'.format(i)) for i in mean_acc_] 
         std_acc = [statistics.stdev(mean_acc[i]) for i in range(len(mean_acc))]
-        saved = np.vstack((saved, mean_acc))
-        saved = np.vstack((saved, std_acc))
+        saved.append(mean_acc_)
+        saved.append(std_acc)
         
         x_axis = [i for i in range(min_ans_len, max_ans_len+1)]
 
-        #plt.plot(x_axis, mean_acc_, )
+        #plt.plot(x_axis, mean_acc_, )np.array([0 for i in range(1, max_ans_len+1)])
         plt.errorbar(x_axis, mean_acc_ , yerr = std_acc, fmt='o-', elinewidth=2,capsize=4,label=dataset)
         #ax.grid(alpha=0.5, linestyle=':')
         c_index+=1
 
     # save mean acc and std acc   
     saved = pd.DataFrame(saved)
-    path =  '/home/jiaqing/桌面/Fea2Fea/Result/acc_record_Cora.txt'
+    path =  '/home/jiaqing/桌面/Fea2Fea/Result/acc_record_'+ str(o.aim_feature) +'.txt'
     saved.to_csv(path, header = None, index = None, sep = '\t')    
     plt.xlabel("Number of input graph features")
     plt.ylabel("Mean test accuracy")
