@@ -17,13 +17,10 @@ from utils import max_len_arr
 from f_f_TU import train, valid, test
 
 
-
-
 if __name__ == '__main__':
     o = option()
-    ans = all_possible_concatenation(o)
     o.multiple_dataset = True
-
+    saved = []
     '''
     this program aims at a specific feature, if you want to get a
     threshold impact graph, find the python notebook under this folder
@@ -33,8 +30,7 @@ if __name__ == '__main__':
     # ans = [(0, 2), (0, 3), (0, 4), (2, 3), (2, 4), (3, 4), (0, 2, 3), (0, 2, 4), (0, 3, 4), (2, 3, 4), (0, 2, 3, 4)]
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # loading property matrix
-    #print(o.dataset)
+
     if o.multiple_dataset:
         datasets = ['ENZYMES', 'PROTEINS', 'NCI1']
         #c = ['r', 'b', 'g']
@@ -42,71 +38,69 @@ if __name__ == '__main__':
         datasets = o.dataset
         #c = ['b']
     plt.figure()
-    min_ans_len, max_ans_len = max_len_arr(ans)
-    saved = np.array([0 for i in range(min_ans_len, max_ans_len+1)])
 
     for dataset in datasets:
+        o.dataset = dataset
+        ans = all_possible_concatenation(o)
+        min_ans_len, max_ans_len = max_len_arr(ans)
         c_index = 0
         path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
         data_set = TUDataset(root = path + dataset, name = dataset, use_node_attr = False)
 
         train_len, valid_len= int(0.8 * len(data_set)), int(0.1 * len(data_set))  
         test_len = len(data_set) - train_len - valid_len
-        train_loader = DataLoader(data_set[0:train_len], batch_size = 16, shuffle=False) #### batch size 32 for NCI1
-        valid_loader = DataLoader(data_set[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False) #### batch size 32 for NCI1
-        test_loader = DataLoader(data_set[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False) #### batch size 32 for NCI1
+        batchsize = 16 if dataset != 'NCI1' else 32
+        train_loader = DataLoader(data_set[0:train_len], batch_size = batchsize , shuffle=False) #### batch size 32 for NCI1
+        valid_loader = DataLoader(data_set[train_len:(train_len+valid_len)], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
+        test_loader = DataLoader(data_set[(train_len+valid_len):len(data_set)], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
 
-        # read property file as the input of graph data
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset + '_property.txt'
-        property_file = pd.read_csv(name, sep = '\t')
-
-        data.y = np.array(property_file.iloc[:,[o.aim_feature]])
-        #print(property_file.iloc[:,[1]])
-        number = len(data.y)
-        data.y = binning(data.y, k = 6,data_len =  number)
-
-        
 
         mean_acc = [[] for i in range(min_ans_len, max_ans_len+1)]
 
         for value in ans: # for each combination entry:
             # should transform value to list 
-            data.x = np.array(property_file.iloc[:,list(value)])
-            #print(data.x.shape)
-            data.x = torch.tensor(data.x).float()
-            data =  data.to(device)
             for i in range(10):
                 model =  augGNN(input_dim = len(value)).to(device)
                 optimizer = torch.optim.Adam(model.parameters(), lr=0.015, weight_decay=1e-4)
-                t = 0
-                best_val_acc = test_acc = 0 
-                #train_accu = []
-                #count = []
+
+                best_epoch = 0
+                best_valid_acc = 0
+                best_test_acc = 0
+                op_iters = 0
+
                 for epoch in range(1, 3000):
+                    if dataset == 'NCI1':
+                        if o.aim_feature == 2:
+                            break
+                    # for train
+                    t_loss = train(value, o.aim_feature, dataset, model, 'train', optimizer, train_loader, device)
+                    # for valid 
+                    v_acc = valid(value, o.aim_feature, dataset, model, 'valid', optimizer, valid_loader, device)
+                    # for test
+                    t_acc = test(value, o.aim_feature, dataset, model, 'test', optimizer, test_loader, device)
+                    #print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
+                    #   epoch, t_loss, v_acc, t_acc ))
 
-                    train()
-                    train_acc, val_acc, tmp_test_acc = test()
-                    #if epoch%1 == 0:
-                    #    count.append(epoch)
-                    #    train_accu.append(train_acc)
-                    if val_acc > best_val_acc:
-                        best_val_acc = val_acc
-                        test_acc = tmp_test_acc
-                        t = 0
+                    if v_acc > best_valid_acc:
+                        best_valid_acc = v_acc
+                        best_test_acc = t_acc
+                        best_epoch = epoch
+                        
 
-                    t = t + 1
-                    if t > 400:
-                        break   
+                        op_iters=0
+                    op_iters+=1
+                    if op_iters > 20:
+                        break
                     log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
                     #print(log.format(epoch, train_acc, best_val_acc, test_acc))
-                mean_acc[len(value) - min_ans_len].append(test_acc)
+                mean_acc[len(value) - min_ans_len].append(best_test_acc)
             
         
         mean_acc_ = [ sum(mean_acc[i])/len(mean_acc[i]) for i in range(len(mean_acc))]
         mean_acc_ = [float('{:.4f}'.format(i)) for i in mean_acc_] 
         std_acc = [statistics.stdev(mean_acc[i]) for i in range(len(mean_acc))]
-        saved = np.vstack((saved, mean_acc_))
-        saved = np.vstack((saved, std_acc))
+        saved.append(mean_acc_)
+        saved.append(std_acc)
         
         x_axis = [i for i in range(min_ans_len, max_ans_len+1)]
 
@@ -117,13 +111,13 @@ if __name__ == '__main__':
 
     # save mean acc and std acc   
     saved = pd.DataFrame(saved)
-    path =  '/home/jiaqing/桌面/Fea2Fea/Result/acc_record_'+ str(o.aim_feature) +'.txt'
+    path =  '/home/jiaqing/桌面/Fea2Fea/Result/tud_acc_record_'+ str(o.aim_feature) +'.txt'
     saved.to_csv(path, header = None, index = None, sep = '\t')    
     plt.xlabel("Number of input graph features")
     plt.ylabel("Mean test accuracy")
     t_label =  ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
     plt.title("aim feature: {}, threshold: {}".format(t_label[o.aim_feature], o.threshold))
-    plt.legend(loc = 'center')
+    plt.legend(loc = 'lower right')
     path = '/home/jiaqing/桌面/Fea2Fea/Result/pipeline/'
-    plt.savefig(path + 'aim_' + str(o.aim_feature) + '.eps', dpi = 400, bbox_inches='tight')
+    plt.savefig(path + 'tud_aim_' + str(o.aim_feature) + '.eps', dpi = 400, bbox_inches='tight')
     plt.show()
