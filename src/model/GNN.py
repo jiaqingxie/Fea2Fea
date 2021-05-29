@@ -48,11 +48,13 @@ class Net(nn.Module):
             pass 
         self.lin1 = nn.Linear(64,16)
         self.lin2 = nn.Linear(16,6)
-        self.latent = 0
+        self.graph_embed = 0
+        self.init_embed = 0
+        self.linear_embed = 0
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        #x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        self.init_embed = x
         for i in range(2):
             if i == 0:
                 x = self.conv1(x, edge_index, data.edge_attr)
@@ -67,9 +69,10 @@ class Net(nn.Module):
                     x = F.relu(x)
                 x = F.dropout(x, training=self.training)
                 graph_embedding = F.dropout(x, training=self.training)
-                self.latent = graph_embedding
-        x = F.relu(self.lin1(self.latent))
+                self.graph_embed = graph_embedding
+        x = F.relu(self.lin1(self.graph_embed))
         x = self.lin2(x)
+        self.linear_embed = x
         return F.log_softmax(x, dim =1)
 
 
@@ -79,21 +82,12 @@ class debug_MLP(nn.Module):
         self.linear1 = nn.Linear(1, 256)
         self.linear2 = nn.Linear(256, 64)
         self.linear3 = nn.Linear(64, 6)
-        
-        mlp1 = nn.Sequential(
-                nn.Linear(1, 128),
-                nn.BatchNorm1d(128),
-                nn.ReLU(),
-                nn.Linear(128,64),
-            )
-        self.convs = GINConv(mlp1)
+        self.latent = 0
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        #x = self.convs(x, edge_index, data.edge_attr)
-        #x = F.dropout(x, p = 0.5)
-        x = F.relu(self.linear1(x))
 
+        x = F.relu(self.linear1(x))
         x = F.relu(self.linear2(x))
         x = self.linear3(x)
         return F.log_softmax(x, dim =1)

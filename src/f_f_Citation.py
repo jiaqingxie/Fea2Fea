@@ -65,7 +65,7 @@ if __name__ == '__main__':
         for avg in range(avg_num):
             R = np.zeros((5,5)) # initialize our feature relationship matrix 
             R[0][0] = 1.000
-            for i in range(0, 5):
+            for i in range(2, 5):
                 propert_i = property_file.iloc[:,[i]]
                 array = np.array(propert_i)
                 data.x = torch.tensor(array).float()
@@ -102,9 +102,8 @@ if __name__ == '__main__':
                         #plt.savefig('/home/jiaqing/桌面/Fea2Fea/images/binning/' + str(dataset_name) + '_' + xlabels[i] + '_bin6.eps', format = 'eps', dpi = 800)
                         plt.show()
                     '''
-                    #print(data.y)
                     model =  Net(embedding=embedding_method).to(device) if embedding_method != 'MLP' else debug_MLP().to(device)
-                    optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=5e-4)
+                    optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=1e-4)
                     #scheduler = StepLR(optimizer, step_size=10, gamma=0.8)
                     data =  data.to(device)
                     t = 0
