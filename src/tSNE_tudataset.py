@@ -13,7 +13,70 @@ from optimal_R import option, all_possible_concatenation
 from graph_property import G_property, binning
 from model.GNN import Net, debug_MLP
 from utils import max_len_arr, tSNE_vis
-from f_f_TU import train, valid, test
+from f_f_TU import valid, test
+
+def train(i, j, dn, model, task, optimizer, train_loader, device, k = 6):
+    total_loss = 0
+    model.train()
+    total_num_nodes = 0
+    t= 0
+    graph_embed = 0
+    linear_embed = 0
+
+    for load in train_loader:
+        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+        property_file = pd.read_csv(name, sep = '\t')
+        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
+        array = np.array(propert_i)
+        load.x = torch.tensor(array).float()
+
+        propert_j = property_file.iloc[:,[j]]
+        array_2 = np.array(propert_j)
+        number = len(array_2)
+        load.y = binning(array_2, k = k, data_len =  number)
+        # --------- training loop ---------- #
+        
+        load = load.to(device)
+        optimizer.zero_grad()
+        out = model(load)
+        loss = F.nll_loss(out,load.y)
+        loss.backward()
+        optimizer.step()
+        total_loss += loss.item() * len(load.y)
+        total_num_nodes+=len(load.y)
+        if t == 0:
+            graph_embed = model.graph_embed
+            linear_embed = model.linear_embed
+        t+=1
+
+        #print(loss)
+    train_loss = total_loss / total_num_nodes
+    return train_loss, graph_embed, linear_embed
+
+
+
+
+def train_tsne(i, j, dn, l_m, g_m, task, train_loader, device, k = 6):
+    t = 0
+    for load in train_loader:
+        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+        property_file = pd.read_csv(name, sep = '\t')
+        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
+        array = np.array(propert_i)
+        load.x = torch.tensor(array).float()
+
+        propert_j = property_file.iloc[:,[j]]
+        array_2 = np.array(propert_j)
+        number = len(array_2)
+        load.y = binning(array_2, k = k, data_len =  number)
+
+        load = load.to(device)
+        #out = model(load)
+        tSNE_vis(l_m, load.y, 'mlp_embed', d_name, inp, outp, 6)
+                #tSNE_vis(data.x, data.y, 'init_embed', d_name, inp, outp, 6)
+        tSNE_vis(g_m, load.y, 'graph_embed', d_name, inp, outp, 6)
+        break
+
 
 if __name__ == '__main__':
 
@@ -45,12 +108,15 @@ if __name__ == '__main__':
             model = Net(embedding=tmp_txt[inp][outp]).to(device) if tmp_txt[inp][outp] != 'MLP' else debug_MLP().to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=1e-4)
             
+            best_linear_embed = 0
+            best_graph_embed = 0
+
             for epoch in range(1, 300):   
                 if d_name == 'NCI1':
                     if inp == 2 or outp == 2:
                         break
                 # for train
-                t_loss = train(inp, outp, d_name, model, 'train', optimizer, train_loader, device)
+                t_loss, graph_embed, linear_embed = train(inp, outp, d_name, model, 'train', optimizer, train_loader, device)
                 # for valid 
                 v_acc = valid(inp, outp, d_name, model, 'valid', optimizer, valid_loader, device)
                 # for test
@@ -62,24 +128,25 @@ if __name__ == '__main__':
                     best_valid_acc = v_acc
                     best_test_acc = t_acc
                     best_epoch = epoch
+                    best_linear_embed = linear_embed
+                    best_graph_embed = graph_embed
                     # this is for loading model for predicting a batch of training set
-                    model_path = '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/'
-                    torch.save(model, model_path + '/model_tsne_{}.pkl'.format(d_name))
+                    #model_path = '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/'
+                    #torch.save(model, model_path + '/model_tsne_{}.pkl'.format(d_name))
 
                     op_iters=0
 
                 op_iters+=1
                 if op_iters > 20:
                     break
-            
-            for load in train_loader:
-                model_path = '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/'
-                model = torch.load(model_path + '/model_tsne_{}.pkl'.format(d_name))
-                out = model(load)
-                tSNE_vis(out.linear_embed, load.y, 'mlp_embed', d_name, inp, outp, 6)
-                #tSNE_vis(data.x, data.y, 'init_embed', d_name, inp, outp, 6)
-                tSNE_vis(out.graph_embed, load.y, 'graph_embed', d_name, inp, outp, 6)
-                break
+
+
+
+            #model_path = '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/'
+            #model = torch.load(model_path + '/model_tsne_{}.pkl'.format(d_name))
+            #model.to(device)
+            print("visualizing embeddings...")
+            train_tsne(inp, outp, d_name, best_linear_embed, best_graph_embed, 'train', train_loader, device, k = 6)
 
 
 

@@ -54,7 +54,6 @@ def train(i, j, dn, model, task, optimizer, train_loader, device, k = 6):
         propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
         array = np.array(propert_i)
         load.x = torch.tensor(array).float()
-        #print(load.x.shape)
 
         propert_j = property_file.iloc[:,[j]]
         array_2 = np.array(propert_j)
@@ -186,8 +185,8 @@ if __name__ == '__main__':
                         v_acc = valid(i, j, dn, model, 'valid', optimizer, valid_loader, device)
                         # for test
                         t_acc = test(i, j, dn, model, 'test', optimizer, test_loader, device)
-                        #print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
-                        #   epoch, t_loss, v_acc, t_acc ))
+                        print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
+                           epoch, t_loss, v_acc, t_acc ))
 
                         if v_acc > best_valid_acc:
                             best_valid_acc = v_acc
