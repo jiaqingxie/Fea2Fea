@@ -51,8 +51,7 @@ def train(i, j, dn, model, task, optimizer, train_loader, device, k = 6):
     for load in train_loader:
         name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
         property_file = pd.read_csv(name, sep = '\t')
-
-        propert_i = property_file.iloc[:,list(i)]
+        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
         array = np.array(propert_i)
         load.x = torch.tensor(array).float()
         #print(load.x.shape)
@@ -85,7 +84,7 @@ def valid(i, j, dn, model, task, optimizer, valid_loader, device, k = 6):
         name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
         property_file = pd.read_csv(name, sep = '\t')
 
-        propert_i = property_file.iloc[:,list(i)]
+        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
         array = np.array(propert_i)
         load.x = torch.tensor(array).float()
 
@@ -114,7 +113,7 @@ def test(i, j, dn,  model, task, optimizer, test_loader, device, k = 6):
         name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
         property_file = pd.read_csv(name, sep = '\t')
 
-        propert_i = property_file.iloc[:,list(i)]
+        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
         array = np.array(propert_i)
         load.x = torch.tensor(array).float()
 

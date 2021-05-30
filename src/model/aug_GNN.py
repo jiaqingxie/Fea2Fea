@@ -28,6 +28,9 @@ class augGNN(nn.Module):
         self.linear3 = nn.Linear(self.in1_features,self.classes)
         self.linear4 = nn.Linear(embed_dim, 6)
 
+        self.graph_embed = 0 
+        self.linear_embed = 0
+
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
         if self.method == 'SimpleConcat':
@@ -39,9 +42,11 @@ class augGNN(nn.Module):
                 tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
                 x = self.concat1[i](x, tt)
                 i+=1
+            self.graph_embed = x
             #finish concatenation, go through two mlps then softmax
             x = F.relu(self.linear1(x))
             x = self.linear2(x)
+            self.linear_embed = x
             return F.log_softmax(x, dim =1)
         elif self.method == 'Bilinear':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
@@ -53,8 +58,10 @@ class augGNN(nn.Module):
                 x = self.concat2[i](x,tt)
                 i+=1
             #finish concatenation, go through two mlps then softmax 
+            self.graph_embed = x
             x = F.relu(self.linear3(x))
             x = self.linear2(x)
+            self.linear_embed = x
             return F.log_softmax(x, dim =1)
         elif self.method == 'NTN':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
@@ -65,9 +72,11 @@ class augGNN(nn.Module):
                 tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
                 x = self.concat3[i](x,tt)
                 i+=1
+            self.graph_embed = x
             #finish concatenation, go through two mlps then softmax 
             x = F.relu(self.linear4(x))
             x = self.linear2(x)
+            self.linear_embed = x
             return F.log_softmax(x, dim =1)
 
 class SimpleConcat(nn.Module):

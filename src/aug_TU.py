@@ -78,8 +78,8 @@ if __name__ == '__main__':
                     v_acc = valid(value, o.aim_feature, dataset, model, 'valid', optimizer, valid_loader, device)
                     # for test
                     t_acc = test(value, o.aim_feature, dataset, model, 'test', optimizer, test_loader, device)
-                    #print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
-                    #   epoch, t_loss, v_acc, t_acc ))
+                    print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
+                       epoch, t_loss, v_acc, t_acc ))
 
                     if v_acc > best_valid_acc:
                         best_valid_acc = v_acc
@@ -91,8 +91,7 @@ if __name__ == '__main__':
                     op_iters+=1
                     if op_iters > 20:
                         break
-                    log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-                    #print(log.format(epoch, train_acc, best_val_acc, test_acc))
+
                 mean_acc[len(value) - min_ans_len].append(best_test_acc)
             
         

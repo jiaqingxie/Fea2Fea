@@ -47,7 +47,7 @@ def tSNE_vis(embedding, label, type, d_name, inp, outp, num_label):
     x = embedding.cpu().detach().numpy()
     label = label.cpu().detach()
     X_tsne = TSNE(n_components=2,random_state=33).fit_transform(x)
-    plt.figure(figsize=(4, 4))
+    plt.figure(figsize=(8, 8))
     ax = plt.subplot(1,1,1,)
 
     values = range(num_label)
