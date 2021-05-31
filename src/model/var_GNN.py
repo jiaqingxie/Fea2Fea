@@ -90,7 +90,7 @@ class Net(nn.Module):
                 if self.embedding != 'GIN':
                     x = F.relu(self.conv3[self.depth-i](x, edge_index, data.edge_attr))
                 else:
-                    x = self.conv3[self.depth-i](x, edge_index, data.edge_attr)
+                    x = self.conv3[self.depth-i-1](x, edge_index, data.edge_attr)
                 x = F.dropout(x, training=self.training)
 
         x = F.relu(self.lin1(x))

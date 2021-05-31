@@ -123,7 +123,7 @@ if __name__ == "__main__":
                     test_acc_arr.append(test_acc)
                 avg_test_acc = sum(test_acc_arr)/len(test_acc_arr)
                 avg_test_acc = round(avg_test_acc, 3)
-                log2 = 'bins : {}, test acc : {:.4f}, std: {:.4f} task: input {} predict output {}'
+                log2 = 'bins : {}, test acc : {:.3f}, std: {:.3f} task: input {} predict output {}'
                 print(log2.format(bins, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.output_feature]))
 
                     
@@ -137,6 +137,7 @@ if __name__ == "__main__":
             for dep in range(a.min_depth, a.max_depth + 1, 2):
                 avg_test_acc = 0
                 plt_dep.append(dep)
+                test_acc_arr = []
                 for avg in range(average):
                     best_val_acc = test_acc = 0
                     t = 0
@@ -161,14 +162,16 @@ if __name__ == "__main__":
                     # calculate average accuracy
                     avg_test_acc+= test_acc
                     plt_all.append(test_acc)
+                    test_acc_arr.append(test_acc)
                 plt_std.append(np.std(plt_all))
-                avg_test_acc/=10
+                avg_test_acc = sum(test_acc_arr)/len(test_acc_arr)
                 avg_test_acc = round(avg_test_acc, 3)
                 plt_acc.append(avg_test_acc)
-                log2 = 'depth : {}, test acc : {:.4f}, task: input {} predict output {}'
-                print(log2.format(dep, avg_test_acc, features[a.input_feature], features[a.output_feature]))
+                log2 = 'depth : {}, test acc : {:.3f}, std : {:.3f}, task: input {} predict output {}'
+                print(log2.format(dep, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.output_feature]))
 
             # ----- line plot ----- #
+            
             plt.figure(figsize=(8,8))
             plt_dep = np.array(plt_dep)
             plt_acc = np.array(plt_acc)
@@ -176,12 +179,13 @@ if __name__ == "__main__":
 
             plt.scatter(plt_dep,plt_acc)
             plt.plot(plt_dep, plt_acc)
-            plt.fill_between(plt_dep, plt_acc - 0.001 * plt_std, plt_acc + 0.001 * plt_std, facecolor='green', alpha=0.3)
+            plt.fill_between(plt_dep, plt_acc - plt_std, plt_acc + plt_std, facecolor='green', alpha=0.3)
             
             plt.xlabel('depth')
             plt.ylabel('avr_acc')
             plt.savefig('depth_results.eps', dpi = 800, format = 'eps')
             plt.show()
+            
         elif a.hyperparameter == 'threshold':
             pass
     
