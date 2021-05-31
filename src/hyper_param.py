@@ -251,18 +251,20 @@ if __name__ == "__main__":
         train_loader = DataLoader(dataset[0:train_len], batch_size = 16, shuffle=False)
         valid_loader = DataLoader(dataset[train_len:(train_len+valid_len)], batch_size = 16, shuffle = False)
         test_loader = DataLoader(dataset[(train_len+valid_len):len(dataset)], batch_size = 16, shuffle = False)
-        print("dataset : {}".format(a.dataset))
-        print("dataset type : {}".format(a.task))
-        print("min bins : {}".format(a.min_bins))
-        print("max bins : {}".format(a.max_bins))
-        print("input fearure : {}".format(features[a.input_feature]))
-        print("aim fearure : {}".format(features[a.aim_feature]))
-        print("graph embedding method : {}".format(a.embedding))
+
         print("-------- start testing --------")
         if a.hyperparameter == 'binning':
+            print("dataset : {}".format(a.dataset))
+            print("dataset type : {}".format(a.task))
+            print("min bins : {}".format(a.min_bins))
+            print("max bins : {}".format(a.max_bins))
+            print("input fearure : {}".format(features[a.input_feature]))
+            print("aim fearure : {}".format(features[a.aim_feature]))
+            print("graph embedding method : {}".format(a.embedding))
             average = 10
             for bins in range(a.min_bins, a.max_bins +1):
                 # test each case for 10 times
+                test_acc_arr = []
                 avg_test_acc = 0
                 for avg in range(average):
                     best_val_acc = test_acc = 0
@@ -284,11 +286,11 @@ if __name__ == "__main__":
                         op_iters+=1
                         if op_iters > 20:
                             break
-                    avg_test_acc+= test_acc
-                avg_test_acc/=10
+                    test_acc_arr.append(test_acc)
+                avg_test_acc = sum(test_acc_arr) / len(test_acc_arr)
                 avg_test_acc = round(avg_test_acc, 3)
-                log2 = 'bins : {}, test acc : {:.3f}, task: input {} predict output {}'
-                print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.aim_feature]))
+                log2 = 'bins : {}, test acc : {:.3f}, std: {:.3f}, task: input {} predict output {}'
+                print(log2.format(bins, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.aim_feature]))
                     
         elif a.hyperparameter == 'depth':
             pass
