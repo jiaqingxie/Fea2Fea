@@ -333,5 +333,42 @@ if __name__ == "__main__":
                     
         
         elif a.hyperparameter == 'threshold':
-            pass
+            print("dataset : {}".format(a.dataset))
+            print("dataset type : {}".format(a.task))
+            print("min depth : {}".format(a.min_depth))
+            print("max depth : {}".format(a.max_depth))
+            print("input fearure : {}".format(features[a.input_feature]))
+            print("aim fearure : {}".format(features[a.aim_feature]))
+            print("graph embedding method : {}".format(a.embedding))
+            average = 10
+            for dep in range(a.min_depth, a.max_depth + 1, 2):
+                # test each case for 10 times
+                test_acc_arr = []
+                avg_test_acc = 0
+                for avg in range(average):
+                    best_val_acc = test_acc = 0
+                    t = 0
+                    model = Net(embedding = a.embedding , depth = dep, bins = 6).to(device)
+                    optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
+                    for epoch in range(1, 200):
+                        # for train
+                        t_loss = train(a.input_feature, a.aim_feature, a.dataset, model, 'train', optimizer, train_loader, device, k = 6)
+                        # for valid 
+                        v_acc = valid(a.input_feature, a.aim_feature, a.dataset, model, 'valid', optimizer, valid_loader, device,  k = 6)
+                        # for test
+                        t_acc = test(a.input_feature, a.aim_feature, a.dataset, model, 'test', optimizer, test_loader, device, k = 6)
+                        if v_acc > best_val_acc:
+                            best_val_acc = v_acc
+                            test_acc = t_acc
+                            best_epoch = epoch
+                            op_iters=0
+                        op_iters+=1
+                        if op_iters > 20:
+                            break
+                    test_acc_arr.append(test_acc)
+                avg_test_acc = sum(test_acc_arr) / len(test_acc_arr)
+                avg_test_acc = round(avg_test_acc, 3)
+                log2 = 'depth : {}, test acc : {:.3f}, std: {:.3f}, task: input {} predict output {}'
+                print(log2.format(dep, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.aim_feature]))
+                    
     
