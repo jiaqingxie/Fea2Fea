@@ -40,23 +40,28 @@ class Net(nn.Module):
         )
         self.bn = nn.BatchNorm1d(hidden_dim)
         self.embedding = embedding
+        self.conv3 = nn.ModuleList()
         if self.embedding == 'SAGE':
             self.conv1 = SAGEConv(1,256,normalize=True)
             self.conv2 = SAGEConv(256,64 ,normalize=True)
-            self.conv3 = SAGEConv(hidden_dim, hidden_dim, normalize=True)
+            for i in range(self.depth-2):
+                self.conv3.append(SAGEConv(hidden_dim, hidden_dim, normalize=True))
         elif self.embedding == 'GAT':
             self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
             self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
                            dropout=0.6)
-            self.conv3 = GATConv(hidden_dim, hidden_dim, heads = 1, concat= False, dropout= 0.6)
+            for i in range(self.depth-2):
+                self.conv3.append(GATConv(hidden_dim, hidden_dim, heads = 1, concat= False, dropout= 0.5))
         elif self.embedding == 'GCN':
             self.conv1 = GCNConv(1,256,cached=False)
             self.conv2 = GCNConv(256,64,cached=False)
-            self.conv3 = GCNConv(hidden_dim, hidden_dim, cached=False)
+            for i in range(self.depth-2):
+                self.conv3.append(GCNConv(hidden_dim, hidden_dim, cached=False))
         elif self.embedding == 'GIN':
             self.conv1 = GINConv(mlp1)
             self.conv2 = GINConv(mlp2)
-            self.conv3 = GINConv(mlp3)
+            for i in range(self.depth-2):
+                self.conv3.append(GINConv(mlp3))
         else:
             pass 
         self.lin1 = nn.Linear(hidden_dim,16)
@@ -83,9 +88,9 @@ class Net(nn.Module):
                 self.graph_embed = x
             else:
                 if self.embedding != 'GIN':
-                    x = F.relu(self.conv3(x, edge_index, data.edge_attr))
+                    x = F.relu(self.conv3[self.depth-i](x, edge_index, data.edge_attr))
                 else:
-                    x = self.conv3(x, edge_index, data.edge_attr)
+                    x = self.conv3[self.depth-i](x, edge_index, data.edge_attr)
                 x = F.dropout(x, training=self.training)
 
         x = F.relu(self.lin1(x))

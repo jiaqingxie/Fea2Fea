@@ -1,16 +1,19 @@
 from argparse import ArgumentParser
-from model.var_GNN import Net
+import matplotlib.pyplot as plt
 import numpy as np 
 import pandas as pd
 import os.path as osp
+
 import torch 
 import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid, TUDataset
 import torch_geometric.transforms as T
 from torch_geometric.data import Dataset, DataLoader
+
+from model.var_GNN import Net
+from model.aug_GNN import augGNN
 from graph_property import binning, G_property
 from f_f_TU import train, valid, test
-import matplotlib.pyplot as plt
 
 def train_n(task):
     '''
@@ -28,7 +31,6 @@ def train_n(task):
         
     elif task == 'graph':
         pass
-
 
 def test_n(task):
     '''
@@ -82,16 +84,19 @@ if __name__ == "__main__":
         propert_j = property_file.iloc[:,[a.output_feature]]
         array_2 = np.array(propert_j)
         # if task is different bins
-        print("dataset : {}".format(a.dataset))
-        print("dataset type : {}".format(a.task))
-        print("min bins : {}".format(a.min_bins))
-        print("max bins : {}".format(a.max_bins))
-        print("graph embedding method : {}".format(a.embedding))
         print("-------- start testing --------")
         if a.hyperparameter == 'binning':
+            print("dataset : {}".format(a.dataset))
+            print("dataset type : {}".format(a.task))
+            print("min bins : {}".format(a.min_bins))
+            print("max bins : {}".format(a.max_bins))
+            print("input fearure : {}".format(features[a.input_feature]))
+            print("aim fearure : {}".format(features[a.output_feature]))
+            print("graph embedding method : {}".format(a.embedding))
             average = 10
             for bins in range(a.min_bins, a.max_bins +1):
                 # test each case for 10 times
+                test_acc_arr = []
                 avg_test_acc = 0
                 for avg in range(average):
                     best_val_acc = test_acc = 0
@@ -110,18 +115,17 @@ if __name__ == "__main__":
                         if val_acc > best_val_acc and tmp_test_acc > test_acc:
                             best_val_acc = val_acc
                             test_acc = tmp_test_acc
-
                             t = 0
                         t = t + 1
                         if t > 500:
                             break   
                     # calculate average accuracy
-                    avg_test_acc+= test_acc
-                
-                avg_test_acc/=10
+                    test_acc_arr.append(test_acc)
+                avg_test_acc = sum(test_acc_arr)/len(test_acc_arr)
                 avg_test_acc = round(avg_test_acc, 3)
-                log2 = 'bins : {}, test acc : {:.4f}, task: input {} predict output {}'
-                print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
+                log2 = 'bins : {}, test acc : {:.4f}, std: {:.4f} task: input {} predict output {}'
+                print(log2.format(bins, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.output_feature]))
+
                     
         elif a.hyperparameter == 'depth':
             average = 10
@@ -136,8 +140,6 @@ if __name__ == "__main__":
                 for avg in range(average):
                     best_val_acc = test_acc = 0
                     t = 0
-
-
                     # choose k = 6
                     data.y = binning(array_2, k = 6, data_len =  len(data.y))
                     # to GPU
@@ -152,7 +154,6 @@ if __name__ == "__main__":
                         if val_acc > best_val_acc and tmp_test_acc > test_acc:
                             best_val_acc = val_acc
                             test_acc = tmp_test_acc
-
                             t = 0
                         t = t + 1
                         if t > 500:
@@ -160,37 +161,12 @@ if __name__ == "__main__":
                     # calculate average accuracy
                     avg_test_acc+= test_acc
                     plt_all.append(test_acc)
-
                 plt_std.append(np.std(plt_all))
-                
-                
                 avg_test_acc/=10
                 avg_test_acc = round(avg_test_acc, 3)
-                
                 plt_acc.append(avg_test_acc)
                 log2 = 'depth : {}, test acc : {:.4f}, task: input {} predict output {}'
                 print(log2.format(dep, avg_test_acc, features[a.input_feature], features[a.output_feature]))
-
-            #plt.bar() 
-            
-            # ----- bar plot ------ #
-            """
-            x = np.arange(len(plt_dep))  # the label locations
-            width = 0.35  # the width of the bars
-
-            fig, ax = plt.subplots()
-            rects1 = ax.bar(x - width/2, plt_acc, width, label='model depth')
-            #rects2 = ax.bar(x + width/2, women_means, width, label='Women')
-
-            # Add some text for labels, title and custom x-axis tick labels, etc.
-            ax.set_ylabel('Scores')
-            ax.set_title('Scores by group and gender')
-            ax.set_xticks(x)
-            ax.set_xticklabels(plt_dep)
-            ax.legend()
-
-            plt.show()
-            """
 
             # ----- line plot ----- #
             plt.figure(figsize=(8,8))
@@ -208,15 +184,10 @@ if __name__ == "__main__":
             plt.show()
         elif a.hyperparameter == 'threshold':
             pass
-
-                    
     
     # else if graph dataset
     elif a.task == 'graph':
         dataset = TUDataset(root = '/home/jiaqing/桌面/Fea2Fea/data/' + a.dataset, name = a.dataset, use_node_attr = False)
-        
-
-
         # data loader
         train_len, valid_len= int(0.8 * len(dataset)), int(0.1 * len(dataset))
         test_len = len(dataset) - train_len - valid_len
@@ -229,6 +200,8 @@ if __name__ == "__main__":
         print("dataset type : {}".format(a.task))
         print("min bins : {}".format(a.min_bins))
         print("max bins : {}".format(a.max_bins))
+        print("input fearure : {}".format(features[a.input_feature]))
+        print("aim fearure : {}".format(features[a.output_feature]))
         print("graph embedding method : {}".format(a.embedding))
         print("-------- start testing --------")
         if a.hyperparameter == 'binning':
@@ -239,7 +212,6 @@ if __name__ == "__main__":
                 for avg in range(average):
                     best_val_acc = test_acc = 0
                     t = 0
-
                     model = Net(embedding = a.embedding ,bins = bins).to(device)
                     optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
                     for epoch in range(1, 200):
@@ -249,15 +221,12 @@ if __name__ == "__main__":
                         v_acc = valid(a.input_feature, a.output_feature, a.dataset, model, 'valid', optimizer, valid_loader, device,  k = bins)
                         # for test
                         t_acc = test(a.input_feature, a.output_feature, a.dataset, model, 'test', optimizer, test_loader, device, k = bins)
-
                         if v_acc > best_val_acc:
                             best_val_acc = v_acc
                             test_acc = t_acc
                             best_epoch = epoch
                             op_iters=0
-
                         op_iters+=1
-
                         if op_iters > 20:
                             break
                     avg_test_acc+= test_acc
@@ -266,9 +235,6 @@ if __name__ == "__main__":
                 log2 = 'bins : {}, test acc : {:.3f}, task: input {} predict output {}'
                 print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
                     
-
-
-
         elif a.hyperparameter == 'depth':
             pass
 
