@@ -13,6 +13,10 @@ from f_f_TU import train, valid, test
 import matplotlib.pyplot as plt
 
 def train_n(task):
+    '''
+        abbreviation of training on node dataset
+        avoid train from f_f_TU
+    '''
     if task == 'node':
         model.train()
         optimizer.zero_grad()
@@ -27,6 +31,10 @@ def train_n(task):
 
 
 def test_n(task):
+    '''
+        abbreviation of testing on node dataset
+        avoid test from f_f_Tu
+    '''
     if task == 'node':
         model.eval()
         logits, accs = model(data), []
@@ -198,6 +206,8 @@ if __name__ == "__main__":
             plt.ylabel('avr_acc')
             plt.savefig('depth_results.eps', dpi = 800, format = 'eps')
             plt.show()
+        elif a.hyperparameter == 'threshold':
+            pass
 
                     
     
