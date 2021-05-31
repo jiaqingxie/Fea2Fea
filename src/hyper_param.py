@@ -12,6 +12,10 @@ from torch_geometric.data import Dataset, DataLoader
 
 from model.var_GNN import Net
 from model.aug_GNN import augGNN
+from optimal_R import option, all_possible_concatenation
+from graph_property import G_property, binning
+from utils import max_len_arr
+
 from graph_property import binning, G_property
 from f_f_TU import train, valid, test
 
@@ -49,7 +53,7 @@ def test_n(task):
 def option():
     parser = ArgumentParser()
     parser.add_argument('--input_feature', default = 0, type = int, help = 'input feature')
-    parser.add_argument('--output_feature', default = 1, type = int, help = 'output feature')
+    parser.add_argument('--aim_feature', default = 1, type = int, help = 'output feature')
     parser.add_argument('--task', default = 'node', type = str, help = 'node / graph dataset')
     parser.add_argument('--dataset', default = 'Cora', type = str, help = 'dataset name')
     parser.add_argument('--hyperparameter', default = 'binning', type = str, help = 'hyper-para task')
@@ -60,6 +64,7 @@ def option():
     parser.add_argument('--hidden_dim', default = 2, type = int, help = 'hidden dimension')
     parser.add_argument('--batchnorm', default = 0, type = bool, help = 'if BatchNorm')
     parser.add_argument('--embedding', default = 'GIN', type = str, help = 'graph embedding method')
+    parser.add_argument('--threshold', default=0.8, type=float, help='threshold')
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -81,7 +86,7 @@ if __name__ == "__main__":
         array = np.array(propert_i)
         data.x = torch.tensor(array).float()
         #print(data.x.shape)
-        propert_j = property_file.iloc[:,[a.output_feature]]
+        propert_j = property_file.iloc[:,[a.aim_feature]]
         array_2 = np.array(propert_j)
         # if task is different bins
         print("-------- start testing --------")
@@ -91,7 +96,7 @@ if __name__ == "__main__":
             print("min bins : {}".format(a.min_bins))
             print("max bins : {}".format(a.max_bins))
             print("input fearure : {}".format(features[a.input_feature]))
-            print("aim fearure : {}".format(features[a.output_feature]))
+            print("aim fearure : {}".format(features[a.aim_feature]))
             print("graph embedding method : {}".format(a.embedding))
             average = 10
             for bins in range(a.min_bins, a.max_bins +1):
@@ -124,7 +129,7 @@ if __name__ == "__main__":
                 avg_test_acc = sum(test_acc_arr)/len(test_acc_arr)
                 avg_test_acc = round(avg_test_acc, 3)
                 log2 = 'bins : {}, test acc : {:.3f}, std: {:.3f} task: input {} predict output {}'
-                print(log2.format(bins, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.output_feature]))
+                print(log2.format(bins, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.aim_feature]))
 
                     
         elif a.hyperparameter == 'depth':
@@ -168,7 +173,7 @@ if __name__ == "__main__":
                 avg_test_acc = round(avg_test_acc, 3)
                 plt_acc.append(avg_test_acc)
                 log2 = 'depth : {}, test acc : {:.3f}, std : {:.3f}, task: input {} predict output {}'
-                print(log2.format(dep, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.output_feature]))
+                print(log2.format(dep, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.input_feature], features[a.aim_feature]))
 
             # ----- line plot ----- #
             
@@ -187,7 +192,53 @@ if __name__ == "__main__":
             plt.show()
             
         elif a.hyperparameter == 'threshold':
-            pass
+            threshold = [0.6, 0.8]
+            
+
+            print("dataset : {}".format(a.dataset))
+            print("dataset type : {}".format(a.task))
+            print("aim fearure : {}".format(features[a.aim_feature]))
+            print("graph embedding method : {}".format(a.embedding))
+            average = 10
+            for thres in threshold:
+                a.threshold = thres
+                ans = all_possible_concatenation(a)
+                min_ans_len, max_ans_len = max_len_arr(ans)
+                for value in ans:
+                    data.x = np.array(property_file.iloc[:,list(value)])
+                    #print(data.x.shape)
+                    data.x = torch.tensor(data.x).float()
+                    data =  data.to(device)
+                    data.y = binning(array_2, k = 6, data_len =  len(data.y))
+                        # to GPU
+                    data =  data.to(device)
+                    # test each case for 10 times
+                    test_acc_arr = []
+                    avg_test_acc = 0
+                    for avg in range(average):
+                        best_val_acc = test_acc = 0
+                        t = 0
+                        # optimizer
+                        model =  augGNN(input_dim = len(value)).to(device)
+                        optimizer = torch.optim.Adam(model.parameters(), lr=0.015, weight_decay=1e-4)  
+                        # training epoch
+                        for epoch in range(1, 3000):
+                            train_n('node')
+                            train_acc, val_acc, tmp_test_acc = test_n('node')
+                            if val_acc > best_val_acc and tmp_test_acc > test_acc:
+                                best_val_acc = val_acc
+                                test_acc = tmp_test_acc
+                                t = 0
+                            t = t + 1
+                            if t > 500:
+                                break   
+                        # calculate average accuracy
+                        test_acc_arr.append(test_acc)
+                    avg_test_acc = sum(test_acc_arr)/len(test_acc_arr)
+                    avg_test_acc = round(avg_test_acc, 3)
+                log2 = 'threshold : {}, test acc : {:.3f}, std: {:.3f}  predict output {}'
+                print(log2.format(thres, avg_test_acc, np.std(test_acc_arr, ddof=1), features[a.aim_feature]))
+
     
     # else if graph dataset
     elif a.task == 'graph':
@@ -205,7 +256,7 @@ if __name__ == "__main__":
         print("min bins : {}".format(a.min_bins))
         print("max bins : {}".format(a.max_bins))
         print("input fearure : {}".format(features[a.input_feature]))
-        print("aim fearure : {}".format(features[a.output_feature]))
+        print("aim fearure : {}".format(features[a.aim_feature]))
         print("graph embedding method : {}".format(a.embedding))
         print("-------- start testing --------")
         if a.hyperparameter == 'binning':
@@ -220,11 +271,11 @@ if __name__ == "__main__":
                     optimizer = torch.optim.Adam(model.parameters(), lr = 0.04)
                     for epoch in range(1, 200):
                         # for train
-                        t_loss = train(a.input_feature, a.output_feature, a.dataset, model, 'train', optimizer, train_loader, device, k = bins)
+                        t_loss = train(a.input_feature, a.aim_feature, a.dataset, model, 'train', optimizer, train_loader, device, k = bins)
                         # for valid 
-                        v_acc = valid(a.input_feature, a.output_feature, a.dataset, model, 'valid', optimizer, valid_loader, device,  k = bins)
+                        v_acc = valid(a.input_feature, a.aim_feature, a.dataset, model, 'valid', optimizer, valid_loader, device,  k = bins)
                         # for test
-                        t_acc = test(a.input_feature, a.output_feature, a.dataset, model, 'test', optimizer, test_loader, device, k = bins)
+                        t_acc = test(a.input_feature, a.aim_feature, a.dataset, model, 'test', optimizer, test_loader, device, k = bins)
                         if v_acc > best_val_acc:
                             best_val_acc = v_acc
                             test_acc = t_acc
@@ -237,7 +288,7 @@ if __name__ == "__main__":
                 avg_test_acc/=10
                 avg_test_acc = round(avg_test_acc, 3)
                 log2 = 'bins : {}, test acc : {:.3f}, task: input {} predict output {}'
-                print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.output_feature]))
+                print(log2.format(bins, avg_test_acc, features[a.input_feature], features[a.aim_feature]))
                     
         elif a.hyperparameter == 'depth':
             pass
