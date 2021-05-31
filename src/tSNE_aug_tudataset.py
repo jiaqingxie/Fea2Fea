@@ -11,7 +11,7 @@ from torch_geometric.data import DataLoader, Dataset
 
 from optimal_R import option, all_possible_concatenation
 from graph_property import G_property, binning
-from model.GNN import Net, debug_MLP
+from model.aug_GNN import augGNN
 from utils import max_len_arr, tSNE_vis
 from f_f_TU import valid, test
 
@@ -72,19 +72,22 @@ def train_tsne(i, j, dn, l_m, g_m, task, train_loader, device, k = 6):
 
         load = load.to(device)
         #out = model(load)
-        tSNE_vis(l_m, load.y, 'mlp_embed', d_name, inp, outp, 6)
+        tSNE_vis(load.x, load.y, 'init_embed_aug', d_name, value, o.aim_feature, 6)
+        tSNE_vis(l_m, load.y, 'mlp_embed_aug', d_name, value, o.aim_feature, 6)
                 #tSNE_vis(data.x, data.y, 'init_embed', d_name, inp, outp, 6)
-        tSNE_vis(g_m, load.y, 'graph_embed', d_name, inp, outp, 6)
+        tSNE_vis(g_m, load.y, 'graph_embed_aug', d_name, value, o.aim_feature, 6)
         break
 
 
 if __name__ == '__main__':
-
+    o = option()
     paths = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
     test_case = [(1, 3)]
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     dataset_name = ['ENZYMES', 'PROTEINS', 'NCI1']
     for dataset in dataset_name:
+        o.dataset = dataset
+        ans = all_possible_concatenation(o)
         d_name = dataset
         data_set = TUDataset(paths + dataset, name = dataset, use_node_attr = False)
         path = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/'
@@ -96,16 +99,13 @@ if __name__ == '__main__':
         test_loader = DataLoader(data_set[(train_len+valid_len):len(data_set)], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
         embedding = 0
         graph_embedding = 0
-        for (inp, outp) in test_case:
+        for value in ans:
             best_epoch = 0
             best_valid_acc = 0
             best_test_acc = 0
             op_iters = 0
-            #print(tmp_txt[1][2])
-            # take the optimal embedding method as graph embedding
-            #print(tmp_txt[input][out])
-            tmp_txt = pd.read_csv(path + d_name + '_optimal_method.txt', sep = '\t', header = None) # array
-            model = Net(embedding=tmp_txt[inp][outp]).to(device) if tmp_txt[inp][outp] != 'MLP' else debug_MLP().to(device)
+
+            model = augGNN(input_dim = len(value), method = 'NTN').to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=1e-4)
             
             best_linear_embed = 0
@@ -113,16 +113,16 @@ if __name__ == '__main__':
 
             for epoch in range(1, 300):   
                 if d_name == 'NCI1':
-                    if inp == 2 or outp == 2:
+                    if o.aim_feature == 2:
                         break
                 # for train
-                t_loss, graph_embed, linear_embed = train(inp, outp, d_name, model, 'train', optimizer, train_loader, device)
+                t_loss, graph_embed, linear_embed = train(value, o.aim_feature, d_name, model, 'train', optimizer, train_loader, device)
                 # for valid 
-                v_acc = valid(inp, outp, d_name, model, 'valid', optimizer, valid_loader, device)
+                v_acc = valid(value, o.aim_feature, d_name, model, 'valid', optimizer, valid_loader, device)
                 # for test
-                t_acc = test(inp, outp, d_name, model, 'test', optimizer, test_loader, device)
-                print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
-                   epoch, t_loss, v_acc, t_acc ))
+                t_acc = test(value, o.aim_feature, d_name, model, 'test', optimizer, test_loader, device)
+                #print('Epoch {:03d}, Train Loss: {:.4f}, Valid acc :{:.4f}, Test acc : {:.4f}'.format(
+                 #  epoch, t_loss, v_acc, t_acc ))
 
                 if v_acc > best_valid_acc:
                     best_valid_acc = v_acc
@@ -146,7 +146,7 @@ if __name__ == '__main__':
             #model = torch.load(model_path + '/model_tsne_{}.pkl'.format(d_name))
             #model.to(device)
             print("visualizing embeddings...")
-            train_tsne(inp, outp, d_name, best_linear_embed, best_graph_embed, 'train', train_loader, device, k = 6)
-
+            train_tsne(value, o.aim_feature, d_name, best_linear_embed, best_graph_embed, 'train', train_loader, device, k = 6)
+            break
 
 

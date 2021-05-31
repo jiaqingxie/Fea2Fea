@@ -65,7 +65,7 @@ def tSNE_vis(embedding, label, type, d_name, inp, outp, num_label):
     plt.ylabel("tSNE 2", fontsize = 12)
     plt.tick_params(labelsize=12)
     name2 = r'/home/jiaqing/桌面/Fea2Fea/Result/tSNE/'
-    plt.savefig('{}{}_{}to{}_tSNE{}.eps'.format(name2, str(d_name), str(inp), str(outp), type), dpi = 800, format = 'eps')
+    plt.savefig('{}{},{}_{}to{}_tSNE{}.eps'.format(name2, str(d_name), str(inp[0]), str(inp[1]), str(outp), type), dpi = 800, format = 'eps')
     #plt.show()
     #plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=tmp.numpy(), cmap = "rainbow")
     #plt.legend()
