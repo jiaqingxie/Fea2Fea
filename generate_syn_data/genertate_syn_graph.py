@@ -1,13 +1,16 @@
 import pandas as pd
 import numpy as np
 import os, sys
+sys.path.append('/home/jiaqing/桌面/Fea2Fea/property_process/')
+
 import matplotlib.pyplot as plt
 from argparse import ArgumentParser
-from ... import G_property
+from graph_property import G_property
 import networkx as nx
+import torch
 
 
-sys.path.insert(1, '/path/to/application/app/folder')
+
 '''
 G = nx.random_geometric_graph(200, 0.125)
 nx.draw(G)
@@ -21,7 +24,11 @@ def generate_property(edge_idx):
     for u,v in edge_idx:
         G.append((u,v))
 
-    
+    constant = torch.ones([len(data.x),1], dtype = float)
+    degrees, graph = G_property(G, degree_bool=1, bin_bool=0) 
+    clustering, graph = G_property(G, clustering_bool=1, bin_bool=0) 
+    pagerank, graph = G_property(G, pagerank_bool=1, bin_bool=0)
+    avg_path_len_G, graph = G_property(G, avg_path_length_bool=1, bin_bool=0)
 
 
 def option():
