@@ -7,10 +7,8 @@ from torch_geometric.datasets import TUDataset
 
 
 #Bioinformatics, social networks, small molecules
-tuda = ['dblp_ct1']
-#,'COLLAB',,'REDDIT-MULTI-5K'
-
-#'Finished : 'ENZYMES','ZINC_test','NCI1','PROTEINS', 
+tuda = ['ENZYMES','NCI1','PROTEINS']
+#,'COLLAB',,'REDDIT-MULTI-5K','ZINC_test'
 
 for name_1 in tuda:
 
@@ -38,7 +36,7 @@ for name_1 in tuda:
             matrix = torch.cat((matrix,avg_path_len_G),1)
             matrix = matrix.numpy()
             matrix = pd.DataFrame(matrix,columns = ['Constant_feature','Degree','Clustering_coefficient','Pagerank','Aver_path_len'])
-            name = r'/home/jiaqing/桌面/FASG_KDD/Result/TUdataset/'+ name_1 +'/' + name_1 + '_property' + str(cnt) + '.txt'
+            name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/'+ name_1 +'/' + name_1 + '_property' + str(cnt) + '.txt'
             matrix.to_csv(name, sep = '\t', index=False)
             cnt+=1
         else:

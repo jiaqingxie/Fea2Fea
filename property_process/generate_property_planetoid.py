@@ -26,7 +26,6 @@ for dataset in planetoid:
     for i in range(np.array(data.edge_index).shape[1]):
         G.append((int(data.edge_index[0][i]),int(data.edge_index[1][i])))
 
-
     constant = torch.ones([len(data.x),1], dtype = float)
     degrees, graph = G_property(G, degree_bool=1, bin_bool=0) 
     clustering, graph = G_property(G, clustering_bool=1, bin_bool=0) 
@@ -37,13 +36,9 @@ for dataset in planetoid:
     matrix = torch.cat((matrix,clustering),1)
     matrix = torch.cat((matrix,pagerank),1)
     matrix = torch.cat((matrix,avg_path_len_G),1)
-    #print(matrix.shape)
-    #print(matrix)
-
     matrix = matrix.numpy()
-
     matrix = pd.DataFrame(matrix,columns = ['Constant_feature','Degree','Clustering_coefficient','Pagerank','Aver_path_len'])
-    name = r'/home/jiaqing/桌面/FASG_KDD/property process/Result/' + dataset_name + '_property.txt'
+    name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset_name + '_property.txt'
     matrix.to_csv(name, sep = '\t', index=False)
 
 

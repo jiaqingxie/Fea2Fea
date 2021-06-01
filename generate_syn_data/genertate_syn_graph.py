@@ -1,3 +1,4 @@
+from networkx.generators import geometric
 import pandas as pd
 import numpy as np
 import os, sys
@@ -9,27 +10,27 @@ from graph_property import G_property
 import networkx as nx
 import torch
 
-
-
-'''
-G = nx.random_geometric_graph(200, 0.125)
-nx.draw(G)
-plt.draw()#
-plt.show()
-'''
-
-def generate_property(edge_idx):
+def generate_property(edge_idx, num_nodes):
     G = []
     edge_idx = np.array(edge_idx)
+
     for u,v in edge_idx:
         G.append((u,v))
 
-    constant = torch.ones([len(data.x),1], dtype = float)
+    constant = torch.ones([num_nodes,1], dtype = float)
     degrees, graph = G_property(G, degree_bool=1, bin_bool=0) 
     clustering, graph = G_property(G, clustering_bool=1, bin_bool=0) 
     pagerank, graph = G_property(G, pagerank_bool=1, bin_bool=0)
     avg_path_len_G, graph = G_property(G, avg_path_length_bool=1, bin_bool=0)
-
+    
+    matrix = torch.cat((constant,degrees),1)
+    matrix = torch.cat((matrix,clustering),1)
+    matrix = torch.cat((matrix,pagerank),1)
+    matrix = torch.cat((matrix,avg_path_len_G),1)
+    matrix = matrix.numpy()
+    matrix = pd.DataFrame(matrix,columns = ['Constant_feature','Degree','Clustering_coefficient','Pagerank','Aver_path_len'])
+    name = '/home/jiaqing/桌面/Fea2Fea/data/syn_data/geometric_graph_{}_property.txt'.format(num_nodes)
+    matrix.to_csv(name, sep = '\t', index=False)
 
 def option():
     parser = ArgumentParser()
@@ -93,6 +94,10 @@ if __name__ == "__main__":
             # 2. ordering
         tmp = tmp.sort_values(by='u')
         tmp.to_csv(edge_idx_file, header = None, index = None, sep = ',')  
+
+        # generate graph property:
+
+        generate_property(tmp, o.num_nodes)
 
 
 
