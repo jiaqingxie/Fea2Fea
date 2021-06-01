@@ -53,17 +53,17 @@ class Net(nn.Module):
         self.linear_embed = 0
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        x, edge_index = data.x, data.edge_index
         self.init_embed = x
         for i in range(2):
             if i == 0:
-                x = self.conv1(x, edge_index, data.edge_attr)
+                x = self.conv1(x, edge_index)
                 if self.embedding != 'GIN':
                     x = self.batch_norm1(x)
                     x = F.relu(x)
                 x = F.dropout(x, training=self.training)
             if i == 1:
-                x = self.conv2(x, edge_index, data.edge_attr)
+                x = self.conv2(x, edge_index)
                 if self.embedding != 'GIN':
                     x = self.batch_norm2(x)
                     x = F.relu(x)
@@ -85,7 +85,7 @@ class debug_MLP(nn.Module):
         self.latent = 0
 
     def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        x = data.x
 
         x = F.relu(self.linear1(x))
         x = F.relu(self.linear2(x))

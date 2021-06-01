@@ -71,16 +71,16 @@ class Net(nn.Module):
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        x, edge_index = data.x, data.edge_index
         for i in range(self.depth):
             if i == 0:
-                x = self.conv1(x, edge_index, data.edge_attr)
+                x = self.conv1(x, edge_index)
                 if self.embedding != 'GIN':
                     x = self.batch_norm1(x)
                     x = F.relu(x)
                 x = F.dropout(x, training=self.training)
             elif i == 1:
-                x = self.conv2(x, edge_index, data.edge_attr)
+                x = self.conv2(x, edge_index)
                 if self.embedding != 'GIN':
                     x = self.batch_norm2(x)
                     x = F.relu(x)
@@ -88,9 +88,9 @@ class Net(nn.Module):
                 self.graph_embed = x
             else:
                 if self.embedding != 'GIN':
-                    x = F.relu(self.conv3[self.depth-i](x, edge_index, data.edge_attr))
+                    x = F.relu(self.conv3[self.depth-i](x, edge_index))
                 else:
-                    x = self.conv3[self.depth-i-1](x, edge_index, data.edge_attr)
+                    x = self.conv3[self.depth-i-1](x, edge_index)
                 x = F.dropout(x, training=self.training)
 
         x = F.relu(self.lin1(x))

@@ -3,15 +3,26 @@ import numpy as np
 import os, sys
 import matplotlib.pyplot as plt
 from argparse import ArgumentParser
-
+from ... import G_property
 import networkx as nx
-from networkx.convert_matrix import to_numpy_matrix
+
+
+sys.path.insert(1, '/path/to/application/app/folder')
 '''
 G = nx.random_geometric_graph(200, 0.125)
 nx.draw(G)
 plt.draw()#
 plt.show()
 '''
+
+def generate_property(edge_idx):
+    G = []
+    edge_idx = np.array(edge_idx)
+    for u,v in edge_idx:
+        G.append((u,v))
+
+    
+
 
 def option():
     parser = ArgumentParser()

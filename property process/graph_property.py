@@ -21,7 +21,6 @@ def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pa
             degrees[n,0] = d
         #print(degrees)
         
-        degrees_sequence = sorted(degrees, reverse=True)
         '''
         plt.loglog(degrees_sequence, marker="o")
         plt.title("Degree distribution of Cora dataset")
@@ -39,7 +38,6 @@ def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pa
         clustering = torch.zeros([max(G) + 1,1],dtype = float)
         for key, value in sorted(nx.clustering(G).items()):
             clustering[int(key),0] = value
-        clustering_sequence = sorted(clustering, reverse=True)
         if bin_bool:
             bin_clustering = binning(clustering, k = 6)
             return bin_clustering, clustering, G
@@ -50,7 +48,6 @@ def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pa
         pagerank = torch.zeros([max(G) + 1,1],dtype = float)
         for key,value in sorted(nx.pagerank(G, alpha=0.9).items()): #default dumping coefficient is equal to 0.85
             pagerank[key,0] = value
-        pagerank_sequence = sorted(pagerank, reverse=True)
         if bin_bool:
             bin_pagerank = binning(pagerank, k = 6)
             return bin_pagerank, pagerank, G
@@ -82,8 +79,6 @@ def G_property(graph,constant_bool = 0, degree_bool = 0, clustering_bool = 0, pa
 
 
 
-    if centrality_bool:  #degree centrality of nodes
-        pass
 
 def binning(Array, k, data_len):
     Array = Array.reshape(data_len,)

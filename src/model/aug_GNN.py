@@ -32,14 +32,14 @@ class augGNN(nn.Module):
         self.linear_embed = 0
 
     def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr # data.x in R^N * 5 
+        x, edge_index  = data.x, data.edge_index# data.x in R^N * 5 
         if self.method == 'SimpleConcat':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
             i = 0
-            x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 128
+            x = self.block(data.x[:,[tmp-1]], edge_index) # 1 -> 128
             while tmp > 1:
                 tmp-=1
-                tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
+                tt = self.block(data.x[:,[tmp-1]], edge_index)
                 x = self.concat1[i](x, tt)
                 i+=1
             self.graph_embed = x
@@ -51,10 +51,10 @@ class augGNN(nn.Module):
         elif self.method == 'Bilinear':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
             i = 0
-            x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 64
+            x = self.block(data.x[:,[tmp-1]], edge_index) # 1 -> 64
             while tmp > 1:
                 tmp-=1
-                tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
+                tt = self.block(data.x[:,[tmp-1]], edge_index)
                 x = self.concat2[i](x,tt)
                 i+=1
             #finish concatenation, go through two mlps then softmax 
@@ -66,10 +66,10 @@ class augGNN(nn.Module):
         elif self.method == 'NTN':
             tmp = x.shape[1] # less or equal than 4 if total features are 5
             i = 0
-            x = self.block(data.x[:,[tmp-1]], edge_index, edge_attr) # 1 -> 64
+            x = self.block(data.x[:,[tmp-1]], edge_index) # 1 -> 64
             while tmp > 1:
                 tmp-=1
-                tt = self.block(data.x[:,[tmp-1]], edge_index, edge_attr)
+                tt = self.block(data.x[:,[tmp-1]], edge_index)
                 x = self.concat3[i](x,tt)
                 i+=1
             self.graph_embed = x
@@ -177,17 +177,17 @@ class GNNBlock(nn.Module):
         self.batch_norm1 = nn.BatchNorm1d(256)
         self.batch_norm2 = nn.BatchNorm1d(64)
 
-    def forward(self, data, edge_index, edge_attr):
+    def forward(self, data, edge_index):
         x = data
         for i in range(self.depth):
             if i == 0:
-                x = self.conv1(x, edge_index, edge_attr)
+                x = self.conv1(x, edge_index)
                 if self.graph_conv != 'GIN':
                     x = self.batch_norm1(x)
                     x = F.relu(x)
                 x = F.dropout(x, training=self.training)
             elif i == 1:
-                x = self.conv2(x, edge_index, edge_attr)
+                x = self.conv2(x, edge_index)
                 if self.graph_conv != 'GIN':
                     x = self.batch_norm2(x)
                     x = F.relu(x)
@@ -196,7 +196,7 @@ class GNNBlock(nn.Module):
                 if self.graph_conv != 'GIN':
                     x = F.relu(self.conv3(x, edge_index))
                 else:
-                    x = self.conv3(x, edge_index, edge_attr)
+                    x = self.conv3(x, edge_index)
                 x = F.dropout(x, training=self.training)
         return x
         
