@@ -4,13 +4,9 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
-txt_dir = os.path.join(os.getcwd(), 'Result')
+txt_dir = os.path.join('/home/jiaqing/桌面/Fea2Fea/', 'Result')
 
-
-
-
-
-def read_file(dataset = 'planetoid', Property ='Degree', plot_distribution = False, count_zero = False):
+def read_file(dataset = 'planetoid', dataset_name = 'Cora', Property ='Degree', method = 'dist', count_zero = False):
     dir_name = []
     planetoid = ['PubMed','Cora', 'Citeseer'] # Must in this order
     if dataset == 'planetoid':
@@ -23,13 +19,13 @@ def read_file(dataset = 'planetoid', Property ='Degree', plot_distribution = Fal
         temp = pd.read_csv(element, sep='\t')
         print(temp.describe())
         if Property == 'Degree':   
-            prop = temp[temp[Property]<10]
+            prop = temp[temp[Property]<16]
         if Property == 'Clustering_coefficient':
-            prop = temp[temp[Property]< 0.2]
+            prop = temp[temp[Property]< 0.1]
         if Property == 'Pagerank':
-            prop = temp[temp[Property]< 0.0006]
+            prop = temp[temp[Property]< 0.0008]
         if Property == 'Aver_path_len':
-            prop = temp[temp[Property]< 10]
+            prop = temp[temp[Property]< 16]
         prop = prop[Property]
         df[name] = prop
     df.dropna()
@@ -44,12 +40,13 @@ def read_file(dataset = 'planetoid', Property ='Degree', plot_distribution = Fal
         print("\n")
         
 
-    if plot_distribution: 
+    if method == 'dist': 
         plt.figure(figsize=(12,7))
         sns.set(font_scale = 1.5) 
-        sns.distplot(df['Cora'], axlabel = Property)
-        plt.savefig(txt_dir + '/data distribution/planetoid/' + 'Cora' +'_' + Property +'_dis.eps', dpi = 800, format = 'eps')
-        plt.show()
+        sns.distplot(df[dataset_name], axlabel = Property)
+        plt.savefig(txt_dir + '/data distribution/planetoid/' + dataset_name +'_' + Property +'_dis.eps', dpi = 800, format = 'eps')
+        
+        return
     df = df.melt(var_name=Property, value_name='value')
     plt.figure(figsize=(10,10))
     sns.set(font_scale = 2) 
@@ -59,14 +56,11 @@ def read_file(dataset = 'planetoid', Property ='Degree', plot_distribution = Fal
     plt.show()
 
    
-
-
-
-
-
 if __name__ == "__main__":
     prop = ['Degree', 'Clustering_coefficient', 'Pagerank', 'Aver_path_len']
-    for i in prop:
-        read_file(Property=i,plot_distribution = True,count_zero=True)
+    planetoid = ['PubMed','Cora', 'Citeseer']
+    for dataset_name in planetoid: 
+        for i in prop:
+            read_file(dataset_name = dataset_name, Property=i, count_zero=True)
 
     
