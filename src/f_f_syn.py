@@ -2,55 +2,75 @@ import itertools
 import os.path as osp
 import pandas as pd
 import numpy as np
+import sys
+
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-from torch_geometric.datasets import Planetoid
 import torch_geometric.transforms as T
+import torch_geometric
+from torch_geometric.data import Data
+from torch_geometric.data import DataLoader
 from torch_geometric.nn import ARMAConv,AGNNConv
 from torch_geometric.nn import GINConv,GATConv,GCNConv
 from torch_geometric.nn import SAGEConv,SplineConv
 import math
 import matplotlib.pyplot as plt
-from graph_property import G_property, binning
+
 import seaborn as sns
 import matplotlib.cm as cm
 from torch.optim.lr_scheduler import StepLR
-
+sys.path.append('/home/jiaqing/桌面/Fea2Fea/property_process/')
+from graph_property import G_property, binning
 from model.GNN import Net, debug_MLP
 
-path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
-
-def train():
+def train(data, train_idx):
     model.train()
     optimizer.zero_grad()
-    F.nll_loss(model(data)[data.train_mask], data.y[data.train_mask]).backward()
+    F.nll_loss(model(data)[train_idx], data.y[train_idx]).backward()
     optimizer.step()
 
-def test():
+def valid(data, valid_idx):
     model.eval()
-    logits, accs = model(data), []
-    for _, mask in data('train_mask', 'val_mask', 'test_mask'):
-        pred = logits[mask].max(1)[1]
-        acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
-        accs.append(acc)
-    return accs
+    with torch.no_grad():
+            pred = model(data).max(dim=1)[1]
+    correct = 0
+    correct += pred[valid_idx].eq(data.y[valid_idx]).sum().item()
+    valid_acc = correct / len(valid_idx)
+    return valid_acc
+
+def test(data, test_idx):
+    model.eval()
+    with torch.no_grad():
+        pred = model(data).max(dim=1)[1]
+    correct = 0
+    correct += pred[test_idx].eq(data.y[test_idx]).sum().item()
+    test_acc = correct / len(test_idx)
+    return test_acc
 #'MLP',
 #------------------ Start our algorithm1 ---------------------#
 
 if __name__ == '__main__':
 
     xlabels = ['Constant','Degree','Clustering_Coefficient','PageRank','Aver_Path_Len']
-    for dataset,embedding_method in list(itertools.product(['Cora','PubMed','Citeseer'],['SAGE','GAT','GCN','GIN'])):
-        
+    num_of_nodes = [50, 200, 400, 800]
+    for non in num_of_nodes:
+        num_nodes = non
+        #print(num_nodes)
+        num_train_nodes = int(num_nodes * 0.8)
+        num_valid_nodes = int(num_nodes * 0.1)
+        num_test_nodes = int(num_nodes * 0.1)
+        perm = torch.randperm(num_nodes)
+        train_idx = perm[:num_train_nodes]
+        valid_idx = perm[num_train_nodes:(num_train_nodes+num_valid_nodes)]
+        test_idx = perm[(num_train_nodes+num_valid_nodes):(num_train_nodes+num_valid_nodes+num_test_nodes)]
+        file_path = '/home/jiaqing/桌面/Fea2Fea/data/syn_data/'
+        property_file = pd.read_csv(file_path+'geometric_graph_{}_property.txt'.format(non), sep = '\t')
         Aver = np.zeros((5,5))
-        dataset_name = dataset
-        dataset = Planetoid(path, name = dataset, transform=T.NormalizeFeatures())
-        data = dataset[0]
+        edge_idx_file = pd.read_csv(file_path+'geometric_graph_{}_edge_idx.txt'.format(non), sep = ',',header = None)
 
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset_name + '_property.txt'
-        property_file = pd.read_csv(name, sep = '\t')
-        
+        x = torch.tensor(np.array(property_file), dtype=torch.float)
+        edge_idx = torch.tensor(np.array(edge_idx_file), dtype=torch.long)
         
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -65,15 +85,13 @@ if __name__ == '__main__':
             R = np.zeros((5,5)) # initialize our feature relationship matrix 
             R[0][0] = 1.000
             for i in range(0, 5):
-                propert_i = property_file.iloc[:,[i]]
-                array = np.array(propert_i)
-                data.x = torch.tensor(array).float()
+                x_train = x[:,i].reshape((len(x),1))
                 for j in range(1,5):
-                    propert_j = property_file.iloc[:,[j]]
-                    array_2 = np.array(propert_j)
-                    number = len(data.y)
-                    data.y = binning(array_2, k = 6,data_len =  number)
-                    model =  Net(embedding=embedding_method).to(device) if embedding_method != 'MLP' else debug_MLP().to(device)
+                    tmp = np.array(x[:,j])
+                    y = binning(tmp, k = 2,data_len = len(x))
+                    data = Data(x=x_train, edge_index=edge_idx.t().contiguous(), y =y).to(device)
+                   
+                    model =  Net(embedding='GIN').to(device)
                     optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=1e-4)
                     #scheduler = StepLR(optimizer, step_size=10, gamma=0.8)
                     data =  data.to(device)
@@ -81,8 +99,8 @@ if __name__ == '__main__':
                     best_val_acc = test_acc = 0 
                     for epoch in range(1, 2000):
                         
-                        train()
-                        train_acc, val_acc, tmp_test_acc = test()
+                        train(data = data,train_idx = train_idx)
+                        val_acc, tmp_test_acc = valid(data=data,valid_idx=valid_idx), test(data=data,test_idx=test_idx)
 
                         if val_acc > best_val_acc:
                             best_val_acc = val_acc
@@ -97,8 +115,8 @@ if __name__ == '__main__':
                         if t > 500:
                             break   
                         
-                        log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-                        print(log.format(epoch, train_acc, best_val_acc, test_acc))
+                        log = 'Epoch: {:03d}, Val: {:.4f}, Test: {:.4f}'
+                        #print(log.format(epoch, best_val_acc, test_acc))
                         # do that for several times
                         #scheduler.step()
                     if i == 4 and j == 4:
@@ -108,13 +126,13 @@ if __name__ == '__main__':
                 k = Aver / 1
                 np.set_printoptions(precision=3)
                 k = pd.DataFrame(k)
-                filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
-                fig_name = '/' + dataset_name + '_' + embedding_method + '.txt'
+                filepath = '/home/jiaqing/桌面/Fea2Fea/Result/syn_data'
+                fig_name = '/{}_GIN.txt'.format(non)
                 fig_path = filepath + fig_name
                 k.to_csv(fig_path, header = None, index = None, sep = '\t')
                 #----------- save Heatmap Matrix-----------#
-                filepath = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid'
-                fig_name = '/' + dataset_name + '_' + embedding_method + '_property' + '.eps'
+                filepath = '/home/jiaqing/桌面/Fea2Fea/Result/syn_data'
+                fig_name = '/{}_GIN_property.eps'.format(non)
                 fig_path = filepath + fig_name
                 xlabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
                 ylabels = ['Constant','Degree','Clustering','PageRank','Aver_Path_Len']
@@ -122,10 +140,9 @@ if __name__ == '__main__':
                             xticklabels = xlabels, yticklabels = ylabels)
                 cm.set_xticklabels(cm.get_xticklabels(), rotation=30)
                 cm.set_yticklabels(cm.get_xticklabels(), rotation=0)
-                label = embedding_method
+                label = 'GIN'
                 cm.set_title(label)
                 heatmap = cm.get_figure()
-                heatmap.savefig(fig_path, dpi = 400,bbox_inches='tight')
-                plt.show()
+                heatmap.savefig(fig_path, dpi = 800,bbox_inches='tight')
                 break
             
