@@ -332,7 +332,7 @@ if __name__ == "__main__":
                     
         
         elif a.hyperparameter == 'threshold':
-            threshold = [0.6, 0.8]
+            threshold = [ 0.8]
                         
             print("dataset : {}".format(a.dataset))
             print("dataset type : {}".format(a.task))

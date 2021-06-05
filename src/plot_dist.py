@@ -26,7 +26,7 @@ def read_file(dataset = 'planetoid', dataset_name = 'Cora', Property ='Degree', 
             if Property == 'Degree':   
                 prop = temp[temp[Property]<16]
             if Property == 'Clustering_coefficient':
-                prop = temp[temp[Property]< 0.1]
+                prop = temp[temp[Property]< 0.001]
             if Property == 'Pagerank':
                 prop = temp[temp[Property]< 0.0008]
             if Property == 'Aver_path_len':
@@ -78,8 +78,8 @@ if __name__ == "__main__":
     prop = ['Degree', 'Clustering_coefficient', 'Pagerank', 'Aver_path_len']
     planetoid = ['PubMed','Cora', 'Citeseer']
     tudataset = ['PROTEINS', 'ENZYMES', 'NCI1']
-    for dataset_name in tudataset: 
+    for dataset_name in planetoid: 
         for i in prop:
-            read_file(dataset = 'tudataset', dataset_name = dataset_name, Property=i, count_zero=True)
+            read_file(dataset = 'planetoid', dataset_name = dataset_name, Property=i, count_zero=True)
 
     
