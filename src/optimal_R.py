@@ -87,13 +87,12 @@ def all_possible_concatenation(o):
     '''
     planetoid = ['Cora', 'Citeseer', 'PubMed']
     tudataset = ['ENZYMES','PROTEINS', 'NCI1']
-
     if o.dataset in planetoid:
         path = '/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' 
     elif o.dataset in tudataset:
         path = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' 
     else:
-        print("please input a correct dataset name")
+        print("please input a correct dataset name please")
         sys.exit()
     txt_name = o.dataset + '_optimal_R.txt'
     txt_path = path + txt_name

@@ -74,7 +74,7 @@ def train(i, j, dn, model, task, optimizer, train_loader, device, k = 6):
     train_loss = total_loss / total_num_nodes
     return train_loss
 
-def valid(i, j, dn, model, task, optimizer, valid_loader, device, k = 6):
+def valid(i, j, dn, model, task,  valid_loader, device, k = 6):
     correct = 0
     model.eval()
     total_num_nodes = 0
@@ -102,7 +102,7 @@ def valid(i, j, dn, model, task, optimizer, valid_loader, device, k = 6):
     valid_acc = correct / total_num_nodes
     return valid_acc
 
-def test(i, j, dn,  model, task, optimizer, test_loader, device, k = 6):
+def test(i, j, dn,  model, task, test_loader, device, k = 6):
     correct = 0
     model.eval()
     total_num_nodes = 0
