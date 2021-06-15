@@ -50,7 +50,7 @@ if __name__ == "__main__":
     else:
         G = nx.random_geometric_graph(o.num_nodes, o.threshold)
         pos = nx.get_node_attributes(G, "pos")
-
+        '''
         # find node near center (0.5,0.5)
         dmin = 1
         ncenter = 0
@@ -81,6 +81,7 @@ if __name__ == "__main__":
         plt.axis("off")
         plt.savefig('/home/jiaqing/桌面/Fea2Fea/generate_syn_data/graph_{}.eps'.format(o.num_nodes), dpi=400)
         #plt.show()
+        '''
         row = 0
 
         # save to edge index file

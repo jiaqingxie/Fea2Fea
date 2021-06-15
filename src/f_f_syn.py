@@ -53,7 +53,8 @@ def test(data, test_idx):
 if __name__ == '__main__':
 
     xlabels = ['Constant','Degree','Clustering_Coefficient','PageRank','Aver_Path_Len']
-    num_of_nodes = [50, 200, 400, 800]
+    #50, 200, 400, 800
+    num_of_nodes = [1000]
     for non in num_of_nodes:
         num_nodes = non
         #print(num_nodes)
