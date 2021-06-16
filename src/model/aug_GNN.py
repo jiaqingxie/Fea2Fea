@@ -160,10 +160,10 @@ class GNNBlock(nn.Module):
             self.conv2 = SAGEConv(256,64 ,normalize=True)
             self.conv3 = SAGEConv(self.embed_dim, self.embed_dim, normalize=True)
         elif self.graph_conv == 'GAT':
-            self.conv1 = GATConv(1, 16,heads= 16, dropout=0.6)
+            self.conv1 = GATConv(1, 16,heads= 16, dropout=0.4)
             self.conv2 = GATConv(16 * 16, 64, heads=1, concat=False,
-                           dropout=0.6)
-            self.conv3 = GATConv(self.embed_dim, self.embed_dim, heads = 1, concat= False, dropout= 0.6)
+                           dropout=0.4)
+            self.conv3 = GATConv(self.embed_dim, self.embed_dim, heads = 1, concat= False, dropout= 0.4)
         elif self.graph_conv == 'GCN':
             self.conv1 = GCNConv(1,256,cached=False)
             self.conv2 = GCNConv(256,64,cached=False)

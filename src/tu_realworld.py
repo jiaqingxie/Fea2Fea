@@ -227,67 +227,60 @@ if __name__ == '__main__':
                 first = load.x.shape[0]
                 break
         input_dim+= len(ans[0])
-        print(input_dim)
-        #print(first)
-        
+        print('input dim: {}'.format(input_dim))
         num_classes = {'ENZYMES':6, 'PROTEINS':2, 'NCI1':2}
         # reserve train_loader and test_loader
         '''
         reserve('train', dataset, train_loader, folds)
-        
         reserve('test', dataset, test_loader, 1)
         '''
-        
-        mean_acc = [[] for i in range(min_ans_len, max_ans_len+1)]
         ans = [(3,4)]
         folds_arr = [i for i in range(folds)]
         folds_arr = np.array(folds_arr)
         for value in ans: # for each combination entry:
-            model =  StrucFeaGNN(concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
-            optimizer = torch.optim.Adam(model.parameters(), lr=0.017, weight_decay=1e-5)
-            best_epoch = 0
-            best_train_acc = 0
-            best_valid_acc = 0
-            best_test_acc = 0
-            op_iters = 0
-            for epoch in range(1, 800):
+            mean_test_acc = []
+            mean_valid_acc = []
+            for fo in range(folds):
+                #model =  StrucFeaGNN(concat_fea=False, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
+
+                #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
+
+                #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2, cat_method = 'Bilinear').to(device)
+
+                model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2, cat_method = 'NTN').to(device)
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.017, weight_decay=1e-5)
+                best_epoch = 0
+                best_valid_acc = 0
+                best_test_acc = 0
+                op_iters = 0
+                
                 if o.dataset == 'NCI1':
                     if o.aim_feature == 2:
                         break
                 # for train
-                for fo in range(folds):
+                for epoch in range(1, 800):
                     tr_acc, t_loss = train(value, o.dataset, model, 'train', optimizer, train_loader, device, folds_arr[folds_arr!=fo])
                     # for valid 
                     v_acc = valid(value, o.dataset, model, 'train',  train_loader, device, fo)
                     # for test
                     t_acc = test(value, o.dataset, model, 'test', test_loader, device, 0)
-
-
                     if v_acc > best_valid_acc:
                         best_valid_acc = v_acc
                         best_test_acc = t_acc
-                        best_train_acc = tr_acc
                         best_epoch = epoch
                         #torch.save(model, '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/best_model_{}.pkl'.format(o.dataset))
                         op_iters=0
                     op_iters+=1
                     if op_iters > 100:
                         break
-                    print('Epoch {:03d}, Train loss:{:.4f}, best Train acc: {:.4f}, best valid acc :{:.4f}, best test acc : {:.4f}'.format(
-   epoch, t_loss, best_train_acc, best_valid_acc , best_test_acc))
-                    #model2 = torch.load('/home/jiaqing/桌面/Fea2Fea/src/model_pkl/best_model_{}.pkl'.format(o.dataset))
-                    #print_conf_mtx(o.dataset, 'test', model2, test_loader, device, num_classes[o.dataset])
-                #mean_acc[len(value) - min_ans_len].append(best_test_acc)
+                print('added_features: {}, validation fold:{}, best valid acc: {:.4f}, best test acc: {:.4f}'.format(ans, fo, best_valid_acc, best_test_acc))
+                mean_test_acc.append(best_test_acc)
+                mean_valid_acc.append(best_valid_acc)    
+                
+            print('average test acc: {:.4f}, std: {:.4f}'.format(sum(mean_test_acc)/len(mean_test_acc), np.std(mean_test_acc)))
+            print('average valid acc: {:.4f}, std: {:.4f}'.format(sum(mean_valid_acc)/len(mean_valid_acc), np.std(mean_valid_acc)))
             break
             
-        
-        mean_acc_ = [ sum(mean_acc[i])/len(mean_acc[i]) for i in range(len(mean_acc))]
-        mean_acc_ = [float('{:.4f}'.format(i)) for i in mean_acc_] 
-        std_acc = [statistics.stdev(mean_acc[i]) for i in range(len(mean_acc))]
-        saved.append(mean_acc_)
-        saved.append(std_acc)
-        
-        x_axis = [i for i in range(min_ans_len, max_ans_len+1)]
 
         c_index+=1
         break
