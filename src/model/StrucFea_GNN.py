@@ -16,13 +16,14 @@ from torch_geometric.nn import SAGEConv,SplineConv
 from torch_geometric.nn import global_mean_pool
 
 class StrucFeaGNN(nn.Module):
-    def __init__(self, concat_fea_num = 2, embed_method = 'GIN', input_dim = 1024, output_dim = 7, depth = 3):
+    def __init__(self, concat_fea = True, concat_fea_num = 2, embed_method = 'GIN', input_dim = 1024, output_dim = 7, depth = 3):
         super(StrucFeaGNN, self).__init__()
         self.concat_fea_num = concat_fea_num
         self.embed_method = embed_method
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.depth = depth
+        self.concat_fea = concat_fea
         self.pre_mlp1 = nn.Linear(self.concat_fea_num, 16)
         self.pre_mlp2 = nn.Linear(16, 32)
         self.pre_mlp3 = nn.Linear(self.input_dim - self.concat_fea_num, 16)

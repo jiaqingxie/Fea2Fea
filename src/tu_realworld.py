@@ -50,71 +50,90 @@ def print_conf_mtx(dn, task, model, test_loader, device, num_class):
     
     print(conf_matrix)
 
-def reserve(task, dn, loader):
-    t = 0
+def reserve(task, dn, loader, folds):
+    for f in range(folds):
+        t = 0
+        random.seed(1)
+        torch.manual_seed(1)
+        torch.cuda.manual_seed(1)
+        np.random.seed(1)
+        for load in loader[f]:
+            G = []
+            # construct graph
+            for p1 in range(np.array(load.edge_index).shape[1]):
+                G.append((int(load.edge_index[0][p1]),int(load.edge_index[1][p1])))
+            # calculate graph properties
+            constant = G_property(G, constant_bool=1)
+            degrees, graph = G_property(G, degree_bool=1, bin_bool=0) 
+            clustering, graph = G_property(G, clustering_bool=1, bin_bool=0) 
+            pagerank, graph = G_property(G, pagerank_bool=1, bin_bool=0)
+            avg_path_len_G, graph = G_property(G, avg_path_length_bool=1, bin_bool=0)
 
-    for load in loader:
-        G = []
-        # construct graph
-        for p1 in range(np.array(load.edge_index).shape[1]):
-            G.append((int(load.edge_index[0][p1]),int(load.edge_index[1][p1])))
-        # calculate graph properties
-        constant = G_property(G, constant_bool=1)
-        degrees, graph = G_property(G, degree_bool=1, bin_bool=0) 
-        clustering, graph = G_property(G, clustering_bool=1, bin_bool=0) 
-        pagerank, graph = G_property(G, pagerank_bool=1, bin_bool=0)
-        avg_path_len_G, graph = G_property(G, avg_path_length_bool=1, bin_bool=0)
+            matrix = torch.cat((constant,degrees),1)
+            matrix = torch.cat((matrix,clustering),1)
+            matrix = torch.cat((matrix,pagerank),1)
+            matrix = torch.cat((matrix,avg_path_len_G),1)
 
-        matrix = torch.cat((constant,degrees),1)
-        matrix = torch.cat((matrix,clustering),1)
-        matrix = torch.cat((matrix,pagerank),1)
-        matrix = torch.cat((matrix,avg_path_len_G),1)
+            matrix = matrix.numpy()
+            matrix = pd.DataFrame(matrix,columns = ['Constant_feature','Degree','Clustering_coefficient','Pagerank','Aver_path_len'])   
+            name = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/{}/{}_property{}{}_fold{}.txt'.format(dn, dn, t, task, f)
+            matrix.to_csv(name, sep = '\t', index=False)
+            t+=1
 
-        matrix = matrix.numpy()
-        matrix = pd.DataFrame(matrix,columns = ['Constant_feature','Degree','Clustering_coefficient','Pagerank','Aver_path_len'])   
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
-        matrix.to_csv(name, sep = '\t', index=False)
-        t+=1
-
-def train(i, dn, model, task, optimizer, train_loader, device):
-    total_loss = 0
+def train(i, dn, model, task, optimizer, train_loader, device, folds):
+    ### for example, the folds that need to be trained are 0-8, the valid fold then is 9
+    ### if total number of folds is equal to 10 
     model.train()
-    total_num_nodes = 0
-    t= 0
-    random.seed(1)
-    torch.manual_seed(1)
-    torch.cuda.manual_seed(1)
-    np.random.seed(1)
-    for load in train_loader:
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
-        property_file = pd.read_csv(name, sep = '\t')
-        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
-        array = np.array(propert_i)
-        load.x = torch.cat((load.x, torch.tensor(array).float()), dim = 1)
+    correct_arr = []
+    tot_loss = []
+    length = []
+    for f in folds:
+        t= 0
+        correct = 0
+        total_loss = 0
+        random.seed(1)
+        torch.manual_seed(1)
+        torch.cuda.manual_seed(1)
+        np.random.seed(1)
 
-        load = load.to(device)
-        optimizer.zero_grad()
-        out = model(load, load.batch)
+        for load in train_loader[f]:
 
-        loss = F.nll_loss(out,load.y)
-        loss.backward()
-        optimizer.step()
-        total_loss += loss.item() * len(load.y)
-        t+=1
-    train_loss = total_loss / len(train_loader.dataset)
-    return train_loss
+            name = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/{}/{}_property{}{}_fold{}.txt'.format(dn, dn, t, task, f)
+            property_file = pd.read_csv(name, sep = '\t')
+            propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
+            array = np.array(propert_i)
+            load.x = torch.cat((load.x, torch.tensor(array).float()), dim = 1)
 
-def valid(i, dn, model, task, valid_loader, device, k = 6):
-    correct = 0
+            load = load.to(device)
+            optimizer.zero_grad()
+            out = model(load, load.batch)
+
+            loss = F.nll_loss(out,load.y)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item() * len(load.y)
+            with torch.no_grad():
+                load = load.to(device)
+                pred = model(load, load.batch).max(dim=1)[1]
+            correct += pred.eq(load.y).sum().item()
+            t+=1
+        correct_arr.append(correct)
+        length.append(len(train_loader[f].dataset))
+        tot_loss.append(total_loss)
+    
+    return sum(correct_arr)/sum(length), sum(tot_loss)/sum(length)
+
+def valid(i, dn, model, task, train_loader, device, fold):  
     model.eval()
-    total_num_nodes = 0
+
+    correct = 0
     t = 0
     random.seed(1)
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
     np.random.seed(1)
-    for load in valid_loader:
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+    for load in train_loader[fold]:
+        name = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/{}/{}_property{}{}_fold{}.txt'.format(dn, dn, t, task, fold)
         property_file = pd.read_csv(name, sep = '\t')
 
         propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
@@ -126,10 +145,10 @@ def valid(i, dn, model, task, valid_loader, device, k = 6):
             pred = model(load, load.batch).max(dim=1)[1]
         correct += pred.eq(load.y).sum().item()
         t+=1
-    valid_acc = correct / len(valid_loader.dataset)
+    valid_acc = correct / len(train_loader[fold].dataset)
     return valid_acc
 
-def test(i, dn,  model, task, test_loader, device, k = 6):
+def test(i, dn,  model, task, test_loader, device, fold):
     correct = 0
     model.eval()
     total_num_nodes = 0
@@ -138,8 +157,8 @@ def test(i, dn,  model, task, test_loader, device, k = 6):
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
     np.random.seed(1)
-    for load in test_loader:
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
+    for load in test_loader[fold]:
+        name = '/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/{}/{}_property{}{}_fold{}.txt'.format(dn, dn, t, task, fold)
         property_file = pd.read_csv(name, sep = '\t')
         propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
         array = np.array(propert_i)
@@ -150,138 +169,114 @@ def test(i, dn,  model, task, test_loader, device, k = 6):
             pred = model(load, load.batch).max(dim=1)[1]
         correct += pred.eq(load.y).sum().item()
         t+=1
-    test_acc = correct / len(test_loader.dataset)
+    test_acc = correct / len(test_loader[fold].dataset)
     return test_acc
 
 
 if __name__ == '__main__':
     o = option()
     o.multiple_dataset = True
+    folds = 10 # k-fold cross-validation
     saved = []
-    '''
-    this program aims at a specific feature, if you want to get a
-    threshold impact graph, find the python notebook under this folder
-
-    '''
-    #print(ans) will show all possible concatenation under one threshold
-    # ans = [(0, 2), (0, 3), (0, 4), (2, 3), (2, 4), (3, 4), (0, 2, 3), (0, 2, 4), (0, 3, 4), (2, 3, 4), (0, 2, 3, 4)]
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     datasets = []
     datasets.append(o.dataset)
     plt.figure()
     for dataset in datasets:
-        o.dataset = dataset
         ans = all_possible_concatenation(o)
         min_ans_len, max_ans_len = max_len_arr(ans)
         c_index = 0
         path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
         data_set = TUDataset(root = path + o.dataset, name = o.dataset, use_node_attr = False)
 
+        num_train_graphs = int(len(data_set) * 0.8)
+        num_test_graphs = int(len(data_set) * 0.2)
+        # fix shuffle seeds
         random.seed(1)
         torch.manual_seed(1)
         torch.cuda.manual_seed(1)
         np.random.seed(1)
-
-        #data_set = data_set.shuffle()
-        train_len, valid_len= int(0.6 * len(data_set)), int(0.1 * len(data_set))  
-        test_len = len(data_set) - train_len - valid_len
-        batchsize = 16 if o.dataset != 'NCI1' else 32
-
-        num_graphs = len(data_set)
-        num_train_graphs = int(num_graphs * 0.8)
-        num_valid_graphs = int(num_graphs * 0.1)
-        num_test_graphs = int(num_graphs * 0.1)
-
-        random.seed(1)
-        torch.manual_seed(1)
-        torch.cuda.manual_seed(1)
-        np.random.seed(1)
-
-        perm = torch.randperm(num_graphs)
+        perm = torch.randperm(len(data_set))
         train_idx = perm[:num_train_graphs]
-        valid_idx = perm[num_train_graphs:(num_train_graphs+num_valid_graphs)]
-        test_idx = perm[(num_train_graphs+num_valid_graphs):(num_train_graphs+num_valid_graphs+num_test_graphs)]
-
-        random.seed(1)
-        torch.manual_seed(1)
-        torch.cuda.manual_seed(1)
-        np.random.seed(1)
-        train_loader = DataLoader(data_set[train_idx], batch_size = batchsize , shuffle=True, worker_init_fn=random.seed(12345)) #### batch size 32 for NCI1
-        valid_loader = DataLoader(data_set[valid_idx], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
-        test_loader = DataLoader(data_set[test_idx], batch_size = batchsize , shuffle = False) #### batch size 32 for NCI1
-
+        test_idx = perm[num_train_graphs:]
+        num_each_fold = int(num_train_graphs / folds)
+        batchsize = 16 if dataset != 'NCI1' else 32
+        train_loader = []
+        test_loader = []
+        test_loader.append(DataLoader(data_set[test_idx], batch_size = batchsize , shuffle = False)) #### batch size 32 for NCI1
+        # split cross-validation sets
+        for i in range(folds):
+            # fix shuffle seeds
+            random.seed(1)
+            torch.manual_seed(1)
+            torch.cuda.manual_seed(1)
+            np.random.seed(1)
+            train_loader.append(DataLoader(data_set[train_idx[(i*num_each_fold):((i+1)*num_each_fold)]], batch_size = batchsize , shuffle=True, worker_init_fn=random.seed(12345))) 
+        
         input_dim = 0
         first = 0
         random.seed(1)
         torch.manual_seed(1)
         torch.cuda.manual_seed(1)
         np.random.seed(1)
-        for load in train_loader:
-            input_dim = load.x.shape[1]
-            first = load.x.shape[0]
-            break
+        ans = [(3,4)]
+        for i in train_loader[1:]:
+            for load in i:
+                input_dim = load.x.shape[1]
+                first = load.x.shape[0]
+                break
         input_dim+= len(ans[0])
-        print(first)
-
+        print(input_dim)
+        #print(first)
+        
         num_classes = {'ENZYMES':6, 'PROTEINS':2, 'NCI1':2}
+        # reserve train_loader and test_loader
+        '''
+        reserve('train', dataset, train_loader, folds)
         
-        random.seed(1)
-        torch.manual_seed(1)
-        torch.cuda.manual_seed(1)
-        np.random.seed(1)
-        reserve('train', dataset, train_loader)
-        random.seed(1)
-        torch.manual_seed(1)
-        torch.cuda.manual_seed(1)
-        np.random.seed(1)
-        reserve('valid', dataset, valid_loader)
-        random.seed(1)
-        torch.manual_seed(1)
-        torch.cuda.manual_seed(1)
-        np.random.seed(1)
-        reserve('test', dataset, test_loader)
-        
+        reserve('test', dataset, test_loader, 1)
+        '''
         
         mean_acc = [[] for i in range(min_ans_len, max_ans_len+1)]
         ans = [(3,4)]
+        folds_arr = [i for i in range(folds)]
+        folds_arr = np.array(folds_arr)
         for value in ans: # for each combination entry:
-            # should transform value to list 
-            for i in range(10):
-                model =  StrucFeaGNN(concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.017, weight_decay=1e-5)
-
-                best_epoch = 0
-                best_valid_acc = 0
-                best_test_acc = 0
-                op_iters = 0
-
-                for epoch in range(1, 800):
-                    if o.dataset == 'NCI1':
-                        if o.aim_feature == 2:
-                            break
-                    # for train
-                    t_loss = train(value, o.dataset, model, 'train', optimizer, train_loader, device)
+            model =  StrucFeaGNN(concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
+            optimizer = torch.optim.Adam(model.parameters(), lr=0.017, weight_decay=1e-5)
+            best_epoch = 0
+            best_train_acc = 0
+            best_valid_acc = 0
+            best_test_acc = 0
+            op_iters = 0
+            for epoch in range(1, 800):
+                if o.dataset == 'NCI1':
+                    if o.aim_feature == 2:
+                        break
+                # for train
+                for fo in range(folds):
+                    tr_acc, t_loss = train(value, o.dataset, model, 'train', optimizer, train_loader, device, folds_arr[folds_arr!=fo])
                     # for valid 
-                    v_acc = valid(value, o.dataset, model, 'valid',  valid_loader, device)
+                    v_acc = valid(value, o.dataset, model, 'train',  train_loader, device, fo)
                     # for test
-                    t_acc = test(value, o.dataset, model, 'test', test_loader, device)
-                    
-                    
+                    t_acc = test(value, o.dataset, model, 'test', test_loader, device, 0)
+
 
                     if v_acc > best_valid_acc:
                         best_valid_acc = v_acc
                         best_test_acc = t_acc
+                        best_train_acc = tr_acc
                         best_epoch = epoch
-                        torch.save(model, '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/best_model_{}.pkl'.format(o.dataset))
+                        #torch.save(model, '/home/jiaqing/桌面/Fea2Fea/src/model_pkl/best_model_{}.pkl'.format(o.dataset))
                         op_iters=0
                     op_iters+=1
-                    if op_iters > 20:
+                    if op_iters > 100:
                         break
-                    print('Epoch {:03d}, Train Loss: {:.4f}, best valid acc :{:.4f}, best test acc : {:.4f}'.format(
-   epoch, t_loss, best_valid_acc , best_test_acc))
-                model = torch.load('/home/jiaqing/桌面/Fea2Fea/src/model_pkl/best_model_{}.pkl'.format(o.dataset))
-                print_conf_mtx(o.dataset, 'train', model, train_loader, device, num_classes[o.dataset])
+                    print('Epoch {:03d}, Train loss:{:.4f}, best Train acc: {:.4f}, best valid acc :{:.4f}, best test acc : {:.4f}'.format(
+   epoch, t_loss, best_train_acc, best_valid_acc , best_test_acc))
+                    #model2 = torch.load('/home/jiaqing/桌面/Fea2Fea/src/model_pkl/best_model_{}.pkl'.format(o.dataset))
+                    #print_conf_mtx(o.dataset, 'test', model2, test_loader, device, num_classes[o.dataset])
                 #mean_acc[len(value) - min_ans_len].append(best_test_acc)
             break
             
@@ -299,4 +294,4 @@ if __name__ == '__main__':
 
     # save mean acc and std acc   
     saved = pd.DataFrame(saved)
-        
+    
