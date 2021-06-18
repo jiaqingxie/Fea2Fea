@@ -8,6 +8,8 @@ import torch
 from torch_geometric.datasets import Planetoid
 import torch_geometric.transforms as T
 import torch.nn.functional as F
+from torch_geometric.data import DataLoader
+
 
 from optimal_R import option, all_possible_concatenation
 from graph_property import G_property, binning
@@ -63,6 +65,7 @@ if __name__ == '__main__':
         name = r'/home/jiaqing/桌面/Fea2Fea/Result/Planetoid/' + dataset + '_property.txt'
         property_file = pd.read_csv(name, sep = '\t')
 
+        
         data.y = np.array(property_file.iloc[:,[o.aim_feature]])
         #print(property_file.iloc[:,[1]])
         number = len(data.y)
@@ -128,3 +131,4 @@ if __name__ == '__main__':
     path = '/home/jiaqing/桌面/Fea2Fea/Result/pipeline/'
     plt.savefig(path + 'aim_' + str(o.aim_feature) + '.eps', dpi = 400, bbox_inches='tight')
     plt.show()
+        

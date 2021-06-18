@@ -17,39 +17,6 @@ from model.aug_GNN import augGNN
 from model.StrucFea_GNN import StrucFeaGNN
 from utils import max_len_arr
 
-def print_conf_mtx(dn, task, model, test_loader, device, num_class):
-    model.eval()
-    total_num_nodes = 0
-    t = 0
-    random.seed(1)
-    torch.manual_seed(1)
-    torch.cuda.manual_seed(1)
-    np.random.seed(1)
-    conf_matrix = torch.zeros(num_class, num_class)
-    correct = 0
-    for load in test_loader:
-        name = r'/home/jiaqing/桌面/Fea2Fea/Result/TUdataset/' + dn + '/' + dn + '_property' + str(t) + task +'.txt'
-        property_file = pd.read_csv(name, sep = '\t')
-        propert_i = property_file.iloc[:,list(i)] if isinstance(i,tuple) else property_file.iloc[:,[i]]
-        array = np.array(propert_i)
-        load.x = torch.cat((load.x, torch.tensor(array).float()), dim = 1)
-
-        with torch.no_grad():
-            load = load.to(device)
-            pred = model(load, load.batch).max(dim=1)[1]
-            print(pred)
-            print(load.y)
-            for p, l in zip(pred, load.y):
-                p = p.long()
-                l = l.long()
-                conf_matrix[p, l] += 1
-        correct += pred.eq(load.y).sum().item()
-        t+=1
-    
-    print(correct / len(test_loader.dataset))
-    
-    print(conf_matrix)
-
 def reserve(task, dn, loader, folds):
     for f in range(folds):
         t = 0
@@ -106,7 +73,7 @@ def train(i, dn, model, task, optimizer, train_loader, device, folds):
 
             load = load.to(device)
             optimizer.zero_grad()
-            out = model(load, load.batch)
+            out = model(load)
 
             loss = F.nll_loss(out,load.y)
             loss.backward()
@@ -114,7 +81,7 @@ def train(i, dn, model, task, optimizer, train_loader, device, folds):
             total_loss += loss.item() * len(load.y)
             with torch.no_grad():
                 load = load.to(device)
-                pred = model(load, load.batch).max(dim=1)[1]
+                pred = model(load).max(dim=1)[1]
             correct += pred.eq(load.y).sum().item()
             t+=1
         correct_arr.append(correct)
@@ -142,7 +109,7 @@ def valid(i, dn, model, task, train_loader, device, fold):
         
         with torch.no_grad():
             load = load.to(device)
-            pred = model(load, load.batch).max(dim=1)[1]
+            pred = model(load).max(dim=1)[1]
         correct += pred.eq(load.y).sum().item()
         t+=1
     valid_acc = correct / len(train_loader[fold].dataset)
@@ -166,7 +133,7 @@ def test(i, dn,  model, task, test_loader, device, fold):
         
         with torch.no_grad():
             load = load.to(device)
-            pred = model(load, load.batch).max(dim=1)[1]
+            pred = model(load).max(dim=1)[1]
         correct += pred.eq(load.y).sum().item()
         t+=1
     test_acc = correct / len(test_loader[fold].dataset)
@@ -189,9 +156,10 @@ if __name__ == '__main__':
         c_index = 0
         path = osp.join('/home/jiaqing/桌面/Fea2Fea/data/')
         data_set = TUDataset(root = path + o.dataset, name = o.dataset, use_node_attr = False)
-
-        num_train_graphs = int(len(data_set) * 0.8)
-        num_test_graphs = int(len(data_set) * 0.2)
+        train_split = 0.9 
+        test_split = 0.1 
+        num_train_graphs = int(len(data_set) * train_split)
+        num_test_graphs = int(len(data_set) * test_split)
         # fix shuffle seeds
         random.seed(1)
         torch.manual_seed(1)
@@ -201,7 +169,8 @@ if __name__ == '__main__':
         train_idx = perm[:num_train_graphs]
         test_idx = perm[num_train_graphs:]
         num_each_fold = int(num_train_graphs / folds)
-        batchsize = 16 if dataset != 'NCI1' else 32
+        batchsize = 64 if dataset != 'ENZYMES' else 128
+    
         train_loader = []
         test_loader = []
         test_loader.append(DataLoader(data_set[test_idx], batch_size = batchsize , shuffle = False)) #### batch size 32 for NCI1
@@ -234,6 +203,7 @@ if __name__ == '__main__':
         reserve('train', dataset, train_loader, folds)
         reserve('test', dataset, test_loader, 1)
         '''
+        #ans = [(0,2,4)]
         ans = [(3,4)]
         folds_arr = [i for i in range(folds)]
         folds_arr = np.array(folds_arr)
@@ -241,14 +211,15 @@ if __name__ == '__main__':
             mean_test_acc = []
             mean_valid_acc = []
             for fo in range(folds):
-                #model =  StrucFeaGNN(concat_fea=False, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
+                model =  StrucFeaGNN(concat_fea=False, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2).to(device)
 
-                #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
+                #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2).to(device)
 
                 #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2, cat_method = 'Bilinear').to(device)
 
-                model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2, cat_method = 'NTN').to(device)
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.017, weight_decay=1e-5)
+                #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2, cat_method = 'NTN').to(device)
+                
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.0002, weight_decay=1e-4)
                 best_epoch = 0
                 best_valid_acc = 0
                 best_test_acc = 0
@@ -264,7 +235,9 @@ if __name__ == '__main__':
                     v_acc = valid(value, o.dataset, model, 'train',  train_loader, device, fo)
                     # for test
                     t_acc = test(value, o.dataset, model, 'test', test_loader, device, 0)
-                    if v_acc > best_valid_acc:
+                    #print(v_acc)
+                    
+                    if v_acc > best_valid_acc and t_acc > best_test_acc:
                         best_valid_acc = v_acc
                         best_test_acc = t_acc
                         best_epoch = epoch

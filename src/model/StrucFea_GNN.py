@@ -18,7 +18,7 @@ from torch_geometric.nn import global_mean_pool
 from model.aug_GNN import NeuralTensorNetwork
 
 class StrucFeaGNN(nn.Module):
-    def __init__(self, concat_fea = True, concat_fea_num = 2, embed_method = 'GIN', input_dim = 1024, output_dim = 7, depth = 2, cat_method = 'SimpleConcat'):
+    def __init__(self, concat_fea = True, concat_fea_num = 2, embed_method = 'GIN', input_dim = 1024, output_dim = 7, depth = 2, cat_method = 'SimpleConcat', required_batch = True, embed_dim = 16):
         super(StrucFeaGNN, self).__init__()
         self.concat_fea_num = concat_fea_num
         self.embed_method = embed_method
@@ -27,28 +27,31 @@ class StrucFeaGNN(nn.Module):
         self.depth = depth
         self.concat_fea = concat_fea
         self.cat_method = cat_method
-        self.pre_mlp1 = nn.Linear(self.concat_fea_num, 16)
-        self.pre_mlp2 = nn.Linear(16, 32)
-        self.pre_mlp3 = nn.Linear(self.input_dim - self.concat_fea_num, 16)
-        self.pre_mlp4 = nn.Linear(16, 32)
-        self.pre_mlp5 = nn.Linear(16, 64)
-        self.post_mlp1 = nn.Linear(64, 16)
-        self.post_mlp2 = nn.Linear(16, output_dim)
+        self.required_batch = required_batch
+        self.embed_dim = embed_dim
+
+        self.pre_mlp1 = nn.Linear(self.concat_fea_num, self.embed_dim)
+        self.pre_mlp2 = nn.Linear(self.embed_dim, self.embed_dim * 2)
+        self.pre_mlp3 = nn.Linear(self.input_dim - self.concat_fea_num, self.embed_dim)
+        self.pre_mlp4 = nn.Linear(self.embed_dim, self.embed_dim * 2)
+        self.pre_mlp5 = nn.Linear(self.embed_dim, self.embed_dim * 4)
+        self.post_mlp1 = nn.Linear(self.embed_dim * 4, self.embed_dim * 2)
+        self.post_mlp2 = nn.Linear(self.embed_dim * 2, output_dim)
         
-        self.bilinear = nn.Bilinear(32,32,64)
-        self.ntn = NeuralTensorNetwork(32, 64)
+        self.bilinear = nn.Bilinear(self.embed_dim * 2, self.embed_dim * 2,self.embed_dim * 4)
+        self.ntn = NeuralTensorNetwork(self.embed_dim * 2, self.embed_dim * 4)
         self.convs = nn.ModuleList()
         self.mlps = nn.ModuleList()
         self.batch_norms = nn.ModuleList()
         for i in range(self.depth):
             self.mlps.append(nn.Sequential(
-                            nn.Linear(64, 64),
-                            nn.BatchNorm1d(64),
+                            nn.Linear(self.embed_dim * 4, self.embed_dim * 4),
+                            nn.BatchNorm1d(self.embed_dim * 4),
                             nn.ReLU(),
-                            nn.Linear(64, 64),
+                            nn.Linear(self.embed_dim * 4, self.embed_dim * 4),
             ))
             self.batch_norms.append(
-                            nn.BatchNorm1d(64)
+                            nn.BatchNorm1d(self.embed_dim * 4,)
             )
         
         
@@ -56,18 +59,18 @@ class StrucFeaGNN(nn.Module):
             if embed_method == 'GIN':
                 self.convs.append(GINConv(self.mlps[i]))
             elif embed_method == 'GCN':
-                self.convs.append(GCNConv(64, 64, cached=False))
+                self.convs.append(GCNConv(self.embed_dim * 4, self.embed_dim * 4, cached=False))
             elif embed_method == 'GAT':
-                self.convs.append(GATConv(64, 64, heads=1, concat = False, dropout= 0.4))
+                self.convs.append(GATConv(self.embed_dim * 4, self.embed_dim * 4, heads= 4, concat = False, dropout= 0.4))
             elif embed_method == 'SAGE':
-                self.convs.append(SAGEConv(64,64 ,normalize=True))
-            elif embed_method == 'None':
+                self.convs.append(SAGEConv(self.embed_dim * 4,self.embed_dim * 4, normalize=True))
+            elif embed_method == 'None' or embed_method == 'MLP' :
                 pass
             else:
                 print("please give four of the embedding methods: GIN, GAT, GCN, SAGE")
                 sys.exit(0)
         
-    def forward(self, data, batch):
+    def forward(self, data):
         
         ident_idx = self.input_dim - self.concat_fea_num
         ident_vec = data.x[:,:ident_idx]
@@ -91,18 +94,28 @@ class StrucFeaGNN(nn.Module):
         elif self.cat_method == 'NTN':
             new_x = self.ntn(init_x, x)
         
-        
-        # two gnn layers
-        graph_embed_0 = self.batch_norms[0](self.convs[0](new_x, data.edge_index))
-        graph_embed_0 = F.dropout(graph_embed_0, p = 0.4, training=self.training)
-        graph_embed_0+=new_x # skip connection
-        graph_embed_1 = self.batch_norms[1](self.convs[1](graph_embed_0, data.edge_index))
-        graph_embed_1 = F.dropout(graph_embed_1, p = 0.4, training=self.training)
-        graph_embed_1 = graph_embed_1 + graph_embed_0 + new_x # skip connection
+        if self.embed_method != 'MLP':
+            # two gnn layers
+            graph_embed_0 = self.batch_norms[0](self.convs[0](new_x, data.edge_index))
+            graph_embed_0 = F.dropout(graph_embed_0, p = 0.3, training=self.training)
+            graph_embed_0+=new_x # skip connection
+            graph_embed_1 = self.batch_norms[1](self.convs[1](graph_embed_0, data.edge_index))
+            graph_embed_1 = F.dropout(graph_embed_1, p = 0.3, training=self.training)
+            graph_embed_1 = graph_embed_1 + graph_embed_0 + new_x # skip connection
+            # readout layer
+            if self.required_batch:
+                tmp = global_mean_pool(graph_embed_1, data.batch)  
+            else:
+                tmp = graph_embed_1
+            tmp = F.dropout(tmp, p= 0.3, training=self.training)
+        else:
+            if self.required_batch:
+                tmp = global_mean_pool(new_x, data.batch)   
+            else:
+                tmp = new_x     
+            tmp = F.dropout(tmp, p= 0.3, training=self.training)
 
-        # readout layer
-        tmp = global_mean_pool(graph_embed_1, data.batch)        
-        tmp = F.dropout(tmp, p= 0.4, training=self.training)
+
         output = F.relu(self.post_mlp1(tmp))
         output = self.post_mlp2(output)
 
