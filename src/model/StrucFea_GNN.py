@@ -18,7 +18,7 @@ from torch_geometric.nn import global_mean_pool
 from model.aug_GNN import NeuralTensorNetwork
 
 class StrucFeaGNN(nn.Module):
-    def __init__(self, concat_fea = True, concat_fea_num = 2, embed_method = 'GIN', input_dim = 1024, output_dim = 7, depth = 2, cat_method = 'SimpleConcat', required_batch = True, embed_dim = 16):
+    def __init__(self, concat_fea = True, concat_fea_num = 2, embed_method = 'GIN', input_dim = 1024, output_dim = 7, depth = 2, cat_method = 'SimpleConcat', required_batch = True, embed_dim = 32):
         super(StrucFeaGNN, self).__init__()
         self.concat_fea_num = concat_fea_num
         self.embed_method = embed_method
@@ -35,8 +35,8 @@ class StrucFeaGNN(nn.Module):
         self.pre_mlp3 = nn.Linear(self.input_dim - self.concat_fea_num, self.embed_dim)
         self.pre_mlp4 = nn.Linear(self.embed_dim, self.embed_dim * 2)
         self.pre_mlp5 = nn.Linear(self.embed_dim, self.embed_dim * 4)
-        self.post_mlp1 = nn.Linear(self.embed_dim * 4, self.embed_dim * 2)
-        self.post_mlp2 = nn.Linear(self.embed_dim * 2, output_dim)
+        self.post_mlp1 = nn.Linear(self.embed_dim * 4, self.embed_dim)
+        self.post_mlp2 = nn.Linear(self.embed_dim, output_dim)
         
         self.bilinear = nn.Bilinear(self.embed_dim * 2, self.embed_dim * 2,self.embed_dim * 4)
         self.ntn = NeuralTensorNetwork(self.embed_dim * 2, self.embed_dim * 4)
@@ -63,7 +63,7 @@ class StrucFeaGNN(nn.Module):
             elif embed_method == 'GAT':
                 self.convs.append(GATConv(self.embed_dim * 4, self.embed_dim * 4, heads= 4, concat = False, dropout= 0.4))
             elif embed_method == 'SAGE':
-                self.convs.append(SAGEConv(self.embed_dim * 4,self.embed_dim * 4, normalize=True))
+                self.convs.append(SAGEConv(self.embed_dim * 4,normalize=True))
             elif embed_method == 'None' or embed_method == 'MLP' :
                 pass
             else:
@@ -107,13 +107,13 @@ class StrucFeaGNN(nn.Module):
                 tmp = global_mean_pool(graph_embed_1, data.batch)  
             else:
                 tmp = graph_embed_1
-            tmp = F.dropout(tmp, p= 0.3, training=self.training)
+            tmp = F.dropout(tmp, p= 0.4, training=self.training)
         else:
             if self.required_batch:
                 tmp = global_mean_pool(new_x, data.batch)   
             else:
                 tmp = new_x     
-            tmp = F.dropout(tmp, p= 0.3, training=self.training)
+            tmp = F.dropout(tmp, p= 0.4, training=self.training)
 
 
         output = F.relu(self.post_mlp1(tmp))

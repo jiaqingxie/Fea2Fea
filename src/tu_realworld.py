@@ -14,7 +14,8 @@ from torch_geometric.data import DataLoader, Dataset
 from optimal_R import option, all_possible_concatenation
 from graph_property import G_property, binning
 from model.aug_GNN import augGNN
-from model.StrucFea_GNN import StrucFeaGNN
+#from model.StrucFea_GNN import StrucFeaGNN
+from model.StrucFea_GNN_cit import StrucFeaGNN
 from utils import max_len_arr
 
 def reserve(task, dn, loader, folds):
@@ -211,7 +212,7 @@ if __name__ == '__main__':
             mean_test_acc = []
             mean_valid_acc = []
             for fo in range(folds):
-                model =  StrucFeaGNN(concat_fea=False, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2).to(device)
+                model =  StrucFeaGNN(concat_fea=False, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 3).to(device)
 
                 #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2).to(device)
 
@@ -219,7 +220,7 @@ if __name__ == '__main__':
 
                 #model =  StrucFeaGNN(concat_fea=True, concat_fea_num = 2, embed_method = 'GIN', input_dim = input_dim, output_dim = num_classes[o.dataset], depth = 2, cat_method = 'NTN').to(device)
                 
-                optimizer = torch.optim.Adam(model.parameters(), lr=0.0002, weight_decay=1e-4)
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.002, weight_decay=1e-4)
                 best_epoch = 0
                 best_valid_acc = 0
                 best_test_acc = 0

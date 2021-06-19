@@ -14,6 +14,8 @@ def option():
     parser.add_argument('--task', default='getR', type=str, help='getR or getConcat')
     parser.add_argument('--aim_feature', default=1, type=int, help='graph features')
     parser.add_argument('--show_matrix', default=False, type=bool, help='show the gathered matrix')
+    parser.add_argument('--graphconv', default='GIN', type=str, help='graph convolution method')
+    parser.add_argument('--concat_method', default='SimpleConcat', type=str, help='Concatenation methods between structural features')
     return parser.parse_args()
 
 def get_optimal_R(o):
