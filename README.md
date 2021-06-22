@@ -28,7 +28,7 @@ pip install networkx
 ```
 
 ## pipeline model
-![Fea2Fea-simple and Fea2Fea-multiple](output.pdf)
+![Fea2Fea-simple and Fea2Fea-multiple](https://github.com/JIAQING-XIE/Fea2Fea/blob/main/output.png)
 
 
 ## Dataset
