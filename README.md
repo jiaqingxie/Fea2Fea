@@ -28,7 +28,7 @@ pip install networkx
 ```
 
 ## pipeline model
-
+![Fea2Fea-simple and Fea2Fea-multiple](output.pdf)
 
 
 ## Dataset
