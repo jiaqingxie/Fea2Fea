@@ -92,15 +92,28 @@ Finally, you will reach acc for simple/bilinear/NTN + number of input features. 
 ## 5. Hyper-parameter tests
 In this part, we introduce the hyper-parameter tests.
 ```bash
-    python hyper_param.py --param
+    python hyper_param.py [option list]
 ```
 
 hyperparameter list: 
 
-| Name     | `EXPERIMENT_NAME` | Description  |
-|----------|:-------------------:|--------------|
-|task | node | node Fea2Fea-single
-|task | graph | graph Fea2Fea-single
+| Hyperparameter    | Type | Default Value| Description
+|----------|:-------------------:|--------------|------------|
+|input_feature | int| 0 | input feature index
+|aim_feature|int| 1 | output feature index
+|task | str |  `node`| node or graph dataset
+|dataset | str | `Cora` | dataset name 
+|hyperparameter | str | `binning` | binning or depth or threshold tunning
+|min_bins | int | 2 | minimum number of bins
+|max_bins | int | 6 | maximum number of bins
+|min_depth| int | 2 | minimum depth of GNN architecture
+|max_depth| int | 6 | maximum depth of GNN architecture
+|hidden_dim | int | 2 | hidden dimension
+|batchnorm | bool | 0 | if BatchNorm
+|embedding | str | `GIN` | graph embedding method
+|threshold | float | 0.8 | threshold for filtering irredundant features
+
+
 
 ## visualization 
 ### input feature distribution
