@@ -65,8 +65,8 @@ For single feature to single feature prediction, go to the src folder and run f_
 want to run experiments on Planetoid datasets. If you want to perform experiments on TUDatasets, then
 please run f_f_TU.py
 ```bash
-   python f_f_Citation.py 
-   python f_f_TU.py
+   python aug_Citation.py 
+   python aug_TU.py
 ```
 You need to correct the path at the moment before it's been corrected to the right relative path. Results are saved in Results/{dataset}.
 
