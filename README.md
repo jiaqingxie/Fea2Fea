@@ -65,8 +65,8 @@ For single feature to single feature prediction, go to the src folder and run f_
 want to run experiments on Planetoid datasets. If you want to perform experiments on TUDatasets, then
 please run f_f_TU.py
 ```bash
-   python aug_Citation.py 
-   python aug_TU.py
+   python f_f_Citation.py 
+   python f_f_TU.py
 ```
 You need to correct the path at the moment before it's been corrected to the right relative path. Results are saved in Results/{dataset}.
 
@@ -74,9 +74,10 @@ You need to correct the path at the moment before it's been corrected to the rig
 What's different from Fea2Fea-single is that predicted objective should be set in advance in the parameter list which should be passed to the command line.
 For example: run
 ```bash
-   python f_f_Citation.py 
-   python f_f_TU.py
+   python aug_Citation.py --dataset=Cora --aim_feature = 2 ## prediction on Cora dataset and predict clustering coefficient
+   python aug_TU.py --dataset=ENZYMES --aim_feature = 4 ## prediction on ENZYMES dataset and predict average path length (shortest)
 ```
+The predicted objective will be filtered by function `all_possible_concatenation`
 
 ## hyperparameter tunning
 
