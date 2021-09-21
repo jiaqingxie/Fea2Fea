@@ -95,9 +95,9 @@ In this part, we introduce the hyper-parameter tests.
     python hyper_param.py [option list]
 ```
 
-hyperparameter list: 
+Parameter list: 
 
-| Hyperparameter    | Type | Default Value| Description
+| Parameters    | Type | Default Value| Description
 |----------|:-------------------:|--------------|------------|
 |input_feature | int| 0 | input feature index
 |aim_feature|int| 1 | output feature index
@@ -113,18 +113,20 @@ hyperparameter list:
 |embedding | str | `GIN` | graph embedding method
 |threshold | float | 0.8 | threshold for filtering irredundant features
 
-
+Results will be shown on the screen. By the way, you can only perform hyperparameter once, choosing from `binning`, `depth` or `threshold`. 
 
 ## visualization 
 ### input feature distribution
+If you want to draw distribution to check whether the number of bins is reasonable, run
+```bash
+   python plot_dist.py # under src folder
+```
 
-
-
-### comparing concatenation methods
-
-### embedding visualization
 
 ## jupyter notebook playground (for reference)
+to compare concatenation methods: `different_concat_method_node.ipynb`
+
+to explore different embeddings: `explore_embedding.ipynb`
 
 Most importantly, in the future, we are going to add more features and more graph neural network models to ensure the model's robustness.
 
